@@ -16,23 +16,52 @@
 
   <h2 class="text-xl font-semibold mt-6">Question</h2>
   <p>
-    How does structure affect entropy in text data?
+    How does increasing structure in input data affect predictability and entropy in a computational system?
+  </p>
   </p>
 
   <h2 class="text-xl font-semibold mt-6">Setup</h2>
   <p>
-    We compare repetitive, semi-structured, and random text samples.
-  </p>
+Following the experimental design, we generate text files with increasing amounts of structured content (1 to 10 pages of repeated characters). Each file is measured in bytes to observe how size changes as a function of content.
+</p>
 
   <h2 class="text-xl font-semibold mt-6">Method</h2>
   <p>
-    Entropy is computed using character frequency distributions.
+    <ul>
+    <li>Generate 10 text files with increasing pages of repeated characters</li>
+    <li>Measure file size in bytes</li>
+    <li>Compute differences between consecutive files</li>
+    <li>Apply linear regression: Size = f(Pages)</li>
+    <li>Analyze predictability and variation</li>
+  </ul>
   </p>
 
   <h2 class="text-xl font-semibold mt-6">Results</h2>
 
 <p class="mb-4">
-  The system shows clear differences between structured and random text.
+  <p>
+File size increases approximately linearly with the number of pages, indicating a highly predictable system under structured input.
+</p>
+
+<div class="placeholder-box">
+  Graph: Pages vs File Size (linear trend)
+</div>
+
+<p class="small">
+Differences between consecutive files remain relatively stable, showing low variability.
+</p>
+
+  <section class="section-card">
+  <h2>Entropy Reference</h2>
+
+  <p class="small">
+  Entropy measures uncertainty in a distribution. Lower entropy corresponds to more predictable systems.
+  </p>
+
+  <p class="small">
+  H(X) = - Σ p(x) log p(x)
+  </p>
+</section>
 </p>
 
 <section class="mt-6">
@@ -55,7 +84,13 @@
 
   <h2 class="text-xl font-semibold mt-6">Insight</h2>
   <p>
-    Systems can quantify structure mathematically, but do not interpret meaning.
+    <p>
+The system exhibits low entropy because the input is highly structured. As the number of pages increases, the output (file size) remains predictable and follows a consistent pattern.
+</p>
+
+<p>
+This shows that structured systems reduce uncertainty, making outcomes easier to model and approximate.
+</p>
   </p>
 
 <script>
