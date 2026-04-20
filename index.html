@@ -1,65 +1,561 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>From Entropy to Experience</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --bg: #06142c;
+      --panel: rgba(255,255,255,0.04);
+      --panel-2: rgba(255,255,255,0.06);
+      --text: #f5f7fb;
+      --muted: #c1c9d8;
+      --accent: #6ca8ff;
+      --accent-2: #8ad7ff;
+      --border: rgba(255,255,255,0.1);
+      --shadow: 0 20px 60px rgba(0,0,0,0.35);
+      --radius: 18px;
+      --max: 980px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(108,168,255,0.13), transparent 28%),
+        radial-gradient(circle at top right, rgba(138,215,255,0.08), transparent 24%),
+        linear-gradient(180deg, #071224 0%, var(--bg) 100%);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover { color: var(--accent-2); }
+
+    .container {
+      width: min(calc(100% - 2rem), var(--max));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(10px);
+      background: rgba(6,20,44,0.7);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .topbar-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.9rem 0;
+      gap: 1rem;
+    }
+
+    .brand {
+      font-size: 0.98rem;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+    }
+
+    .actions {
+      display: flex;
+      gap: 0.7rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    button, .button-link {
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      color: var(--text);
+      padding: 0.8rem 1rem;
+      border-radius: 14px;
+      font: inherit;
+      cursor: pointer;
+      transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+      box-shadow: var(--shadow);
+    }
+
+    button:hover, .button-link:hover {
+      transform: translateY(-1px);
+      border-color: rgba(108,168,255,0.5);
+      background: rgba(255,255,255,0.08);
+    }
+
+    header.hero {
+      padding: 4.75rem 0 2.25rem;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 1.25rem;
+      align-items: stretch;
+    }
+
+    .hero-card, .side-card, .section-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-card {
+      padding: 2.2rem;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      color: var(--accent-2);
+      font-size: 0.9rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 0.9rem;
+    }
+
+    h1 {
+      font-size: clamp(2.4rem, 5vw, 4.1rem);
+      line-height: 1.05;
+      margin: 0 0 1rem;
+      max-width: 12ch;
+    }
+
+    .lede {
+      font-size: clamp(1.05rem, 1.5vw, 1.3rem);
+      color: var(--text);
+      max-width: 60ch;
+      margin: 0 0 1.5rem;
+    }
+
+    .hero-meta {
+      display: flex;
+      gap: 0.65rem;
+      flex-wrap: wrap;
+      margin-top: 1.25rem;
+    }
+
+    .tag {
+      border: 1px solid rgba(255,255,255,0.12);
+      padding: 0.55rem 0.8rem;
+      border-radius: 999px;
+      color: var(--muted);
+      background: rgba(255,255,255,0.03);
+      font-size: 0.92rem;
+    }
+
+    .side-card {
+      padding: 1.3rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .side-card h2 {
+      font-size: 1.05rem;
+      margin: 0 0 0.6rem;
+    }
+
+    .question {
+      font-size: 1rem;
+      color: var(--text);
+      margin: 0;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    section {
+      padding: 1rem 0 1.35rem;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .section-head h2 {
+      font-size: 1.65rem;
+      margin: 0;
+    }
+
+    .section-head p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 62ch;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .section-card {
+      padding: 1.25rem;
+      transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+    }
+
+    .section-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(108,168,255,0.4);
+      background: rgba(255,255,255,0.05);
+    }
+
+    .card-kicker {
+      font-size: 0.86rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--accent-2);
+      margin-bottom: 0.5rem;
+    }
+
+    .section-card h3 {
+      margin: 0 0 0.5rem;
+      font-size: 1.16rem;
+    }
+
+    .section-card p {
+      margin: 0 0 0.9rem;
+      color: var(--muted);
+    }
+
+    .status-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      font-size: 0.94rem;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      color: var(--muted);
+    }
+
+    .dot {
+      width: 0.62rem;
+      height: 0.62rem;
+      border-radius: 50%;
+      display: inline-block;
+      background: #ffd166;
+      box-shadow: 0 0 16px rgba(255,209,102,0.5);
+    }
+
+    .dot.ready { background: #5dd39e; box-shadow: 0 0 16px rgba(93,211,158,0.5); }
+    .dot.later { background: #7f8ea3; box-shadow: none; }
+
+    .framework {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .framework .section-card { min-height: 185px; }
+
+    footer {
+      padding: 2rem 0 3rem;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 900px) {
+      .hero-grid,
+      .grid,
+      .framework {
+        grid-template-columns: 1fr;
+      }
+
+      header.hero { padding-top: 3.5rem; }
+      .hero-card { padding: 1.4rem; }
+      h1 { max-width: 100%; }
+    }
+  </style>
 </head>
-
-<body class="bg-gray-900 text-white p-10 max-w-3xl mx-auto">
-
-  <button onclick="toggleLanguage()" class="mb-6 bg-gray-700 px-4 py-2 rounded">
-    Switch Language
-  </button>
-
-  <!-- ENGLISH -->
-  <div id="en">
-    <h1 class="text-3xl font-bold mb-4">From Entropy to Experience</h1>
-
-    <p class="mb-6">
-      A computational exploration of how systems reduce uncertainty,
-      build structured representations, and why this process does not
-      explain subjective experience.
-    </p>
-
-    <h2 class="text-xl font-semibold mb-2">Experiments</h2>
-
-    <ul class="list-disc ml-6">
-      <li><a href="experiment-1.html" class="text-blue-400">Experiment 1 — Entropy & Structure</a></li>
-    </ul>
+<body>
+  <div class="topbar">
+    <div class="container topbar-inner">
+      <div class="brand" data-i18n="brand">Computational Neuroscience Prep</div>
+      <div class="actions">
+        <a class="button-link" href="#experiments" data-i18n="navExperiments">Experiments</a>
+        <a class="button-link" href="#framework" data-i18n="navFramework">Framework</a>
+        <button id="langToggle" type="button" aria-label="Switch language">Español</button>
+      </div>
+    </div>
   </div>
 
-  <!-- SPANISH -->
-  <div id="es" style="display:none;">
-    <h1 class="text-3xl font-bold mb-4">De la Entropía a la Experiencia</h1>
+  <header class="hero">
+    <div class="container hero-grid">
+      <div class="hero-card">
+        <div class="eyebrow" data-i18n="eyebrow">Public Research Portfolio</div>
+        <h1 data-i18n="title">From Entropy to Experience</h1>
+        <p class="lede" data-i18n="subtitle">
+          A computational exploration of how systems reduce uncertainty, build structured representations, and why this process does not explain subjective experience.
+        </p>
+        <div class="hero-meta">
+          <span class="tag" data-i18n="tag1">Entropy</span>
+          <span class="tag" data-i18n="tag2">Representation</span>
+          <span class="tag" data-i18n="tag3">Perception</span>
+          <span class="tag" data-i18n="tag4">Limits of Experience</span>
+        </div>
+      </div>
 
-    <p class="mb-6">
-      Una exploración computacional de cómo los sistemas reducen la incertidumbre,
-      construyen representaciones estructuradas y por qué esto no explica
-      la experiencia subjetiva.
-    </p>
+      <aside class="side-card">
+        <div>
+          <h2 data-i18n="questionLabel">Central Question</h2>
+          <p class="question" data-i18n="questionText">
+            To what extent can reducing entropy in computational systems explain structured representation and perception, and why does it fail to account for subjective experience?
+          </p>
+        </div>
+        <div>
+          <h2 data-i18n="statusLabel">Current Focus</h2>
+          <p class="muted" data-i18n="statusText">
+            First five homeworks and two projects, redesigned as compact computational experiments and published incrementally.
+          </p>
+        </div>
+      </aside>
+    </div>
+  </header>
 
-    <h2 class="text-xl font-semibold mb-2">Experimentos</h2>
+  <main>
+    <section id="experiments">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2 data-i18n="experimentsTitle">Experiments</h2>
+            <p data-i18n="experimentsIntro">
+              A growing archive of course assignments reworked into bilingual mini-studies. Published items stay live; placeholders mark what comes next.
+            </p>
+          </div>
+        </div>
 
-    <ul class="list-disc ml-6">
-      <li><a href="experiment-1.html" class="text-blue-400">Experimento 1 — Entropía y Estructura</a></li>
-    </ul>
-  </div>
+        <div class="grid">
+          <article class="section-card">
+            <div class="card-kicker" data-i18n="kicker1">Homework 1</div>
+            <h3><a href="experiment-1.html" data-i18n="exp1Title">Experiment 1 — Entropy & Structure</a></h3>
+            <p data-i18n="exp1Desc">How repeated and random text differ in entropy, structure, and measurable file properties.</p>
+            <div class="status-row">
+              <span class="status"><span class="dot ready"></span><span data-i18n="live">Live</span></span>
+              <a href="experiment-1.html" data-i18n="open">Open page</a>
+            </div>
+          </article>
+
+          <article class="section-card">
+            <div class="card-kicker" data-i18n="kicker2">Homework 2</div>
+            <h3><a href="#" data-i18n="exp2Title">Experiment 2 — Noise & Download Variability</a></h3>
+            <p data-i18n="exp2Desc">A comparison of noisy transmission conditions through browser-based timing differences and uncertainty.</p>
+            <div class="status-row">
+              <span class="status"><span class="dot"></span><span data-i18n="comingSoon">Coming soon</span></span>
+              <span class="muted" data-i18n="placeholder">Placeholder</span>
+            </div>
+          </article>
+
+          <article class="section-card">
+            <div class="card-kicker" data-i18n="kicker3">Homework 3</div>
+            <h3><a href="#" data-i18n="exp3Title">Experiment 3 — Group Differences & ANOVA</a></h3>
+            <p data-i18n="exp3Desc">Testing whether measured differences across groups reveal stable structure or only surface variation.</p>
+            <div class="status-row">
+              <span class="status"><span class="dot"></span><span data-i18n="comingSoon">Coming soon</span></span>
+              <span class="muted" data-i18n="placeholder">Placeholder</span>
+            </div>
+          </article>
+
+          <article class="section-card">
+            <div class="card-kicker" data-i18n="kicker4">Homework 4</div>
+            <h3><a href="#" data-i18n="exp4Title">Experiment 4 — Comparison, Difference, and LSD</a></h3>
+            <p data-i18n="exp4Desc">A structured comparison experiment focused on measurement contrast, significance, and interpretive limits.</p>
+            <div class="status-row">
+              <span class="status"><span class="dot"></span><span data-i18n="comingSoon">Coming soon</span></span>
+              <span class="muted" data-i18n="placeholder">Placeholder</span>
+            </div>
+          </article>
+
+          <article class="section-card">
+            <div class="card-kicker" data-i18n="kicker5">Homework 5</div>
+            <h3><a href="#" data-i18n="exp5Title">Experiment 5 — Matrix Structure & Relative Volume</a></h3>
+            <p data-i18n="exp5Desc">A compact study of summation, spatial transformation, and constrained physical form treated computationally.</p>
+            <div class="status-row">
+              <span class="status"><span class="dot"></span><span data-i18n="comingSoon">Coming soon</span></span>
+              <span class="muted" data-i18n="placeholder">Placeholder</span>
+            </div>
+          </article>
+
+          <article class="section-card">
+            <div class="card-kicker" data-i18n="kicker6">Project 1</div>
+            <h3><a href="#" data-i18n="proj1Title">Project 1 — Hypothesis Testing as Constraint</a></h3>
+            <p data-i18n="proj1Desc">A focused study of hypothesis testing as a way to formalize what counts as evidence within a system.</p>
+            <div class="status-row">
+              <span class="status"><span class="dot"></span><span data-i18n="comingSoon">Coming soon</span></span>
+              <span class="muted" data-i18n="placeholder">Placeholder</span>
+            </div>
+          </article>
+
+          <article class="section-card">
+            <div class="card-kicker" data-i18n="kicker7">Project 2</div>
+            <h3><a href="#" data-i18n="proj2Title">Project 2 — Weather, Prediction, and Uncertainty</a></h3>
+            <p data-i18n="proj2Desc">A weather-based experiment exploring prediction, environmental variables, and residual uncertainty.</p>
+            <div class="status-row">
+              <span class="status"><span class="dot"></span><span data-i18n="comingSoon">Coming soon</span></span>
+              <span class="muted" data-i18n="placeholder">Placeholder</span>
+            </div>
+          </article>
+
+          <article class="section-card">
+            <div class="card-kicker" data-i18n="kicker8">Later</div>
+            <h3><a href="#" data-i18n="laterTitle">Further Uploads — Representation, Vision, and Models</a></h3>
+            <p data-i18n="laterDesc">Additional experiments will continue extending this archive beyond the initial coursework set.</p>
+            <div class="status-row">
+              <span class="status"><span class="dot later"></span><span data-i18n="planned">Planned</span></span>
+              <span class="muted" data-i18n="ongoing">Ongoing archive</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="framework">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2 data-i18n="frameworkTitle">Framework</h2>
+            <p data-i18n="frameworkIntro">
+              The project moves in three layers: measuring uncertainty, observing how structure emerges, and testing whether structured output is enough to count as experience.
+            </p>
+          </div>
+        </div>
+
+        <div class="framework">
+          <article class="section-card">
+            <div class="card-kicker" data-i18n="layer1Kicker">Layer 1</div>
+            <h3 data-i18n="layer1Title">Entropy</h3>
+            <p data-i18n="layer1Desc">Measure uncertainty, repetition, randomness, and how information can be quantified without assuming meaning.</p>
+          </article>
+
+          <article class="section-card">
+            <div class="card-kicker" data-i18n="layer2Kicker">Layer 2</div>
+            <h3 data-i18n="layer2Title">Representation</h3>
+            <p data-i18n="layer2Desc">Track how systems transform input into structure through regression, comparison, and constrained modeling.</p>
+          </article>
+
+          <article class="section-card">
+            <div class="card-kicker" data-i18n="layer3Kicker">Layer 3</div>
+            <h3 data-i18n="layer3Title">Limits</h3>
+            <p data-i18n="layer3Desc">Ask what remains absent once uncertainty has been reduced: interpretation, subjectivity, and lived experience.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <span data-i18n="footerText">Built as a bilingual public portfolio in progress. More experiments will be added over time.</span>
+    </div>
+  </footer>
 
   <script>
-    function toggleLanguage() {
-      const en = document.getElementById("en");
-      const es = document.getElementById("es");
-
-      if (en.style.display === "none") {
-        en.style.display = "block";
-        es.style.display = "none";
-      } else {
-        en.style.display = "none";
-        es.style.display = "block";
+    const translations = {
+      en: {
+        brand: 'Computational Neuroscience Prep',
+        navExperiments: 'Experiments',
+        navFramework: 'Framework',
+        eyebrow: 'Public Research Portfolio',
+        title: 'From Entropy to Experience',
+        subtitle: 'A computational exploration of how systems reduce uncertainty, build structured representations, and why this process does not explain subjective experience.',
+        tag1: 'Entropy', tag2: 'Representation', tag3: 'Perception', tag4: 'Limits of Experience',
+        questionLabel: 'Central Question',
+        questionText: 'To what extent can reducing entropy in computational systems explain structured representation and perception, and why does it fail to account for subjective experience?',
+        statusLabel: 'Current Focus',
+        statusText: 'First five homeworks and two projects, redesigned as compact computational experiments and published incrementally.',
+        experimentsTitle: 'Experiments',
+        experimentsIntro: 'A growing archive of course assignments reworked into bilingual mini-studies. Published items stay live; placeholders mark what comes next.',
+        kicker1: 'Homework 1', exp1Title: 'Experiment 1 — Entropy & Structure', exp1Desc: 'How repeated and random text differ in entropy, structure, and measurable file properties.',
+        kicker2: 'Homework 2', exp2Title: 'Experiment 2 — Noise & Download Variability', exp2Desc: 'A comparison of noisy transmission conditions through browser-based timing differences and uncertainty.',
+        kicker3: 'Homework 3', exp3Title: 'Experiment 3 — Group Differences & ANOVA', exp3Desc: 'Testing whether measured differences across groups reveal stable structure or only surface variation.',
+        kicker4: 'Homework 4', exp4Title: 'Experiment 4 — Comparison, Difference, and LSD', exp4Desc: 'A structured comparison experiment focused on measurement contrast, significance, and interpretive limits.',
+        kicker5: 'Homework 5', exp5Title: 'Experiment 5 — Matrix Structure & Relative Volume', exp5Desc: 'A compact study of summation, spatial transformation, and constrained physical form treated computationally.',
+        kicker6: 'Project 1', proj1Title: 'Project 1 — Hypothesis Testing as Constraint', proj1Desc: 'A focused study of hypothesis testing as a way to formalize what counts as evidence within a system.',
+        kicker7: 'Project 2', proj2Title: 'Project 2 — Weather, Prediction, and Uncertainty', proj2Desc: 'A weather-based experiment exploring prediction, environmental variables, and residual uncertainty.',
+        kicker8: 'Later', laterTitle: 'Further Uploads — Representation, Vision, and Models', laterDesc: 'Additional experiments will continue extending this archive beyond the initial coursework set.',
+        live: 'Live', open: 'Open page', comingSoon: 'Coming soon', placeholder: 'Placeholder', planned: 'Planned', ongoing: 'Ongoing archive',
+        frameworkTitle: 'Framework',
+        frameworkIntro: 'The project moves in three layers: measuring uncertainty, observing how structure emerges, and testing whether structured output is enough to count as experience.',
+        layer1Kicker: 'Layer 1', layer1Title: 'Entropy', layer1Desc: 'Measure uncertainty, repetition, randomness, and how information can be quantified without assuming meaning.',
+        layer2Kicker: 'Layer 2', layer2Title: 'Representation', layer2Desc: 'Track how systems transform input into structure through regression, comparison, and constrained modeling.',
+        layer3Kicker: 'Layer 3', layer3Title: 'Limits', layer3Desc: 'Ask what remains absent once uncertainty has been reduced: interpretation, subjectivity, and lived experience.',
+        footerText: 'Built as a bilingual public portfolio in progress. More experiments will be added over time.'
+      },
+      es: {
+        brand: 'Preparación en Neurociencia Computacional',
+        navExperiments: 'Experimentos',
+        navFramework: 'Marco',
+        eyebrow: 'Portafolio Público de Investigación',
+        title: 'De la Entropía a la Experiencia',
+        subtitle: 'Una exploración computacional de cómo los sistemas reducen la incertidumbre, construyen representaciones estructuradas y por qué ese proceso no explica la experiencia subjetiva.',
+        tag1: 'Entropía', tag2: 'Representación', tag3: 'Percepción', tag4: 'Límites de la Experiencia',
+        questionLabel: 'Pregunta Central',
+        questionText: '¿Hasta qué punto la reducción de entropía en sistemas computacionales puede explicar la representación estructurada y la percepción, y por qué ese proceso no logra explicar la experiencia subjetiva?',
+        statusLabel: 'Enfoque Actual',
+        statusText: 'Las primeras cinco tareas y dos proyectos, rediseñados como experimentos computacionales compactos y publicados de forma incremental.',
+        experimentsTitle: 'Experimentos',
+        experimentsIntro: 'Un archivo en crecimiento de actividades del curso replanteadas como miniestudios bilingües. Lo publicado se mantiene en vivo; los espacios reservados marcan lo que sigue.',
+        kicker1: 'Tarea 1', exp1Title: 'Experimento 1 — Entropía y Estructura', exp1Desc: 'Cómo el texto repetido y el aleatorio difieren en entropía, estructura y propiedades medibles del archivo.',
+        kicker2: 'Tarea 2', exp2Title: 'Experimento 2 — Ruido y Variabilidad de Descarga', exp2Desc: 'Una comparación de condiciones ruidosas de transmisión mediante diferencias de tiempo entre navegadores e incertidumbre.',
+        kicker3: 'Tarea 3', exp3Title: 'Experimento 3 — Diferencias de Grupo y ANOVA', exp3Desc: 'Prueba de si las diferencias medidas entre grupos revelan estructura estable o solo variación superficial.',
+        kicker4: 'Tarea 4', exp4Title: 'Experimento 4 — Comparación, Diferencia y LSD', exp4Desc: 'Un experimento de comparación estructurada centrado en contraste de medición, significancia y límites interpretativos.',
+        kicker5: 'Tarea 5', exp5Title: 'Experimento 5 — Estructura Matricial y Volumen Relativo', exp5Desc: 'Un estudio compacto de sumatoria, transformación espacial y forma física restringida tratado computacionalmente.',
+        kicker6: 'Proyecto 1', proj1Title: 'Proyecto 1 — Pruebas de Hipótesis como Restricción', proj1Desc: 'Un estudio enfocado en las pruebas de hipótesis como forma de formalizar qué cuenta como evidencia dentro de un sistema.',
+        kicker7: 'Proyecto 2', proj2Title: 'Proyecto 2 — Clima, Predicción e Incertidumbre', proj2Desc: 'Un experimento basado en datos meteorológicos para explorar predicción, variables ambientales e incertidumbre residual.',
+        kicker8: 'Después', laterTitle: 'Subidas Futuras — Representación, Visión y Modelos', laterDesc: 'Experimentos adicionales seguirán ampliando este archivo más allá del conjunto inicial del curso.',
+        live: 'Publicado', open: 'Abrir página', comingSoon: 'Próximamente', placeholder: 'Reservado', planned: 'Planeado', ongoing: 'Archivo en progreso',
+        frameworkTitle: 'Marco',
+        frameworkIntro: 'El proyecto avanza en tres capas: medir incertidumbre, observar cómo emerge la estructura y probar si una salida estructurada basta para contar como experiencia.',
+        layer1Kicker: 'Capa 1', layer1Title: 'Entropía', layer1Desc: 'Medir incertidumbre, repetición, aleatoriedad y cómo la información puede cuantificarse sin asumir significado.',
+        layer2Kicker: 'Capa 2', layer2Title: 'Representación', layer2Desc: 'Seguir cómo los sistemas transforman entradas en estructura mediante regresión, comparación y modelado restringido.',
+        layer3Kicker: 'Capa 3', layer3Title: 'Límites', layer3Desc: 'Preguntar qué sigue ausente una vez que la incertidumbre se ha reducido: interpretación, subjetividad y experiencia vivida.',
+        footerText: 'Construido como un portafolio público bilingüe en progreso. Se añadirán más experimentos con el tiempo.'
       }
-    }
-  </script>
+    };
 
+    let currentLang = localStorage.getItem('site-lang') || 'en';
+
+    function applyLanguage(lang) {
+      document.documentElement.lang = lang;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (translations[lang][key]) el.textContent = translations[lang][key];
+      });
+      document.getElementById('langToggle').textContent = lang === 'en' ? 'Español' : 'English';
+      localStorage.setItem('site-lang', lang);
+    }
+
+    document.getElementById('langToggle').addEventListener('click', () => {
+      currentLang = currentLang === 'en' ? 'es' : 'en';
+      applyLanguage(currentLang);
+    });
+
+    applyLanguage(currentLang);
+  </script>
 </body>
 </html>
