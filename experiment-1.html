@@ -2,134 +2,147 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Experiment 1 — Entropy</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body class="bg-gray-900 text-white p-10 max-w-3xl mx-auto">
 
-  <a href="index.html" class="text-blue-400">← Back</a>
+  <a href="index.html" class="text-blue-400 hover:text-blue-300">← Back</a>
 
   <h1 class="text-3xl font-bold mt-4 mb-4">
     Experiment 1 — Entropy and Structure
   </h1>
 
   <h2 class="text-xl font-semibold mt-6">Question</h2>
-  <p>
+  <p class="text-gray-300">
     How does increasing structure in input data affect predictability and entropy in a computational system?
-  </p>
   </p>
 
   <h2 class="text-xl font-semibold mt-6">Setup</h2>
-  <p>
-Following the experimental design, we generate text files with increasing amounts of structured content (1 to 10 pages of repeated characters). Each file is measured in bytes to observe how size changes as a function of content.
-</p>
+  <p class="text-gray-300">
+    Following the experimental design, we generate text files with increasing amounts of structured content
+    (1 to 10 pages of repeated characters). Each file is measured in bytes to observe how size changes as a
+    function of content.
+  </p>
 
   <h2 class="text-xl font-semibold mt-6">Method</h2>
-  <p>
-    <ul>
+  <ul class="list-disc pl-6 text-gray-300 space-y-1">
     <li>Generate 10 text files with increasing pages of repeated characters</li>
     <li>Measure file size in bytes</li>
     <li>Compute differences between consecutive files</li>
     <li>Apply linear regression: Size = f(Pages)</li>
     <li>Analyze predictability and variation</li>
   </ul>
-  </p>
 
   <h2 class="text-xl font-semibold mt-6">Results</h2>
-
-<p class="mb-4">
-  <p>
-File size increases approximately linearly with the number of pages, indicating a highly predictable system under structured input.
-</p>
-
-<div class="placeholder-box">
-  Graph: Pages vs File Size (linear trend)
-</div>
-
-<p class="small">
-Differences between consecutive files remain relatively stable, showing low variability.
-</p>
-
-  <section class="section-card">
-  <h2>Entropy Reference</h2>
-
-  <p class="small">
-  Entropy measures uncertainty in a distribution. Lower entropy corresponds to more predictable systems.
+  <p class="mb-4 text-gray-300">
+    File size increases approximately linearly with the number of pages, indicating a highly predictable system under structured input.
   </p>
 
-  <p class="small">
-  H(X) = - Σ p(x) log p(x)
+  <div class="border border-dashed border-gray-600 rounded-lg p-4 bg-gray-800 text-gray-400">
+    Graph: Pages vs File Size (linear trend)
+  </div>
+
+  <p class="text-sm text-gray-400 mt-3">
+    Differences between consecutive files remain relatively stable, showing low variability.
   </p>
-</section>
-</p>
 
-<section class="mt-6">
-  <h3 class="text-lg font-semibold mb-2">Interactive Entropy Demo</h3>
+  <div class="mt-6 border border-gray-700 rounded-lg p-4 bg-gray-800">
+    <h2 class="text-xl font-semibold">Entropy Reference</h2>
+    <p class="text-sm text-gray-300 mt-2">
+      Entropy measures uncertainty in a distribution. Lower entropy corresponds to more predictable systems.
+    </p>
+    <p class="text-sm text-blue-300 mt-2">
+      H(X) = - Σ p(x) log p(x)
+    </p>
+  </div>
 
-  <label>
-    Probability Bias (p): <span id="pValue">0.5</span>
-  </label>
+  <section class="mt-6">
+    <h3 class="text-lg font-semibold mb-2">Interactive Entropy Demo</h3>
 
-  <input type="range" id="slider" min="0.01" max="0.99" step="0.01" value="0.5" class="w-full my-2">
+    <label class="block text-gray-300 mb-2">
+      Probability Bias (p): <span id="pValue">0.5</span>
+    </label>
 
-  <p>Entropy: <strong id="entropyValue">0</strong></p>
+    <input
+      type="range"
+      id="slider"
+      min="0.01"
+      max="0.99"
+      step="0.01"
+      value="0.5"
+      class="w-full my-2"
+    >
 
-  <canvas id="entropyChart" width="300" height="200" class="mt-4 bg-gray-800 rounded"></canvas>
+    <p class="text-gray-300 mt-2">Entropy: <strong id="entropyValue">0</strong></p>
 
-  <p class="text-sm text-gray-400 mt-2">
-    Maximum entropy occurs when probabilities are balanced (p = 0.5).
-  </p>
-</section>
+    <canvas id="entropyChart" width="300" height="200" class="mt-4 bg-gray-800 rounded"></canvas>
+
+    <p class="text-sm text-gray-400 mt-2">
+      Maximum entropy occurs when probabilities are balanced (p = 0.5).
+    </p>
+  </section>
 
   <h2 class="text-xl font-semibold mt-6">Insight</h2>
-  <p>
-    <p>
-The system exhibits low entropy because the input is highly structured. As the number of pages increases, the output (file size) remains predictable and follows a consistent pattern.
-</p>
-
-<p>
-This shows that structured systems reduce uncertainty, making outcomes easier to model and approximate.
-</p>
+  <p class="text-gray-300">
+    The system exhibits low entropy because the input is highly structured. As the number of pages increases,
+    the output (file size) remains predictable and follows a consistent pattern.
   </p>
 
-<script>
-const slider = document.getElementById("slider");
-const pValue = document.getElementById("pValue");
-const entropyValue = document.getElementById("entropyValue");
-const canvas = document.getElementById("entropyChart");
-const ctx = canvas.getContext("2d");
+  <p class="text-gray-300 mt-3">
+    This shows that structured systems reduce uncertainty, making outcomes easier to model and approximate.
+  </p>
 
-function entropy(p) {
-  const q = 1 - p;
-  return -(p * Math.log2(p) + q * Math.log2(q));
-}
+  <h2 class="text-xl font-semibold mt-6">Reflection</h2>
+  <p class="text-gray-300">
+    A file filled with repeated characters has very low entropy and is highly predictable, yet it carries almost no meaningful information.
+    This suggests that low entropy alone does not imply meaningful structure.
+  </p>
 
-function draw(p) {
-  const q = 1 - p;
+  <p class="text-gray-300 mt-3">
+    Computational systems can measure predictability, but they do not interpret or experience the content they process.
+    Entropy helps describe uncertainty in representation, but not meaning or subjective experience.
+  </p>
 
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  <script>
+    const slider = document.getElementById("slider");
+    const pValue = document.getElementById("pValue");
+    const entropyValue = document.getElementById("entropyValue");
+    const canvas = document.getElementById("entropyChart");
+    const ctx = canvas.getContext("2d");
 
-  ctx.fillStyle = "#60a5fa";
-  ctx.fillRect(50, 200 - p * 150, 50, p * 150);
+    function entropy(p) {
+      const q = 1 - p;
+      return -(p * Math.log2(p) + q * Math.log2(q));
+    }
 
-  ctx.fillStyle = "#34d399";
-  ctx.fillRect(150, 200 - q * 150, 50, q * 150);
-}
+    function draw(p) {
+      const q = 1 - p;
 
-function update() {
-  const p = parseFloat(slider.value);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  pValue.textContent = p.toFixed(2);
+      ctx.fillStyle = "#60a5fa";
+      ctx.fillRect(50, 200 - p * 150, 50, p * 150);
 
-  const h = entropy(p);
-  entropyValue.textContent = h.toFixed(3);
+      ctx.fillStyle = "#34d399";
+      ctx.fillRect(150, 200 - q * 150, 50, q * 150);
+    }
 
-  draw(p);
-}
+    function update() {
+      const p = parseFloat(slider.value);
+      pValue.textContent = p.toFixed(2);
 
-slider.addEventListener("input", update);
+      const h = entropy(p);
+      entropyValue.textContent = h.toFixed(3);
 
-update();
-</script>
+      draw(p);
+    }
+
+    slider.addEventListener("input", update);
+    update();
+  </script>
+
+</body>
 </html>
