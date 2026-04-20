@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Experiment Title</title>
+  <title>From Entropy to Experience</title>
   <style>
     :root {
       --bg: #06142c;
@@ -107,21 +107,6 @@
       font-weight: 600;
     }
 
-    .button-link {
-      border: 1px solid var(--border);
-      background: linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.04));
-      color: var(--text);
-      padding: 0.82rem 1.08rem;
-      border-radius: 16px;
-      display: inline-block;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.18);
-    }
-
-    .button-link:hover {
-      border-color: rgba(108,168,255,0.45);
-      background: linear-gradient(180deg, rgba(255,255,255,0.1), rgba(255,255,255,0.055));
-    }
-
     header.hero {
       padding: 4.25rem 0 1.5rem;
     }
@@ -164,7 +149,7 @@
       letter-spacing: -0.04em;
     }
 
-    . {
+    .lede {
       font-size: 1.12rem;
       color: var(--text);
       max-width: 62ch;
@@ -182,6 +167,7 @@
 
     .section-card {
       padding: 1.35rem;
+      display: block;
     }
 
     h2 {
@@ -190,44 +176,15 @@
       letter-spacing: -0.02em;
     }
 
+    h3 {
+      margin: 0 0 0.45rem;
+      font-size: 1.05rem;
+      color: var(--text);
+    }
+
     p, li {
       color: var(--muted);
       margin-top: 0;
-    }
-
-    ul {
-      margin: 0.25rem 0 0;
-      padding-left: 1.2rem;
-    }
-
-    .status {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      color: var(--muted);
-      font-size: 0.95rem;
-    }
-
-    .dot {
-      width: 0.62rem;
-      height: 0.62rem;
-      border-radius: 50%;
-      display: inline-block;
-      background: #ffd166;
-      box-shadow: 0 0 16px rgba(255,209,102,0.5);
-    }
-
-    .dot.ready {
-      background: #5dd39e;
-      box-shadow: 0 0 16px rgba(93,211,158,0.5);
-    }
-
-    .placeholder-box {
-      border: 1px dashed rgba(255,255,255,0.16);
-      border-radius: 16px;
-      padding: 1rem;
-      background: rgba(255,255,255,0.02);
-      color: var(--muted);
     }
 
     .small {
@@ -260,84 +217,70 @@
   <header class="hero">
     <div class="container">
       <div class="hero-card">
-        <div class="eyebrow">Experiment / Project</div>
+        <div class="eyebrow">Computational Neuroscience Portfolio</div>
         <h1>From Entropy to Experience</h1>
         <p class="lede">
-          A series of computational experiments exploring entropy, structure, and the limits of representation.
-      </p>
+          A series of computational experiments exploring entropy, structure, uncertainty, and the limits of representation.
+        </p>
       </div>
     </div>
   </header>
 
- <main>
-  <div class="container stack">
-
-    <section class="section-card">
-      <h2>Experiments</h2>
-
-      <div class="stack">
-
-        <h1>Experiment 1 — Entropy & Predictability</h1>
-        <p class="lede">
-          Measuring how structured input affects predictability and entropy in a simple computational system.
-        </p>
-        </a>
-
-        <a href="experiment-2.html" class="section-card">
-          <h3>Experiment 2 — Noise & Variability</h3>
-          <p class="small">
-            Exploring how noise increases uncertainty and degrades signal structure.
-          </p>
-        </a>
-
-        <a href="experiment-3.html" class="section-card">
-          <h3>Experiment 3 — TBD</h3>
-          <p class="small">
-            Coming soon.
-          </p>
-        </a>
-
-      </div>
-    </section>
-
-  </div>
-</main>
-
+  <main>
+    <div class="container stack">
       <section class="section-card">
-        <h2>Method</h2>
-        <ul>
-          <li>Step 1</li>
-          <li>Step 2</li>
-          <li>Step 3</li>
-        </ul>
-      </section>
+        <h2>Experiments</h2>
 
-      <section class="section-card">
-        <h2>Results</h2>
-        <div class="placeholder-box">
-          Add graphs, tables, screenshots, or summary findings here.
+        <div class="stack">
+          <a href="experiment-1.html" class="section-card">
+            <h3>Experiment 1 — Entropy & Predictability</h3>
+            <p class="small">
+              Measuring how structured input affects predictability and entropy in a simple computational system.
+            </p>
+          </a>
+
+          <a href="experiment-2.html" class="section-card">
+            <h3>Experiment 2 — Noise & Variability</h3>
+            <p class="small">
+              Exploring how noise increases uncertainty and degrades signal structure.
+            </p>
+          </a>
+
+          <a href="experiment-3.html" class="section-card">
+            <h3>Experiment 3 — TBD</h3>
+            <p class="small">
+              Coming soon.
+            </p>
+          </a>
+
+          <a href="experiment-4.html" class="section-card">
+            <h3>Experiment 4 — TBD</h3>
+            <p class="small">
+              Coming soon.
+            </p>
+          </a>
+
+          <a href="experiment-5.html" class="section-card">
+            <h3>Experiment 5 — TBD</h3>
+            <p class="small">
+              Coming soon.
+            </p>
+          </a>
+
+          <a href="project-1.html" class="section-card">
+            <h3>Project 1 — TBD</h3>
+            <p class="small">
+              Coming soon.
+            </p>
+          </a>
+
+          <a href="project-2.html" class="section-card">
+            <h3>Project 2 — TBD</h3>
+            <p class="small">
+              Coming soon.
+            </p>
+          </a>
         </div>
-      </section>
-
-      <section class="section-card">
-        <h2>Insight</h2>
-        <p>
-          Write the main takeaway in 2–4 sentences.
-        </p>
-      </section>
-
-      <section class="section-card">
-        <h2>Reflection</h2>
-        <p>
-          Briefly connect the result to entropy, representation, uncertainty, or the limits of explaining experience.
-        </p>
-      </section>
-
-      <section class="section-card">
-        <h2>Bilingual Note</h2>
-        <p class="small">
-          You can later duplicate each section in Spanish below the English version, or add a language toggle once the content is stable.
-        </p>
       </section>
     </div>
   </main>
