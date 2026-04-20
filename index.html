@@ -7,7 +7,6 @@
   <style>
     :root {
       --bg: #06142c;
-      --panel: rgba(255,255,255,0.045);
       --text: #f5f7fb;
       --muted: #c1c9d8;
       --accent: #6ca8ff;
@@ -34,48 +33,6 @@
       overflow-x: hidden;
     }
 
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
-      background-size: 34px 34px;
-      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.4), transparent 85%);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .glow-1, .glow-2 {
-      position: fixed;
-      pointer-events: none;
-      z-index: 0;
-      filter: blur(18px);
-    }
-
-    .glow-1 {
-      inset: auto auto 8% -8%;
-      width: 340px;
-      height: 340px;
-      background: radial-gradient(circle, rgba(108,168,255,0.18), transparent 68%);
-    }
-
-    .glow-2 {
-      inset: 14% -7% auto auto;
-      width: 320px;
-      height: 320px;
-      background: radial-gradient(circle, rgba(158,123,255,0.14), transparent 68%);
-    }
-
-    a {
-      color: var(--accent);
-      text-decoration: none;
-      transition: color 0.18s ease;
-    }
-
-    a:hover { color: var(--accent-2); }
-
     .container {
       width: min(calc(100% - 2rem), var(--max));
       margin: 0 auto;
@@ -97,8 +54,6 @@
       justify-content: space-between;
       align-items: center;
       padding: 1rem 0;
-      gap: 1rem;
-      flex-wrap: wrap;
     }
 
     .brand {
@@ -118,14 +73,6 @@
       box-shadow: var(--shadow);
       position: relative;
       overflow: hidden;
-    }
-
-    .hero-card::before, .section-card::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(108,168,255,0.08), transparent 28%, transparent 72%, rgba(138,215,255,0.05));
-      pointer-events: none;
     }
 
     .hero-card {
@@ -168,6 +115,8 @@
     .section-card {
       padding: 1.35rem;
       display: block;
+      text-decoration: none;
+      color: inherit;
     }
 
     h2 {
@@ -182,7 +131,7 @@
       color: var(--text);
     }
 
-    p, li {
+    p {
       color: var(--muted);
       margin-top: 0;
     }
@@ -196,18 +145,9 @@
       color: var(--muted);
       font-size: 0.95rem;
     }
-
-    @media (max-width: 700px) {
-      header.hero { padding-top: 3.2rem; }
-      .hero-card, .section-card { border-radius: 18px; }
-      .hero-card { padding: 1.4rem; }
-    }
   </style>
 </head>
 <body>
-  <div class="glow-1" aria-hidden="true"></div>
-  <div class="glow-2" aria-hidden="true"></div>
-
   <div class="topbar">
     <div class="container topbar-inner">
       <div class="brand">From Entropy to Experience</div>
@@ -248,37 +188,27 @@
 
           <a href="experiment-3.html" class="section-card">
             <h3>Experiment 3 — TBD</h3>
-            <p class="small">
-              Coming soon.
-            </p>
+            <p class="small">Coming soon.</p>
           </a>
 
           <a href="experiment-4.html" class="section-card">
             <h3>Experiment 4 — TBD</h3>
-            <p class="small">
-              Coming soon.
-            </p>
+            <p class="small">Coming soon.</p>
           </a>
 
           <a href="experiment-5.html" class="section-card">
             <h3>Experiment 5 — TBD</h3>
-            <p class="small">
-              Coming soon.
-            </p>
+            <p class="small">Coming soon.</p>
           </a>
 
           <a href="project-1.html" class="section-card">
             <h3>Project 1 — TBD</h3>
-            <p class="small">
-              Coming soon.
-            </p>
+            <p class="small">Coming soon.</p>
           </a>
 
           <a href="project-2.html" class="section-card">
             <h3>Project 2 — TBD</h3>
-            <p class="small">
-              Coming soon.
-            </p>
+            <p class="small">Coming soon.</p>
           </a>
         </div>
       </section>
