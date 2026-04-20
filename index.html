@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>From Entropy to Experience</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      max-width: 800px;
+      line-height: 1.6;
+    }
+    button {
+      margin-bottom: 20px;
+      padding: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+<button onclick="toggleLanguage()">Switch Language</button>
+
+<div id="en">
+  <h1>From Entropy to Experience</h1>
+  <p>
+    A computational exploration of how systems reduce uncertainty and why that does not explain subjective experience.
+  </p>
+
+  <h2>Experiment 1</h2>
+  <p>How does structure affect entropy?</p>
+</div>
+
+<div id="es" style="display:none;">
+  <h1>De la Entropía a la Experiencia</h1>
+  <p>
+    Una exploración computacional de cómo los sistemas reducen la incertidumbre y por qué eso no explica la experiencia subjetiva.
+  </p>
+
+  <h2>Experimento 1</h2>
+  <p>¿Cómo afecta la estructura a la entropía?</p>
+</div>
+
+<script>
+function toggleLanguage() {
+  const en = document.getElementById("en");
+  const es = document.getElementById("es");
+
+  if (en.style.display === "none") {
+    en.style.display = "block";
+    es.style.display = "none";
+  } else {
+    en.style.display = "none";
+    es.style.display = "block";
+  }
+}
+</script>
+
+</body>
+</html>
