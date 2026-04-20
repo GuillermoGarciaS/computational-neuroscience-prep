@@ -30,14 +30,71 @@
   </p>
 
   <h2 class="text-xl font-semibold mt-6">Results</h2>
-  <p>
-    (Add your graph here later)
+
+<p class="mb-4">
+  The system shows clear differences between structured and random text.
+</p>
+
+<section class="mt-6">
+  <h3 class="text-lg font-semibold mb-2">Interactive Entropy Demo</h3>
+
+  <label>
+    Probability Bias (p): <span id="pValue">0.5</span>
+  </label>
+
+  <input type="range" id="slider" min="0.01" max="0.99" step="0.01" value="0.5" class="w-full my-2">
+
+  <p>Entropy: <strong id="entropyValue">0</strong></p>
+
+  <canvas id="entropyChart" width="300" height="200" class="mt-4 bg-gray-800 rounded"></canvas>
+
+  <p class="text-sm text-gray-400 mt-2">
+    Maximum entropy occurs when probabilities are balanced (p = 0.5).
   </p>
+</section>
 
   <h2 class="text-xl font-semibold mt-6">Insight</h2>
   <p>
     Systems can quantify structure mathematically, but do not interpret meaning.
   </p>
 
-</body>
+<script>
+const slider = document.getElementById("slider");
+const pValue = document.getElementById("pValue");
+const entropyValue = document.getElementById("entropyValue");
+const canvas = document.getElementById("entropyChart");
+const ctx = canvas.getContext("2d");
+
+function entropy(p) {
+  const q = 1 - p;
+  return -(p * Math.log2(p) + q * Math.log2(q));
+}
+
+function draw(p) {
+  const q = 1 - p;
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  ctx.fillStyle = "#60a5fa";
+  ctx.fillRect(50, 200 - p * 150, 50, p * 150);
+
+  ctx.fillStyle = "#34d399";
+  ctx.fillRect(150, 200 - q * 150, 50, q * 150);
+}
+
+function update() {
+  const p = parseFloat(slider.value);
+
+  pValue.textContent = p.toFixed(2);
+
+  const h = entropy(p);
+  entropyValue.textContent = h.toFixed(3);
+
+  draw(p);
+}
+
+slider.addEventListener("input", update);
+
+update();
+</script>
 </html>
