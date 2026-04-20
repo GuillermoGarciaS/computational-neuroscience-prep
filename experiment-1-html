@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Experiment 1 — Entropy</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-900 text-white p-10 max-w-3xl mx-auto">
+
+  <a href="index.html" class="text-blue-400">← Back</a>
+
+  <h1 class="text-3xl font-bold mt-4 mb-4">
+    Experiment 1 — Entropy and Structure
+  </h1>
+
+  <h2 class="text-xl font-semibold mt-6">Question</h2>
+  <p>
+    How does structure affect entropy in text data?
+  </p>
+
+  <h2 class="text-xl font-semibold mt-6">Setup</h2>
+  <p>
+    We compare repetitive, semi-structured, and random text samples.
+  </p>
+
+  <h2 class="text-xl font-semibold mt-6">Method</h2>
+  <p>
+    Entropy is computed using character frequency distributions.
+  </p>
+
+  <h2 class="text-xl font-semibold mt-6">Results</h2>
+  <p>
+    (Add your graph here later)
+  </p>
+
+  <h2 class="text-xl font-semibold mt-6">Insight</h2>
+  <p>
+    Systems can quantify structure mathematically, but do not interpret meaning.
+  </p>
+
+</body>
+</html>
