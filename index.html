@@ -14,7 +14,7 @@
       --border: rgba(255,255,255,0.1);
       --shadow: 0 20px 60px rgba(0,0,0,0.35);
       --radius: 20px;
-      --max: 900px;
+      --max: 980px;
     }
 
     * { box-sizing: border-box; }
@@ -126,7 +126,7 @@
       padding: 4.25rem 0 1.5rem;
     }
 
-    .hero-card, .section-card {
+    .hero-card, .section-card, .mini-card {
       background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.03));
       border: 1px solid var(--border);
       border-radius: var(--radius);
@@ -135,7 +135,7 @@
       overflow: hidden;
     }
 
-    .hero-card::before, .section-card::before {
+    .hero-card::before, .section-card::before, .mini-card::before {
       content: "";
       position: absolute;
       inset: 0;
@@ -167,7 +167,7 @@
     .lede {
       font-size: 1.12rem;
       color: var(--text);
-      max-width: 62ch;
+      max-width: 66ch;
       margin: 0;
     }
 
@@ -178,6 +178,16 @@
     .stack {
       display: grid;
       gap: 1rem;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    .mini-card {
+      padding: 1.2rem;
     }
 
     .section-card {
@@ -195,7 +205,7 @@
 
     h2 {
       margin: 0 0 0.75rem;
-      font-size: 1.18rem;
+      font-size: 1.2rem;
       letter-spacing: -0.02em;
     }
 
@@ -220,9 +230,15 @@
       font-size: 0.95rem;
     }
 
+    @media (max-width: 860px) {
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
     @media (max-width: 700px) {
       header.hero { padding-top: 3.2rem; }
-      .hero-card, .section-card { border-radius: 18px; }
+      .hero-card, .section-card, .mini-card { border-radius: 18px; }
       .hero-card { padding: 1.4rem; }
     }
   </style>
@@ -254,10 +270,10 @@
 
         <p
           class="lede"
-          data-en="A series of computational experiments exploring entropy, structure, uncertainty, and the limits of representation."
-          data-es="Una serie de experimentos computacionales que exploran entropía, estructura, incertidumbre y los límites de la representación."
+          data-en="A long-term portfolio of computational experiments on information, uncertainty, representation, and the limits of explaining subjective experience."
+          data-es="Un portafolio a largo plazo de experimentos computacionales sobre información, incertidumbre, representación y los límites de explicar la experiencia subjetiva."
         >
-          A series of computational experiments exploring entropy, structure, uncertainty, and the limits of representation.
+          A long-term portfolio of computational experiments on information, uncertainty, representation, and the limits of explaining subjective experience.
         </p>
       </div>
     </div>
@@ -265,69 +281,135 @@
 
   <main>
     <div class="container stack">
+
+      <section class="info-grid">
+        <div class="mini-card">
+          <h2 data-en="Core Question" data-es="Pregunta central">Core Question</h2>
+          <p
+            class="small"
+            data-en="To what extent can reducing entropy in computational systems explain structured representation and perception, and why does it fail to account for subjective experience?"
+            data-es="¿Hasta qué punto la reducción de entropía en sistemas computacionales puede explicar la representación estructurada y la percepción, y por qué no logra dar cuenta de la experiencia subjetiva?"
+          >
+            To what extent can reducing entropy in computational systems explain structured representation and perception, and why does it fail to account for subjective experience?
+          </p>
+        </div>
+
+        <div class="mini-card">
+          <h2 data-en="Approach" data-es="Enfoque">Approach</h2>
+          <p
+            class="small"
+            data-en="This project adapts coursework into small computational studies. Each experiment focuses on a limited measurable problem, then asks what the result does and does not explain."
+            data-es="Este proyecto adapta trabajos académicos en pequeños estudios computacionales. Cada experimento se enfoca en un problema medible y luego pregunta qué explica y qué no explica el resultado."
+          >
+            This project adapts coursework into small computational studies. Each experiment focuses on a limited measurable problem, then asks what the result does and does not explain.
+          </p>
+        </div>
+
+        <div class="mini-card">
+          <h2 data-en="Scope" data-es="Alcance">Scope</h2>
+          <p
+            class="small"
+            data-en="This is not a claim to explain consciousness. It is an attempt to map where computational explanation works, where it weakens, and where it appears to stop."
+            data-es="Esto no pretende explicar la consciencia. Es un intento por trazar dónde funciona la explicación computacional, dónde se debilita y dónde parece detenerse."
+          >
+            This is not a claim to explain consciousness. It is an attempt to map where computational explanation works, where it weakens, and where it appears to stop.
+          </p>
+        </div>
+      </section>
+
       <section class="section-card">
-        <h2 data-en="Experiments" data-es="Experimentos">Experiments</h2>
+        <h2 data-en="Experiments & Projects" data-es="Experimentos y Proyectos">Experiments & Projects</h2>
 
         <div class="stack">
           <a href="experiment-1.html" class="section-card experiment-link">
-            <h3 data-en="Experiment 1 — Entropy & Predictability" data-es="Experimento 1 — Entropía y Predictibilidad">
-              Experiment 1 — Entropy & Predictability
+            <h3 data-en="Experiment 1 — File Size, Structure, and Predictability" data-es="Experimento 1 — Tamaño de Archivo, Estructura y Predictibilidad">
+              Experiment 1 — File Size, Structure, and Predictability
             </h3>
             <p
               class="small"
-              data-en="Measuring how structured input affects predictability and entropy in a simple computational system."
-              data-es="Midiendo cómo una entrada estructurada afecta la predictibilidad y la entropía en un sistema computacional simple."
+              data-en="A first study in how file size, repetition, and predictability relate without collapsing into meaning."
+              data-es="Un primer estudio sobre cómo se relacionan el tamaño de archivo, la repetición y la predictibilidad sin reducirse al significado."
             >
-              Measuring how structured input affects predictability and entropy in a simple computational system.
+              A first study in how file size, repetition, and predictability relate without collapsing into meaning.
             </p>
           </a>
 
           <a href="experiment-2.html" class="section-card experiment-link">
-            <h3 data-en="Experiment 2 — Noise & Variability" data-es="Experimento 2 — Ruido y Variabilidad">
-              Experiment 2 — Noise & Variability
+            <h3 data-en="Experiment 2 — Noise, Speed, and Measurement" data-es="Experimento 2 — Ruido, Velocidad y Medición">
+              Experiment 2 — Noise, Speed, and Measurement
             </h3>
             <p
               class="small"
-              data-en="Exploring how noise increases uncertainty and degrades signal structure."
-              data-es="Explorando cómo el ruido incrementa la incertidumbre y degrada la estructura de la señal."
+              data-en="A comparison of measured performance under noise, variability, and changing technical conditions."
+              data-es="Una comparación del rendimiento medido bajo ruido, variabilidad y condiciones técnicas cambiantes."
             >
-              Exploring how noise increases uncertainty and degrades signal structure.
+              A comparison of measured performance under noise, variability, and changing technical conditions.
             </p>
           </a>
 
           <a href="experiment-3.html" class="section-card experiment-link">
-            <h3 data-en="Experiment 3 — TBD" data-es="Experimento 3 — Próximamente">
-              Experiment 3 — TBD
+            <h3 data-en="Experiment 3 — Variability Across Sources" data-es="Experimento 3 — Variabilidad Entre Fuentes">
+              Experiment 3 — Variability Across Sources
             </h3>
-            <p class="small" data-en="Coming soon." data-es="Próximamente.">Coming soon.</p>
+            <p
+              class="small"
+              data-en="An analysis of whether variation across sources is random or reflects deeper structural differences."
+              data-es="Un análisis de si la variación entre fuentes es aleatoria o refleja diferencias estructurales más profundas."
+            >
+              An analysis of whether variation across sources is random or reflects deeper structural differences.
+            </p>
           </a>
 
           <a href="experiment-4.html" class="section-card experiment-link">
-            <h3 data-en="Experiment 4 — TBD" data-es="Experimento 4 — Próximamente">
-              Experiment 4 — TBD
+            <h3 data-en="Experiment 4 — Stability, Repetition, and Comparison" data-es="Experimento 4 — Estabilidad, Repetición y Comparación">
+              Experiment 4 — Stability, Repetition, and Comparison
             </h3>
-            <p class="small" data-en="Coming soon." data-es="Próximamente.">Coming soon.</p>
+            <p
+              class="small"
+              data-en="A study of repeated measurements, stability through time, and the limits of comparing treatments."
+              data-es="Un estudio de mediciones repetidas, estabilidad a través del tiempo y los límites de comparar tratamientos."
+            >
+              A study of repeated measurements, stability through time, and the limits of comparing treatments.
+            </p>
           </a>
 
           <a href="experiment-5.html" class="section-card experiment-link">
-            <h3 data-en="Experiment 5 — TBD" data-es="Experimento 5 — Próximamente">
-              Experiment 5 — TBD
+            <h3 data-en="Experiment 5 — Procedures, Constraints, and Output" data-es="Experimento 5 — Procedimientos, Restricciones y Resultado">
+              Experiment 5 — Procedures, Constraints, and Output
             </h3>
-            <p class="small" data-en="Coming soon." data-es="Próximamente.">Coming soon.</p>
+            <p
+              class="small"
+              data-en="An exploration of how different procedures and constraints change output form and efficiency."
+              data-es="Una exploración de cómo distintos procedimientos y restricciones cambian la forma y la eficiencia del resultado."
+            >
+              An exploration of how different procedures and constraints change output form and efficiency.
+            </p>
           </a>
 
           <a href="project-1.html" class="section-card experiment-link">
-            <h3 data-en="Project 1 — TBD" data-es="Proyecto 1 — Próximamente">
-              Project 1 — TBD
+            <h3 data-en="Project 1 — Experimental Design and Inference" data-es="Proyecto 1 — Diseño Experimental e Inferencia">
+              Project 1 — Experimental Design and Inference
             </h3>
-            <p class="small" data-en="Coming soon." data-es="Próximamente.">Coming soon.</p>
+            <p
+              class="small"
+              data-en="A foundational review of experimental design, hypothesis testing, and what statistical inference can justify."
+              data-es="Una revisión fundacional del diseño experimental, las pruebas de hipótesis y lo que la inferencia estadística puede justificar."
+            >
+              A foundational review of experimental design, hypothesis testing, and what statistical inference can justify.
+            </p>
           </a>
 
           <a href="project-2.html" class="section-card experiment-link">
-            <h3 data-en="Project 2 — TBD" data-es="Proyecto 2 — Próximamente">
-              Project 2 — TBD
+            <h3 data-en="Project 2 — Weather, Response Variables, and Model Limits" data-es="Proyecto 2 — Clima, Variables de Respuesta y Límites del Modelo">
+              Project 2 — Weather, Response Variables, and Model Limits
             </h3>
-            <p class="small" data-en="Coming soon." data-es="Próximamente.">Coming soon.</p>
+            <p
+              class="small"
+              data-en="A model of precipitation as a response variable, used to examine prediction, factor choice, and explanatory limits."
+              data-es="Un modelo de precipitación como variable de respuesta, usado para examinar predicción, elección de factores y límites explicativos."
+            >
+              A model of precipitation as a response variable, used to examine prediction, factor choice, and explanatory limits.
+            </p>
           </a>
         </div>
       </section>
@@ -335,8 +417,12 @@
   </main>
 
   <footer>
-    <div class="container" data-en="Public portfolio in progress." data-es="Portafolio público en progreso.">
-      Public portfolio in progress.
+    <div
+      class="container"
+      data-en="Public portfolio in progress. This site documents an evolving research arc rather than a finished theory."
+      data-es="Portafolio público en progreso. Este sitio documenta un arco de investigación en evolución, no una teoría terminada."
+    >
+      Public portfolio in progress. This site documents an evolving research arc rather than a finished theory.
     </div>
   </footer>
 
