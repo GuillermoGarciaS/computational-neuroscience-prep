@@ -5,6 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Experiment 1 — File Size, Structure, and Predictability</title>
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    html {
+      scrollbar-width: thin;
+      scrollbar-color: #6ca8ff #081120;
+    }
+
+    ::-webkit-scrollbar {
+      width: 12px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: linear-gradient(180deg, #071224, #05101f);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #6ca8ff, #8ad7ff);
+      border-radius: 999px;
+      border: 2px solid #081120;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(180deg, #8ad7ff, #6ca8ff);
+    }
+
+    ::selection {
+      background: rgba(108, 168, 255, 0.28);
+      color: white;
+    }
+  </style>
 </head>
 
 <body class="bg-gray-950 text-white">
@@ -235,6 +265,26 @@
 
             <canvas id="resultsChart" width="760" height="320" class="w-full rounded-xl border border-gray-800 bg-gray-950"></canvas>
 
+            <div class="mt-5 rounded-2xl border border-blue-900/40 bg-blue-950/20 p-5">
+              <p class="text-xs uppercase tracking-[0.18em] text-blue-300 mb-3" data-en="Current Model" data-es="Modelo actual">Current Model</p>
+
+              <p class="text-lg md:text-xl text-blue-200 font-mono mb-3">
+                <span id="formulaLabel" data-en="Estimated Size(page) = Base Overhead + (Letters per Page × page)" data-es="Tamaño Estimado(página) = Costo Base + (Letras por Página × página)">
+                  Estimated Size(page) = Base Overhead + (Letters per Page × page)
+                </span>
+              </p>
+
+              <p class="text-gray-300 leading-8 mb-2">
+                <span data-en="Current substitution:" data-es="Sustitución actual:">Current substitution:</span>
+                <span class="font-mono text-cyan-300" id="formulaSubstitution">Size(10) = 200 + (1200 × 10)</span>
+              </p>
+
+              <p class="text-gray-200 leading-8">
+                <span data-en="Estimated result:" data-es="Resultado estimado:">Estimated result:</span>
+                <strong class="text-blue-300 font-mono" id="formulaResult">12,200 bytes</strong>
+              </p>
+            </div>
+
             <p
               class="text-sm text-gray-400 mt-4 leading-7"
               data-en="More pages and more letters per page increase total file size, while base overhead shifts the curve upward. This models storage growth, not semantic meaning."
@@ -381,6 +431,9 @@
   const resultsCanvas = document.getElementById("resultsChart");
   const rctx = resultsCanvas.getContext("2d");
 
+  const formulaSubstitution = document.getElementById("formulaSubstitution");
+  const formulaResult = document.getElementById("formulaResult");
+
   let animatedPoints = [];
   let targetPoints = [];
   let animationFrame = null;
@@ -397,6 +450,16 @@
       points.push({ x: page, y: estimatedSize });
     }
     return points;
+  }
+
+  function formatNumber(value) {
+    return new Intl.NumberFormat().format(Math.round(value));
+  }
+
+  function updateFormula(maxPages, lettersPerPage, baseOverhead) {
+    const finalSize = baseOverhead + (lettersPerPage * maxPages);
+    formulaSubstitution.textContent = `Size(${maxPages}) = ${baseOverhead} + (${lettersPerPage} × ${maxPages})`;
+    formulaResult.textContent = `${formatNumber(finalSize)} bytes`;
   }
 
   function drawResultsChart(points, maxPages) {
@@ -531,6 +594,8 @@
     pagesValue.textContent = maxPages;
     lettersValue.textContent = lettersPerPage;
     baseValue.textContent = baseOverhead;
+
+    updateFormula(maxPages, lettersPerPage, baseOverhead);
 
     targetPoints = buildResultPoints(maxPages, lettersPerPage, baseOverhead);
 
