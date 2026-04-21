@@ -14,54 +14,83 @@
 
       <aside class="hidden lg:block">
         <div class="sticky top-8 rounded-2xl border border-gray-800 bg-gray-900/70 backdrop-blur p-4">
-          <p class="text-xs uppercase tracking-[0.18em] text-blue-300 mb-4">On this page</p>
+          <p class="text-xs uppercase tracking-[0.18em] text-blue-300 mb-4" data-en="On this page" data-es="En esta página">On this page</p>
           <nav class="space-y-3 text-sm">
-            <a href="#question" class="block text-gray-300 hover:text-blue-300 transition">Question</a>
-            <a href="#setup" class="block text-gray-300 hover:text-blue-300 transition">Setup</a>
-            <a href="#method" class="block text-gray-300 hover:text-blue-300 transition">Method</a>
-            <a href="#results" class="block text-gray-300 hover:text-blue-300 transition">Results</a>
-            <a href="#demo" class="block text-gray-300 hover:text-blue-300 transition">Interactive Demo</a>
-            <a href="#insight" class="block text-gray-300 hover:text-blue-300 transition">Insight</a>
-            <a href="#reflection" class="block text-gray-300 hover:text-blue-300 transition">Reflection</a>
-            <a href="#formula" class="block text-gray-300 hover:text-blue-300 transition">Formula</a>
+            <a href="#question" class="block text-gray-300 hover:text-blue-300 transition" data-en="Question" data-es="Pregunta">Question</a>
+            <a href="#setup" class="block text-gray-300 hover:text-blue-300 transition" data-en="Setup" data-es="Preparación">Setup</a>
+            <a href="#method" class="block text-gray-300 hover:text-blue-300 transition" data-en="Method" data-es="Método">Method</a>
+            <a href="#results" class="block text-gray-300 hover:text-blue-300 transition" data-en="Results" data-es="Resultados">Results</a>
+            <a href="#demo" class="block text-gray-300 hover:text-blue-300 transition" data-en="Interactive Demo" data-es="Demo Interactiva">Interactive Demo</a>
+            <a href="#insight" class="block text-gray-300 hover:text-blue-300 transition" data-en="Insight" data-es="Idea central">Insight</a>
+            <a href="#reflection" class="block text-gray-300 hover:text-blue-300 transition" data-en="Reflection" data-es="Reflexión">Reflection</a>
+            <a href="#formula" class="block text-gray-300 hover:text-blue-300 transition" data-en="Formula" data-es="Fórmula">Formula</a>
           </nav>
         </div>
       </aside>
 
       <main class="max-w-3xl">
-        <a href="index.html" class="text-blue-400 hover:text-blue-300 transition">← Back</a>
+        <div class="flex justify-between items-center gap-4 mb-6">
+          <a href="index.html" class="text-blue-400 hover:text-blue-300 transition" data-en="← Back" data-es="← Volver">← Back</a>
 
-        <h1 class="text-4xl font-bold mt-4 mb-10 tracking-tight">
+          <button
+            id="langToggle"
+            class="rounded-xl border border-gray-800 bg-gray-900/70 px-4 py-2 text-sm text-gray-200 hover:border-blue-400/40 hover:text-white transition"
+          >
+            ES
+          </button>
+        </div>
+
+        <h1
+          class="text-4xl font-bold mt-4 mb-10 tracking-tight"
+          data-en="Experiment 1 — Entropy and Structure"
+          data-es="Experimento 1 — Entropía y Estructura"
+        >
           Experiment 1 — Entropy and Structure
         </h1>
 
         <section id="question" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8">
-          <h2 class="text-2xl font-semibold mb-3">Question</h2>
-          <p class="text-gray-300 leading-8">
+          <h2 class="text-2xl font-semibold mb-3" data-en="Question" data-es="Pregunta">Question</h2>
+          <p
+            class="text-gray-300 leading-8"
+            data-en="How does increasing structure in input data affect predictability and entropy in a computational system?"
+            data-es="¿Cómo afecta el aumento de estructura en los datos de entrada la predictibilidad y la entropía en un sistema computacional?"
+          >
             How does increasing structure in input data affect predictability and entropy in a computational system?
           </p>
         </section>
 
         <section id="setup" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8">
-          <h2 class="text-2xl font-semibold mb-4">Setup</h2>
+          <h2 class="text-2xl font-semibold mb-4" data-en="Setup" data-es="Preparación">Setup</h2>
           <div class="grid gap-4">
             <div class="rounded-2xl border border-gray-800 bg-gray-900/70 p-5">
-              <p class="text-xs uppercase tracking-[0.18em] text-blue-300 mb-2">System</p>
-              <p class="text-gray-300 leading-8">
+              <p class="text-xs uppercase tracking-[0.18em] text-blue-300 mb-2" data-en="System" data-es="Sistema">System</p>
+              <p
+                class="text-gray-300 leading-8"
+                data-en="The experiment generates text files with increasing amounts of structured content."
+                data-es="El experimento genera archivos de texto con cantidades crecientes de contenido estructurado."
+              >
                 The experiment generates text files with increasing amounts of structured content.
               </p>
             </div>
 
             <div class="rounded-2xl border border-gray-800 bg-gray-900/70 p-5">
-              <p class="text-xs uppercase tracking-[0.18em] text-blue-300 mb-2">Input Range</p>
-              <p class="text-gray-300 leading-8">
+              <p class="text-xs uppercase tracking-[0.18em] text-blue-300 mb-2" data-en="Input Range" data-es="Rango de entrada">Input Range</p>
+              <p
+                class="text-gray-300 leading-8"
+                data-en="Files go from 1 to 10 pages, each filled with repeated characters."
+                data-es="Los archivos van de 1 a 10 páginas, cada una llena de caracteres repetidos."
+              >
                 Files go from 1 to 10 pages, each filled with repeated characters.
               </p>
             </div>
 
             <div class="rounded-2xl border border-gray-800 bg-gray-900/70 p-5">
-              <p class="text-xs uppercase tracking-[0.18em] text-blue-300 mb-2">Observation</p>
-              <p class="text-gray-300 leading-8">
+              <p class="text-xs uppercase tracking-[0.18em] text-blue-300 mb-2" data-en="Observation" data-es="Observación">Observation</p>
+              <p
+                class="text-gray-300 leading-8"
+                data-en="Each file is measured in bytes to observe how size changes as a function of content."
+                data-es="Cada archivo se mide en bytes para observar cómo cambia su tamaño como función del contenido."
+              >
                 Each file is measured in bytes to observe how size changes as a function of content.
               </p>
             </div>
@@ -69,40 +98,60 @@
         </section>
 
         <section id="method" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8">
-          <h2 class="text-2xl font-semibold mb-4">Method</h2>
+          <h2 class="text-2xl font-semibold mb-4" data-en="Method" data-es="Método">Method</h2>
 
           <div class="space-y-4">
             <div class="rounded-2xl border border-gray-800 bg-gray-900/70 p-5">
-              <p class="text-sm font-semibold text-white mb-2">Step 1 — Generate structured files</p>
-              <p class="text-gray-300 leading-8">
+              <p class="text-sm font-semibold text-white mb-2" data-en="Step 1 — Generate structured files" data-es="Paso 1 — Generar archivos estructurados">Step 1 — Generate structured files</p>
+              <p
+                class="text-gray-300 leading-8"
+                data-en="Create 10 text files with increasing pages of repeated characters."
+                data-es="Crear 10 archivos de texto con un número creciente de páginas de caracteres repetidos."
+              >
                 Create 10 text files with increasing pages of repeated characters.
               </p>
             </div>
 
             <div class="rounded-2xl border border-gray-800 bg-gray-900/70 p-5">
-              <p class="text-sm font-semibold text-white mb-2">Step 2 — Measure output</p>
-              <p class="text-gray-300 leading-8">
+              <p class="text-sm font-semibold text-white mb-2" data-en="Step 2 — Measure output" data-es="Paso 2 — Medir salida">Step 2 — Measure output</p>
+              <p
+                class="text-gray-300 leading-8"
+                data-en="Record file size in bytes for each file."
+                data-es="Registrar el tamaño del archivo en bytes para cada archivo."
+              >
                 Record file size in bytes for each file.
               </p>
             </div>
 
             <div class="rounded-2xl border border-gray-800 bg-gray-900/70 p-5">
-              <p class="text-sm font-semibold text-white mb-2">Step 3 — Compare change</p>
-              <p class="text-gray-300 leading-8">
+              <p class="text-sm font-semibold text-white mb-2" data-en="Step 3 — Compare change" data-es="Paso 3 — Comparar cambio">Step 3 — Compare change</p>
+              <p
+                class="text-gray-300 leading-8"
+                data-en="Compute differences between consecutive files to examine stability."
+                data-es="Calcular las diferencias entre archivos consecutivos para examinar la estabilidad."
+              >
                 Compute differences between consecutive files to examine stability.
               </p>
             </div>
 
             <div class="rounded-2xl border border-gray-800 bg-gray-900/70 p-5">
-              <p class="text-sm font-semibold text-white mb-2">Step 4 — Model relationship</p>
-              <p class="text-gray-300 leading-8">
+              <p class="text-sm font-semibold text-white mb-2" data-en="Step 4 — Model relationship" data-es="Paso 4 — Modelar relación">Step 4 — Model relationship</p>
+              <p
+                class="text-gray-300 leading-8"
+                data-en="Apply linear regression: Size = f(Pages)."
+                data-es="Aplicar regresión lineal: Tamaño = f(Páginas)."
+              >
                 Apply linear regression: Size = f(Pages).
               </p>
             </div>
 
             <div class="rounded-2xl border border-gray-800 bg-gray-900/70 p-5">
-              <p class="text-sm font-semibold text-white mb-2">Step 5 — Interpret predictability</p>
-              <p class="text-gray-300 leading-8">
+              <p class="text-sm font-semibold text-white mb-2" data-en="Step 5 — Interpret predictability" data-es="Paso 5 — Interpretar predictibilidad">Step 5 — Interpret predictability</p>
+              <p
+                class="text-gray-300 leading-8"
+                data-en="Analyze whether structured input produces stable and predictable output."
+                data-es="Analizar si una entrada estructurada produce una salida estable y predecible."
+              >
                 Analyze whether structured input produces stable and predictable output.
               </p>
             </div>
@@ -110,44 +159,68 @@
         </section>
 
         <section id="results" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8">
-          <h2 class="text-2xl font-semibold mb-3">Results</h2>
-          <p class="mb-4 text-gray-300 leading-8">
+          <h2 class="text-2xl font-semibold mb-3" data-en="Results" data-es="Resultados">Results</h2>
+          <p
+            class="mb-4 text-gray-300 leading-8"
+            data-en="File size increases approximately linearly with the number of pages, indicating a highly predictable system under structured input."
+            data-es="El tamaño del archivo aumenta de forma aproximadamente lineal con el número de páginas, lo que indica un sistema altamente predecible bajo una entrada estructurada."
+          >
             File size increases approximately linearly with the number of pages, indicating a highly predictable system under structured input.
           </p>
 
           <div class="rounded-2xl border border-gray-800 bg-gray-900/70 p-5">
-            <div class="flex flex-col gap-3 mb-4">
-              <label class="text-sm text-gray-300">
-                Growth per page: <span id="growthValue">120</span> bytes
-              </label>
-              <input
-                type="range"
-                id="growthSlider"
-                min="60"
-                max="220"
-                step="10"
-                value="120"
-                class="w-full accent-blue-400"
-              >
+            <div class="grid gap-4 md:grid-cols-3 mb-5">
+              <div>
+                <label class="text-sm text-gray-300 block mb-2">
+                  <span data-en="Growth per page" data-es="Crecimiento por página">Growth per page</span>:
+                  <span id="growthValue">120</span>
+                </label>
+                <input type="range" id="growthSlider" min="60" max="260" step="10" value="120" class="w-full accent-blue-400">
+              </div>
+
+              <div>
+                <label class="text-sm text-gray-300 block mb-2">
+                  <span data-en="Base size" data-es="Tamaño base">Base size</span>:
+                  <span id="baseValue">40</span>
+                </label>
+                <input type="range" id="baseSlider" min="0" max="200" step="10" value="40" class="w-full accent-cyan-400">
+              </div>
+
+              <div>
+                <label class="text-sm text-gray-300 block mb-2">
+                  <span data-en="System variation" data-es="Variación del sistema">System variation</span>:
+                  <span id="variationValue">8</span>
+                </label>
+                <input type="range" id="variationSlider" min="0" max="40" step="2" value="8" class="w-full accent-violet-400">
+              </div>
             </div>
 
-            <canvas id="resultsChart" width="760" height="280" class="w-full rounded-xl border border-gray-800 bg-gray-950"></canvas>
+            <canvas id="resultsChart" width="760" height="320" class="w-full rounded-xl border border-gray-800 bg-gray-950"></canvas>
 
-            <p class="text-sm text-gray-400 mt-4 leading-7">
-              This live graph simulates how a near-linear file-size relationship looks as the growth rate changes.
+            <p
+              class="text-sm text-gray-400 mt-4 leading-7"
+              data-en="This live graph simulates how a near-linear file-size relationship changes as growth, baseline size, and system variation change."
+              data-es="Esta gráfica interactiva simula cómo cambia una relación casi lineal de tamaño de archivo cuando cambian el crecimiento, el tamaño base y la variación del sistema."
+            >
+              This live graph simulates how a near-linear file-size relationship changes as growth, baseline size, and system variation change.
             </p>
           </div>
 
-          <p class="text-sm text-gray-400 mt-4 leading-7">
+          <p
+            class="text-sm text-gray-400 mt-4 leading-7"
+            data-en="Differences between consecutive files remain relatively stable, showing low variability."
+            data-es="Las diferencias entre archivos consecutivos permanecen relativamente estables, mostrando baja variabilidad."
+          >
             Differences between consecutive files remain relatively stable, showing low variability.
           </p>
         </section>
 
         <section id="demo" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8">
-          <h2 class="text-2xl font-semibold mb-3">Interactive Entropy Demo</h2>
+          <h2 class="text-2xl font-semibold mb-3" data-en="Interactive Entropy Demo" data-es="Demo Interactiva de Entropía">Interactive Entropy Demo</h2>
 
           <label class="block text-gray-300 mb-2">
-            Probability Bias (p): <span id="pValue">0.50</span>
+            <span data-en="Probability Bias (p)" data-es="Sesgo de probabilidad (p)">Probability Bias (p)</span>:
+            <span id="pValue">0.50</span>
           </label>
 
           <input
@@ -160,24 +233,38 @@
             class="w-full my-2 accent-blue-400"
           >
 
-          <p class="text-gray-300 mt-3">Entropy: <strong id="entropyValue">0</strong></p>
+          <p class="text-gray-300 mt-3">
+            <span data-en="Entropy" data-es="Entropía">Entropy</span>:
+            <strong id="entropyValue">0</strong>
+          </p>
 
-          <canvas id="entropyChart" width="760" height="320" class="w-full mt-4 bg-gray-950 rounded-xl border border-gray-800"></canvas>
+          <canvas id="entropyChart" width="760" height="360" class="w-full mt-4 bg-gray-950 rounded-xl border border-gray-800"></canvas>
 
-          <p class="text-sm text-gray-400 mt-3 leading-7">
+          <p
+            class="text-sm text-gray-400 mt-3 leading-7"
+            data-en="Maximum entropy occurs when probabilities are balanced. This chart shows both the probability bars and the entropy curve for context."
+            data-es="La entropía máxima ocurre cuando las probabilidades están balanceadas. Esta gráfica muestra tanto las barras de probabilidad como la curva de entropía como contexto."
+          >
             Maximum entropy occurs when probabilities are balanced. This chart shows both the probability bars and the entropy curve for context.
           </p>
         </section>
 
         <section id="insight" class="scroll-mt-24 mb-8">
           <div class="rounded-2xl border border-blue-900/50 bg-blue-950/30 p-6">
-            <h2 class="text-2xl font-semibold mb-3">Insight</h2>
-            <p class="text-gray-200 leading-8">
-              The system exhibits low entropy because the input is highly structured. As the number of pages increases,
-              the output (file size) remains predictable and follows a consistent pattern.
+            <h2 class="text-2xl font-semibold mb-3" data-en="Insight" data-es="Idea central">Insight</h2>
+            <p
+              class="text-gray-200 leading-8"
+              data-en="The system exhibits low entropy because the input is highly structured. As the number of pages increases, the output (file size) remains predictable and follows a consistent pattern."
+              data-es="El sistema exhibe baja entropía porque la entrada está altamente estructurada. A medida que aumenta el número de páginas, la salida (tamaño del archivo) permanece predecible y sigue un patrón consistente."
+            >
+              The system exhibits low entropy because the input is highly structured. As the number of pages increases, the output (file size) remains predictable and follows a consistent pattern.
             </p>
 
-            <p class="text-gray-200 mt-4 leading-8">
+            <p
+              class="text-gray-200 mt-4 leading-8"
+              data-en="This shows that structured systems reduce uncertainty, making outcomes easier to model and approximate."
+              data-es="Esto muestra que los sistemas estructurados reducen la incertidumbre, haciendo que los resultados sean más fáciles de modelar y aproximar."
+            >
               This shows that structured systems reduce uncertainty, making outcomes easier to model and approximate.
             </p>
           </div>
@@ -185,26 +272,51 @@
 
         <section id="reflection" class="scroll-mt-24 mb-12">
           <div class="rounded-2xl border border-violet-900/40 bg-violet-950/20 p-6">
-            <h2 class="text-2xl font-semibold mb-3">Reflection</h2>
-            <p class="text-gray-200 leading-8">
-              A file filled with repeated characters has very low entropy and is highly predictable, yet it carries almost no meaningful information.
-              This suggests that low entropy alone does not imply meaningful structure.
+            <h2 class="text-2xl font-semibold mb-3" data-en="Reflection" data-es="Reflexión">Reflection</h2>
+            <p
+              class="text-gray-200 leading-8"
+              data-en="A file filled with repeated characters has very low entropy and is highly predictable, yet it carries almost no meaningful information. This suggests that low entropy alone does not imply meaningful structure."
+              data-es="Un archivo lleno de caracteres repetidos tiene una entropía muy baja y es altamente predecible, pero casi no contiene información significativa. Esto sugiere que una baja entropía por sí sola no implica estructura significativa."
+            >
+              A file filled with repeated characters has very low entropy and is highly predictable, yet it carries almost no meaningful information. This suggests that low entropy alone does not imply meaningful structure.
             </p>
 
-            <p class="text-gray-200 mt-4 leading-8">
-              Computational systems can measure predictability, but they do not interpret or experience the content they process.
-              Entropy helps describe uncertainty in representation, but not meaning or subjective experience.
+            <p
+              class="text-gray-200 mt-4 leading-8"
+              data-en="Computational systems can measure predictability, but they do not interpret or experience the content they process. Entropy helps describe uncertainty in representation, but not meaning or subjective experience."
+              data-es="Los sistemas computacionales pueden medir la predictibilidad, pero no interpretan ni experimentan el contenido que procesan. La entropía ayuda a describir la incertidumbre en la representación, pero no el significado ni la experiencia subjetiva."
+            >
+              Computational systems can measure predictability, but they do not interpret or experience the content they process. Entropy helps describe uncertainty in representation, but not meaning or subjective experience.
             </p>
           </div>
         </section>
 
         <section id="formula" class="scroll-mt-24 mb-16">
           <div class="text-center">
-            <p class="text-xs uppercase tracking-[0.18em] text-gray-500 mb-3">Formula Reference</p>
-            <div class="inline-block rounded-2xl border border-gray-800 bg-gray-900/70 px-8 py-5">
+            <p class="text-xs uppercase tracking-[0.18em] text-gray-500 mb-3" data-en="Formula Reference" data-es="Referencia de fórmula">Formula Reference</p>
+
+            <div class="group inline-block relative rounded-2xl border border-gray-800 bg-gray-900/70 px-8 py-5 cursor-help">
               <p class="text-blue-300 text-xl md:text-2xl font-mono tracking-wide">
                 H(X) = - Σ p(x) log p(x)
               </p>
+
+              <p
+                class="mt-3 text-sm text-gray-400 max-w-xl"
+                data-en="This is Shannon entropy. It measures how uncertain or spread out a probability distribution is."
+                data-es="Esta es la entropía de Shannon. Mide qué tan incierta o dispersa está una distribución de probabilidad."
+              >
+                This is Shannon entropy. It measures how uncertain or spread out a probability distribution is.
+              </p>
+
+              <div class="absolute left-1/2 top-full mt-3 -translate-x-1/2 w-80 rounded-xl border border-gray-700 bg-gray-950/95 p-4 text-left text-sm text-gray-300 opacity-0 pointer-events-none group-hover:opacity-100 transition z-10">
+                <p class="font-semibold text-white mb-2" data-en="How to read it" data-es="Cómo leerla">How to read it</p>
+                <p
+                  data-en="p(x) is the probability of each outcome. If probabilities are balanced, entropy increases. If one outcome dominates, entropy decreases."
+                  data-es="p(x) es la probabilidad de cada resultado. Si las probabilidades están balanceadas, la entropía aumenta. Si un resultado domina, la entropía disminuye."
+                >
+                  p(x) is the probability of each outcome. If probabilities are balanced, entropy increases. If one outcome dominates, entropy decreases.
+                </p>
+              </div>
             </div>
           </div>
         </section>
@@ -212,17 +324,18 @@
 
       <aside class="hidden lg:block">
         <div class="sticky top-8 rounded-2xl border border-gray-800 bg-gray-900/70 backdrop-blur p-5">
-          <p class="text-xs uppercase tracking-[0.18em] text-blue-300 mb-4">Future Layer</p>
-          <h3 class="text-lg font-semibold mb-3">AI Research Assistant</h3>
-          <p class="text-sm text-gray-400 leading-7 mb-4">
-            Placeholder for a future chatbot that could summarize experiments, compare results across pages,
-            and answer questions about entropy, uncertainty, and representation.
+          <p class="text-xs uppercase tracking-[0.18em] text-blue-300 mb-4" data-en="Future Layer" data-es="Capa futura">Future Layer</p>
+          <h3 class="text-lg font-semibold mb-3" data-en="AI Research Assistant" data-es="Asistente de investigación con IA">AI Research Assistant</h3>
+          <p
+            class="text-sm text-gray-400 leading-7 mb-4"
+            data-en="Placeholder for a future chatbot that could summarize experiments, compare results across pages, and answer questions about entropy, uncertainty, and representation."
+            data-es="Espacio reservado para un futuro chatbot que podría resumir experimentos, comparar resultados entre páginas y responder preguntas sobre entropía, incertidumbre y representación."
+          >
+            Placeholder for a future chatbot that could summarize experiments, compare results across pages, and answer questions about entropy, uncertainty, and representation.
           </p>
 
           <div class="rounded-xl border border-dashed border-gray-700 bg-gray-950 p-4">
-            <p class="text-sm text-gray-500">
-              Chat interface coming later.
-            </p>
+            <p class="text-sm text-gray-500" data-en="Chat interface coming later." data-es="La interfaz de chat llegará después.">Chat interface coming later.</p>
           </div>
         </div>
       </aside>
@@ -239,6 +352,10 @@
 
     const growthSlider = document.getElementById("growthSlider");
     const growthValue = document.getElementById("growthValue");
+    const baseSlider = document.getElementById("baseSlider");
+    const baseValue = document.getElementById("baseValue");
+    const variationSlider = document.getElementById("variationSlider");
+    const variationValue = document.getElementById("variationValue");
     const resultsCanvas = document.getElementById("resultsChart");
     const rctx = resultsCanvas.getContext("2d");
 
@@ -247,71 +364,100 @@
       return -(p * Math.log2(p) + q * Math.log2(q));
     }
 
-    function drawResultsChart(growth) {
+    function drawResultsChart(growth, base, variation) {
       const w = resultsCanvas.width;
       const h = resultsCanvas.height;
+      const padding = 52;
+
       rctx.clearRect(0, 0, w, h);
 
-      const padding = 50;
-      const maxX = 10;
-      const maxY = growth * 10 + 120;
+      const points = [];
+      for (let x = 1; x <= 10; x++) {
+        const oscillation = Math.sin(x * 0.9) * variation;
+        const y = base + growth * x + oscillation;
+        points.push({ x, y });
+      }
 
-      rctx.strokeStyle = "#374151";
+      const maxY = Math.max(...points.map(p => p.y)) + 40;
+      const minY = Math.min(...points.map(p => p.y)) - 20;
+
+      rctx.strokeStyle = "#1f2937";
       rctx.lineWidth = 1;
 
       for (let i = 0; i <= 5; i++) {
-        const y = padding + (i * (h - padding * 2)) / 5;
+        const gy = padding + (i * (h - padding * 2)) / 5;
         rctx.beginPath();
-        rctx.moveTo(padding, y);
-        rctx.lineTo(w - padding, y);
+        rctx.moveTo(padding, gy);
+        rctx.lineTo(w - padding, gy);
         rctx.stroke();
       }
 
-      rctx.beginPath();
+      for (let i = 0; i < 10; i++) {
+        const gx = padding + (i * (w - padding * 2)) / 9;
+        rctx.beginPath();
+        rctx.moveTo(gx, padding);
+        rctx.lineTo(gx, h - padding);
+        rctx.stroke();
+      }
+
       rctx.strokeStyle = "#9ca3af";
       rctx.lineWidth = 1.5;
+      rctx.beginPath();
       rctx.moveTo(padding, h - padding);
       rctx.lineTo(w - padding, h - padding);
-      rctx.lineTo(w - padding - 6, h - padding - 4);
-      rctx.moveTo(w - padding, h - padding);
-      rctx.lineTo(w - padding - 6, h - padding + 4);
       rctx.moveTo(padding, h - padding);
       rctx.lineTo(padding, padding);
-      rctx.lineTo(padding - 4, padding + 6);
-      rctx.moveTo(padding, padding);
-      rctx.lineTo(padding + 4, padding + 6);
       rctx.stroke();
 
       rctx.fillStyle = "#9ca3af";
       rctx.font = "13px sans-serif";
-      rctx.fillText("Pages", w - padding - 10, h - 18);
-      rctx.fillText("Size", 14, padding - 14);
+      rctx.fillText("Pages", w - padding - 12, h - 18);
+      rctx.fillText("Bytes", 14, padding - 14);
+
+      const coords = points.map(p => {
+        const px = padding + ((p.x - 1) / 9) * (w - padding * 2);
+        const py = h - padding - ((p.y - minY) / (maxY - minY)) * (h - padding * 2);
+        return { ...p, px, py };
+      });
+
+      const gradient = rctx.createLinearGradient(0, padding, 0, h - padding);
+      gradient.addColorStop(0, "rgba(96,165,250,0.28)");
+      gradient.addColorStop(1, "rgba(96,165,250,0.02)");
+
+      rctx.beginPath();
+      rctx.moveTo(coords[0].px, h - padding);
+      coords.forEach(c => rctx.lineTo(c.px, c.py));
+      rctx.lineTo(coords[coords.length - 1].px, h - padding);
+      rctx.closePath();
+      rctx.fillStyle = gradient;
+      rctx.fill();
 
       rctx.beginPath();
       rctx.strokeStyle = "#60a5fa";
       rctx.lineWidth = 3;
-
-      for (let x = 1; x <= 10; x++) {
-        const yVal = growth * x + 40;
-        const px = padding + ((x - 1) / (maxX - 1)) * (w - padding * 2);
-        const py = h - padding - (yVal / maxY) * (h - padding * 2);
-
-        if (x === 1) rctx.moveTo(px, py);
-        else rctx.lineTo(px, py);
-      }
-
+      coords.forEach((c, i) => {
+        if (i === 0) rctx.moveTo(c.px, c.py);
+        else rctx.lineTo(c.px, c.py);
+      });
       rctx.stroke();
 
-      for (let x = 1; x <= 10; x++) {
-        const yVal = growth * x + 40;
-        const px = padding + ((x - 1) / (maxX - 1)) * (w - padding * 2);
-        const py = h - padding - (yVal / maxY) * (h - padding * 2);
+      coords.forEach(c => {
+        rctx.beginPath();
+        rctx.fillStyle = "rgba(138,215,255,0.22)";
+        rctx.arc(c.px, c.py, 10, 0, Math.PI * 2);
+        rctx.fill();
 
         rctx.beginPath();
         rctx.fillStyle = "#8ad7ff";
-        rctx.arc(px, py, 4, 0, Math.PI * 2);
+        rctx.arc(c.px, c.py, 4, 0, Math.PI * 2);
         rctx.fill();
-      }
+      });
+
+      rctx.fillStyle = "#6b7280";
+      rctx.font = "12px sans-serif";
+      coords.forEach((c, i) => {
+        rctx.fillText(String(i + 1), c.px - 3, h - padding + 18);
+      });
     }
 
     function drawEntropyChart(p) {
@@ -364,8 +510,8 @@
       ectx.arc(cx, cy, 5, 0, Math.PI * 2);
       ectx.fill();
 
-      const barBase = h - 22;
-      const barMaxHeight = 90;
+      const barBase = h - 28;
+      const barMaxHeight = 100;
 
       ectx.fillStyle = "#60a5fa";
       ectx.fillRect(70, barBase - p * barMaxHeight, 56, p * barMaxHeight);
@@ -375,32 +521,62 @@
 
       ectx.fillStyle = "#9ca3af";
       ectx.font = "13px sans-serif";
-      ectx.fillText("p", 92, barBase + 16);
-      ectx.fillText("1-p", 166, barBase + 16);
+      ectx.fillText("p", 92, barBase + 18);
+      ectx.fillText("1-p", 166, barBase + 18);
       ectx.fillText("Entropy curve", w - 140, 26);
+      ectx.fillText("Probability bias", w - 135, h - 18);
+      ectx.fillText("Entropy", 16, 24);
     }
 
     function updateEntropy() {
       const p = parseFloat(slider.value);
       pValue.textContent = p.toFixed(2);
-
       const h = entropy(p);
       entropyValue.textContent = h.toFixed(3);
-
       drawEntropyChart(p);
     }
 
     function updateResults() {
       const growth = parseInt(growthSlider.value, 10);
+      const base = parseInt(baseSlider.value, 10);
+      const variation = parseInt(variationSlider.value, 10);
+
       growthValue.textContent = growth;
-      drawResultsChart(growth);
+      baseValue.textContent = base;
+      variationValue.textContent = variation;
+
+      drawResultsChart(growth, base, variation);
+    }
+
+    const langToggle = document.getElementById("langToggle");
+    let currentLang = localStorage.getItem("siteLang") || "en";
+
+    function applyLanguage(lang) {
+      document.documentElement.lang = lang;
+
+      document.querySelectorAll("[data-en][data-es]").forEach(el => {
+        el.textContent = el.dataset[lang];
+      });
+
+      document.title = lang === "en" ? "Experiment 1 — Entropy" : "Experimento 1 — Entropía";
+
+      langToggle.textContent = lang === "en" ? "ES" : "EN";
+      localStorage.setItem("siteLang", lang);
+      currentLang = lang;
     }
 
     slider.addEventListener("input", updateEntropy);
     growthSlider.addEventListener("input", updateResults);
+    baseSlider.addEventListener("input", updateResults);
+    variationSlider.addEventListener("input", updateResults);
+
+    langToggle.addEventListener("click", () => {
+      applyLanguage(currentLang === "en" ? "es" : "en");
+    });
 
     updateEntropy();
     updateResults();
+    applyLanguage(currentLang);
   </script>
 
 </body>
