@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
-<head> 
+<html lang="en" class="scroll-smooth">
+<head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>From Entropy to Experience</title>
@@ -33,6 +33,48 @@
       overflow-x: hidden;
     }
 
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 34px 34px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.4), transparent 85%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .glow-1, .glow-2 {
+      position: fixed;
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(18px);
+    }
+
+    .glow-1 {
+      inset: auto auto 8% -8%;
+      width: 340px;
+      height: 340px;
+      background: radial-gradient(circle, rgba(108,168,255,0.18), transparent 68%);
+    }
+
+    .glow-2 {
+      inset: 14% -7% auto auto;
+      width: 320px;
+      height: 320px;
+      background: radial-gradient(circle, rgba(158,123,255,0.14), transparent 68%);
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: color 0.18s ease, border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
+    }
+
+    a:hover { color: var(--accent-2); }
+
     .container {
       width: min(calc(100% - 2rem), var(--max));
       margin: 0 auto;
@@ -54,12 +96,30 @@
       justify-content: space-between;
       align-items: center;
       padding: 1rem 0;
+      gap: 1rem;
+      flex-wrap: wrap;
     }
 
     .brand {
       font-size: 1rem;
       color: var(--muted);
       font-weight: 600;
+    }
+
+    .lang-button {
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.04));
+      color: var(--text);
+      padding: 0.72rem 1rem;
+      border-radius: 14px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+    }
+
+    .lang-button:hover {
+      border-color: rgba(108,168,255,0.45);
+      background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.055));
     }
 
     header.hero {
@@ -73,6 +133,14 @@
       box-shadow: var(--shadow);
       position: relative;
       overflow: hidden;
+    }
+
+    .hero-card::before, .section-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(108,168,255,0.08), transparent 28%, transparent 72%, rgba(138,215,255,0.05));
+      pointer-events: none;
     }
 
     .hero-card {
@@ -119,6 +187,12 @@
       color: inherit;
     }
 
+    .experiment-link:hover {
+      border-color: rgba(108,168,255,0.42);
+      transform: translateY(-2px);
+      background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.045));
+    }
+
     h2 {
       margin: 0 0 0.75rem;
       font-size: 1.18rem;
@@ -145,21 +219,44 @@
       color: var(--muted);
       font-size: 0.95rem;
     }
+
+    @media (max-width: 700px) {
+      header.hero { padding-top: 3.2rem; }
+      .hero-card, .section-card { border-radius: 18px; }
+      .hero-card { padding: 1.4rem; }
+    }
   </style>
 </head>
 <body>
+  <div class="glow-1" aria-hidden="true"></div>
+  <div class="glow-2" aria-hidden="true"></div>
+
   <div class="topbar">
     <div class="container topbar-inner">
-      <div class="brand">From Entropy to Experience</div>
+      <div class="brand" data-en="From Entropy to Experience" data-es="De la Entropía a la Experiencia">
+        From Entropy to Experience
+      </div>
+
+      <button id="langToggle" class="lang-button">ES</button>
     </div>
   </div>
 
   <header class="hero">
     <div class="container">
       <div class="hero-card">
-        <div class="eyebrow">Computational Neuroscience Portfolio</div>
-        <h1>From Entropy to Experience</h1>
-        <p class="lede">
+        <div class="eyebrow" data-en="Computational Neuroscience Portfolio" data-es="Portafolio de Neurociencia Computacional">
+          Computational Neuroscience Portfolio
+        </div>
+
+        <h1 data-en="From Entropy to Experience" data-es="De la Entropía a la Experiencia">
+          From Entropy to Experience
+        </h1>
+
+        <p
+          class="lede"
+          data-en="A series of computational experiments exploring entropy, structure, uncertainty, and the limits of representation."
+          data-es="Una serie de experimentos computacionales que exploran entropía, estructura, incertidumbre y los límites de la representación."
+        >
           A series of computational experiments exploring entropy, structure, uncertainty, and the limits of representation.
         </p>
       </div>
@@ -169,46 +266,68 @@
   <main>
     <div class="container stack">
       <section class="section-card">
-        <h2>Experiments</h2>
+        <h2 data-en="Experiments" data-es="Experimentos">Experiments</h2>
 
         <div class="stack">
-          <a href="experiment-1.html" class="section-card">
-            <h3>Experiment 1 — Entropy & Predictability</h3>
-            <p class="small">
+          <a href="experiment-1.html" class="section-card experiment-link">
+            <h3 data-en="Experiment 1 — Entropy & Predictability" data-es="Experimento 1 — Entropía y Predictibilidad">
+              Experiment 1 — Entropy & Predictability
+            </h3>
+            <p
+              class="small"
+              data-en="Measuring how structured input affects predictability and entropy in a simple computational system."
+              data-es="Midiendo cómo una entrada estructurada afecta la predictibilidad y la entropía en un sistema computacional simple."
+            >
               Measuring how structured input affects predictability and entropy in a simple computational system.
             </p>
           </a>
 
-          <a href="experiment-2.html" class="section-card">
-            <h3>Experiment 2 — Noise & Variability</h3>
-            <p class="small">
+          <a href="experiment-2.html" class="section-card experiment-link">
+            <h3 data-en="Experiment 2 — Noise & Variability" data-es="Experimento 2 — Ruido y Variabilidad">
+              Experiment 2 — Noise & Variability
+            </h3>
+            <p
+              class="small"
+              data-en="Exploring how noise increases uncertainty and degrades signal structure."
+              data-es="Explorando cómo el ruido incrementa la incertidumbre y degrada la estructura de la señal."
+            >
               Exploring how noise increases uncertainty and degrades signal structure.
             </p>
           </a>
 
-          <a href="experiment-3.html" class="section-card">
-            <h3>Experiment 3 — TBD</h3>
-            <p class="small">Coming soon.</p>
+          <a href="experiment-3.html" class="section-card experiment-link">
+            <h3 data-en="Experiment 3 — TBD" data-es="Experimento 3 — Próximamente">
+              Experiment 3 — TBD
+            </h3>
+            <p class="small" data-en="Coming soon." data-es="Próximamente.">Coming soon.</p>
           </a>
 
-          <a href="experiment-4.html" class="section-card">
-            <h3>Experiment 4 — TBD</h3>
-            <p class="small">Coming soon.</p>
+          <a href="experiment-4.html" class="section-card experiment-link">
+            <h3 data-en="Experiment 4 — TBD" data-es="Experimento 4 — Próximamente">
+              Experiment 4 — TBD
+            </h3>
+            <p class="small" data-en="Coming soon." data-es="Próximamente.">Coming soon.</p>
           </a>
 
-          <a href="experiment-5.html" class="section-card">
-            <h3>Experiment 5 — TBD</h3>
-            <p class="small">Coming soon.</p>
+          <a href="experiment-5.html" class="section-card experiment-link">
+            <h3 data-en="Experiment 5 — TBD" data-es="Experimento 5 — Próximamente">
+              Experiment 5 — TBD
+            </h3>
+            <p class="small" data-en="Coming soon." data-es="Próximamente.">Coming soon.</p>
           </a>
 
-          <a href="project-1.html" class="section-card">
-            <h3>Project 1 — TBD</h3>
-            <p class="small">Coming soon.</p>
+          <a href="project-1.html" class="section-card experiment-link">
+            <h3 data-en="Project 1 — TBD" data-es="Proyecto 1 — Próximamente">
+              Project 1 — TBD
+            </h3>
+            <p class="small" data-en="Coming soon." data-es="Próximamente.">Coming soon.</p>
           </a>
 
-          <a href="project-2.html" class="section-card">
-            <h3>Project 2 — TBD</h3>
-            <p class="small">Coming soon.</p>
+          <a href="project-2.html" class="section-card experiment-link">
+            <h3 data-en="Project 2 — TBD" data-es="Proyecto 2 — Próximamente">
+              Project 2 — TBD
+            </h3>
+            <p class="small" data-en="Coming soon." data-es="Próximamente.">Coming soon.</p>
           </a>
         </div>
       </section>
@@ -216,9 +335,36 @@
   </main>
 
   <footer>
-    <div class="container">
+    <div class="container" data-en="Public portfolio in progress." data-es="Portafolio público en progreso.">
       Public portfolio in progress.
     </div>
   </footer>
+
+  <script>
+    const langToggle = document.getElementById("langToggle");
+    let currentLang = localStorage.getItem("siteLang") || "en";
+
+    function applyLanguage(lang) {
+      document.documentElement.lang = lang;
+
+      document.querySelectorAll("[data-en][data-es]").forEach(el => {
+        el.textContent = el.dataset[lang];
+      });
+
+      document.title = lang === "en"
+        ? "From Entropy to Experience"
+        : "De la Entropía a la Experiencia";
+
+      langToggle.textContent = lang === "en" ? "ES" : "EN";
+      localStorage.setItem("siteLang", lang);
+      currentLang = lang;
+    }
+
+    langToggle.addEventListener("click", () => {
+      applyLanguage(currentLang === "en" ? "es" : "en");
+    });
+
+    applyLanguage(currentLang);
+  </script>
 </body>
 </html>
