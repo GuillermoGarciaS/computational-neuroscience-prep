@@ -343,240 +343,326 @@
     </div>
   </div>
 
-  <script>
-    const slider = document.getElementById("slider");
-    const pValue = document.getElementById("pValue");
-    const entropyValue = document.getElementById("entropyValue");
-    const entropyCanvas = document.getElementById("entropyChart");
-    const ectx = entropyCanvas.getContext("2d");
+<script>
+  const slider = document.getElementById("slider");
+  const pValue = document.getElementById("pValue");
+  const entropyValue = document.getElementById("entropyValue");
+  const entropyCanvas = document.getElementById("entropyChart");
+  const ectx = entropyCanvas.getContext("2d");
 
-    const pagesSlider = document.getElementById("pagesSlider");
-    const pagesValue = document.getElementById("pagesValue");
-    const lettersSlider = document.getElementById("lettersSlider");
-    const lettersValue = document.getElementById("lettersValue");
-    const baseSlider = document.getElementById("baseSlider");
-    const baseValue = document.getElementById("baseValue");
-    const resultsCanvas = document.getElementById("resultsChart");
-    const rctx = resultsCanvas.getContext("2d");
+  const pagesSlider = document.getElementById("pagesSlider");
+  const pagesValue = document.getElementById("pagesValue");
+  const lettersSlider = document.getElementById("lettersSlider");
+  const lettersValue = document.getElementById("lettersValue");
+  const baseSlider = document.getElementById("baseSlider");
+  const baseValue = document.getElementById("baseValue");
+  const resultsCanvas = document.getElementById("resultsChart");
+  const rctx = resultsCanvas.getContext("2d");
 
-    function entropy(p) {
-      const q = 1 - p;
-      return -(p * Math.log2(p) + q * Math.log2(q));
+  let animatedPoints = [];
+  let targetPoints = [];
+  let animationFrame = null;
+
+  function entropy(p) {
+    const q = 1 - p;
+    return -(p * Math.log2(p) + q * Math.log2(q));
+  }
+
+  function buildResultPoints(maxPages, lettersPerPage, baseOverhead) {
+    const points = [];
+    for (let page = 1; page <= maxPages; page++) {
+      // Stronger response so slider movement is visible:
+      // letters contribute more, and page growth accelerates slightly
+      const pageFactor = Math.pow(page, 1.12);
+      const estimatedSize = baseOverhead + (lettersPerPage * 0.9 * pageFactor);
+      points.push({ x: page, y: estimatedSize });
+    }
+    return points;
+  }
+
+  function drawResultsChart(points, maxPages) {
+    const w = resultsCanvas.width;
+    const h = resultsCanvas.height;
+    const padding = 56;
+
+    rctx.clearRect(0, 0, w, h);
+
+    const maxY = Math.max(...points.map(p => p.y), 1000) + 250;
+    const minY = 0;
+
+    // background glow
+    const bgGradient = rctx.createLinearGradient(0, 0, 0, h);
+    bgGradient.addColorStop(0, "rgba(17,24,39,0.95)");
+    bgGradient.addColorStop(1, "rgba(2,6,23,0.98)");
+    rctx.fillStyle = bgGradient;
+    rctx.fillRect(0, 0, w, h);
+
+    // grid
+    rctx.strokeStyle = "#1f2937";
+    rctx.lineWidth = 1;
+    for (let i = 0; i <= 5; i++) {
+      const gy = padding + (i * (h - padding * 2)) / 5;
+      rctx.beginPath();
+      rctx.moveTo(padding, gy);
+      rctx.lineTo(w - padding, gy);
+      rctx.stroke();
     }
 
-    function drawResultsChart(maxPages, lettersPerPage, baseOverhead) {
-      const w = resultsCanvas.width;
-      const h = resultsCanvas.height;
-      const padding = 52;
-
-      rctx.clearRect(0, 0, w, h);
-
-      const points = [];
-      for (let page = 1; page <= maxPages; page++) {
-        const estimatedSize = baseOverhead + page * lettersPerPage;
-        points.push({ x: page, y: estimatedSize });
-      }
-
-      const maxY = Math.max(...points.map(p => p.y)) + 200;
-      const minY = 0;
-
-      rctx.strokeStyle = "#1f2937";
-      rctx.lineWidth = 1;
-
-      for (let i = 0; i <= 5; i++) {
-        const gy = padding + (i * (h - padding * 2)) / 5;
-        rctx.beginPath();
-        rctx.moveTo(padding, gy);
-        rctx.lineTo(w - padding, gy);
-        rctx.stroke();
-      }
-
-      for (let i = 0; i < maxPages; i++) {
-        const gx = padding + (i * (w - padding * 2)) / Math.max(maxPages - 1, 1);
-        rctx.beginPath();
-        rctx.moveTo(gx, padding);
-        rctx.lineTo(gx, h - padding);
-        rctx.stroke();
-      }
-
-      rctx.strokeStyle = "#9ca3af";
-      rctx.lineWidth = 1.5;
+    for (let i = 0; i < maxPages; i++) {
+      const gx = padding + (i * (w - padding * 2)) / Math.max(maxPages - 1, 1);
       rctx.beginPath();
-      rctx.moveTo(padding, h - padding);
-      rctx.lineTo(w - padding, h - padding);
-      rctx.moveTo(padding, h - padding);
-      rctx.lineTo(padding, padding);
+      rctx.moveTo(gx, padding);
+      rctx.lineTo(gx, h - padding);
       rctx.stroke();
+    }
 
-      rctx.fillStyle = "#9ca3af";
-      rctx.font = "13px sans-serif";
-      rctx.fillText("Pages", w - padding - 12, h - 18);
-      rctx.fillText("Bytes", 14, padding - 14);
+    // axes
+    rctx.strokeStyle = "#94a3b8";
+    rctx.lineWidth = 1.5;
+    rctx.beginPath();
+    rctx.moveTo(padding, h - padding);
+    rctx.lineTo(w - padding, h - padding);
+    rctx.moveTo(padding, h - padding);
+    rctx.lineTo(padding, padding);
+    rctx.stroke();
 
-      const coords = points.map(p => {
-        const px = padding + ((p.x - 1) / Math.max(maxPages - 1, 1)) * (w - padding * 2);
-        const py = h - padding - ((p.y - minY) / (maxY - minY)) * (h - padding * 2);
-        return { ...p, px, py };
-      });
+    // labels
+    rctx.fillStyle = "#9ca3af";
+    rctx.font = "13px sans-serif";
+    rctx.fillText("Pages", w - padding - 8, h - 18);
+    rctx.fillText("Bytes", 18, padding - 14);
 
-      const gradient = rctx.createLinearGradient(0, padding, 0, h - padding);
-      gradient.addColorStop(0, "rgba(96,165,250,0.30)");
-      gradient.addColorStop(1, "rgba(96,165,250,0.03)");
+    const coords = points.map(p => {
+      const px = padding + ((p.x - 1) / Math.max(maxPages - 1, 1)) * (w - padding * 2);
+      const py = h - padding - ((p.y - minY) / (maxY - minY)) * (h - padding * 2);
+      return { ...p, px, py };
+    });
 
+    // area fill
+    const areaGradient = rctx.createLinearGradient(0, padding, 0, h - padding);
+    areaGradient.addColorStop(0, "rgba(96,165,250,0.40)");
+    areaGradient.addColorStop(0.45, "rgba(56,189,248,0.18)");
+    areaGradient.addColorStop(1, "rgba(96,165,250,0.03)");
+
+    rctx.beginPath();
+    rctx.moveTo(coords[0].px, h - padding);
+    coords.forEach(c => rctx.lineTo(c.px, c.py));
+    rctx.lineTo(coords[coords.length - 1].px, h - padding);
+    rctx.closePath();
+    rctx.fillStyle = areaGradient;
+    rctx.fill();
+
+    // glow line
+    rctx.beginPath();
+    rctx.strokeStyle = "rgba(96,165,250,0.18)";
+    rctx.lineWidth = 10;
+    coords.forEach((c, i) => {
+      if (i === 0) rctx.moveTo(c.px, c.py);
+      else rctx.lineTo(c.px, c.py);
+    });
+    rctx.stroke();
+
+    // main line
+    rctx.beginPath();
+    rctx.strokeStyle = "#7dd3fc";
+    rctx.lineWidth = 3;
+    coords.forEach((c, i) => {
+      if (i === 0) rctx.moveTo(c.px, c.py);
+      else rctx.lineTo(c.px, c.py);
+    });
+    rctx.stroke();
+
+    // dashed trend guide from first to last point
+    rctx.setLineDash([6, 6]);
+    rctx.beginPath();
+    rctx.strokeStyle = "rgba(167,139,250,0.55)";
+    rctx.lineWidth = 1.5;
+    rctx.moveTo(coords[0].px, coords[0].py);
+    rctx.lineTo(coords[coords.length - 1].px, coords[coords.length - 1].py);
+    rctx.stroke();
+    rctx.setLineDash([]);
+
+    // points + value labels
+    coords.forEach(c => {
       rctx.beginPath();
-      rctx.moveTo(coords[0].px, h - padding);
-      coords.forEach(c => rctx.lineTo(c.px, c.py));
-      rctx.lineTo(coords[coords.length - 1].px, h - padding);
-      rctx.closePath();
-      rctx.fillStyle = gradient;
+      rctx.fillStyle = "rgba(125,211,252,0.18)";
+      rctx.arc(c.px, c.py, 12, 0, Math.PI * 2);
       rctx.fill();
 
       rctx.beginPath();
-      rctx.strokeStyle = "#60a5fa";
-      rctx.lineWidth = 3;
-      coords.forEach((c, i) => {
-        if (i === 0) rctx.moveTo(c.px, c.py);
-        else rctx.lineTo(c.px, c.py);
-      });
-      rctx.stroke();
+      rctx.fillStyle = "#8ad7ff";
+      rctx.arc(c.px, c.py, 4.5, 0, Math.PI * 2);
+      rctx.fill();
 
-      coords.forEach(c => {
-        rctx.beginPath();
-        rctx.fillStyle = "rgba(138,215,255,0.20)";
-        rctx.arc(c.px, c.py, 10, 0, Math.PI * 2);
-        rctx.fill();
-
-        rctx.beginPath();
-        rctx.fillStyle = "#8ad7ff";
-        rctx.arc(c.px, c.py, 4, 0, Math.PI * 2);
-        rctx.fill();
-      });
-
-      rctx.fillStyle = "#6b7280";
-      rctx.font = "12px sans-serif";
-      coords.forEach(c => {
-        rctx.fillText(String(c.x), c.px - 3, h - padding + 18);
-      });
-    }
-
-    function drawEntropyChart(p) {
-      const q = 1 - p;
-      const w = entropyCanvas.width;
-      const h = entropyCanvas.height;
-      ectx.clearRect(0, 0, w, h);
-
-      const padding = 44;
-
-      ectx.strokeStyle = "#374151";
-      ectx.lineWidth = 1;
-      for (let i = 0; i <= 4; i++) {
-        const y = padding + (i * (h - padding * 2)) / 4;
-        ectx.beginPath();
-        ectx.moveTo(padding, y);
-        ectx.lineTo(w - padding, y);
-        ectx.stroke();
-      }
-
-      ectx.beginPath();
-      ectx.strokeStyle = "#a78bfa";
-      ectx.lineWidth = 2.5;
-
-      for (let i = 1; i <= 99; i++) {
-        const pxVal = i / 100;
-        const eVal = entropy(pxVal);
-        const x = padding + ((pxVal - 0.01) / 0.98) * (w - padding * 2);
-        const y = h - padding - eVal * (h - padding * 2);
-
-        if (i === 1) ectx.moveTo(x, y);
-        else ectx.lineTo(x, y);
-      }
-
-      ectx.stroke();
-
-      const currentEntropy = entropy(p);
-      const cx = padding + ((p - 0.01) / 0.98) * (w - padding * 2);
-      const cy = h - padding - currentEntropy * (h - padding * 2);
-
-      ectx.beginPath();
-      ectx.strokeStyle = "#60a5fa";
-      ectx.lineWidth = 1.5;
-      ectx.moveTo(cx, h - padding);
-      ectx.lineTo(cx, cy);
-      ectx.stroke();
-
-      ectx.beginPath();
-      ectx.fillStyle = "#8ad7ff";
-      ectx.arc(cx, cy, 5, 0, Math.PI * 2);
-      ectx.fill();
-
-      const barBase = h - 28;
-      const barMaxHeight = 100;
-
-      ectx.fillStyle = "#60a5fa";
-      ectx.fillRect(70, barBase - p * barMaxHeight, 56, p * barMaxHeight);
-
-      ectx.fillStyle = "#34d399";
-      ectx.fillRect(150, barBase - q * barMaxHeight, 56, q * barMaxHeight);
-
-      ectx.fillStyle = "#9ca3af";
-      ectx.font = "13px sans-serif";
-      ectx.fillText("p", 92, barBase + 18);
-      ectx.fillText("1-p", 166, barBase + 18);
-      ectx.fillText("Entropy curve", w - 140, 26);
-      ectx.fillText("Probability bias", w - 135, h - 18);
-      ectx.fillText("Entropy", 16, 24);
-    }
-
-    function updateEntropy() {
-      const p = parseFloat(slider.value);
-      pValue.textContent = p.toFixed(2);
-      const h = entropy(p);
-      entropyValue.textContent = h.toFixed(3);
-      drawEntropyChart(p);
-    }
-
-    function updateResults() {
-      const maxPages = parseInt(pagesSlider.value, 10);
-      const lettersPerPage = parseInt(lettersSlider.value, 10);
-      const baseOverhead = parseInt(baseSlider.value, 10);
-
-      pagesValue.textContent = maxPages;
-      lettersValue.textContent = lettersPerPage;
-      baseValue.textContent = baseOverhead;
-
-      drawResultsChart(maxPages, lettersPerPage, baseOverhead);
-    }
-
-    const langToggle = document.getElementById("langToggle");
-    let currentLang = localStorage.getItem("siteLang") || "en";
-
-    function applyLanguage(lang) {
-      document.documentElement.lang = lang;
-
-      document.querySelectorAll("[data-en][data-es]").forEach(el => {
-        el.textContent = el.dataset[lang];
-      });
-
-      document.title = lang === "en" ? "Experiment 1 — Entropy" : "Experimento 1 — Entropía";
-
-      langToggle.textContent = lang === "en" ? "ES" : "EN";
-      localStorage.setItem("siteLang", lang);
-      currentLang = lang;
-    }
-
-    pagesSlider.addEventListener("input", updateResults);
-    lettersSlider.addEventListener("input", updateResults);
-    baseSlider.addEventListener("input", updateResults);
-    slider.addEventListener("input", updateEntropy);
-
-    langToggle.addEventListener("click", () => {
-      applyLanguage(currentLang === "en" ? "es" : "en");
+      rctx.fillStyle = "#94a3b8";
+      rctx.font = "11px sans-serif";
+      rctx.fillText(Math.round(c.y), c.px - 14, c.py - 12);
+      rctx.fillText(String(c.x), c.px - 3, h - padding + 18);
     });
 
-    updateResults();
-    updateEntropy();
-    applyLanguage(currentLang);
-  </script>
+    // final point highlight
+    const last = coords[coords.length - 1];
+    rctx.beginPath();
+    rctx.strokeStyle = "rgba(34,197,94,0.65)";
+    rctx.lineWidth = 1.5;
+    rctx.moveTo(last.px, h - padding);
+    rctx.lineTo(last.px, last.py);
+    rctx.stroke();
+
+    rctx.fillStyle = "#22c55e";
+    rctx.font = "12px sans-serif";
+    rctx.fillText("Final size", last.px - 22, last.py - 24);
+  }
+
+  function animateResults() {
+    let done = true;
+
+    animatedPoints = animatedPoints.map((p, i) => {
+      const t = targetPoints[i];
+      const newY = p.y + (t.y - p.y) * 0.12;
+      if (Math.abs(newY - t.y) > 0.6) done = false;
+      return { ...p, y: newY };
+    });
+
+    drawResultsChart(animatedPoints, targetPoints.length);
+
+    if (!done) {
+      animationFrame = requestAnimationFrame(animateResults);
+    } else {
+      animatedPoints = targetPoints.map(p => ({ ...p }));
+      drawResultsChart(animatedPoints, targetPoints.length);
+      animationFrame = null;
+    }
+  }
+
+  function updateResults() {
+    const maxPages = parseInt(pagesSlider.value, 10);
+    const lettersPerPage = parseInt(lettersSlider.value, 10);
+    const baseOverhead = parseInt(baseSlider.value, 10);
+
+    pagesValue.textContent = maxPages;
+    lettersValue.textContent = lettersPerPage;
+    baseValue.textContent = baseOverhead;
+
+    targetPoints = buildResultPoints(maxPages, lettersPerPage, baseOverhead);
+
+    if (animatedPoints.length !== targetPoints.length) {
+      animatedPoints = targetPoints.map(p => ({ ...p }));
+      drawResultsChart(animatedPoints, maxPages);
+      return;
+    }
+
+    if (!animationFrame) {
+      animationFrame = requestAnimationFrame(animateResults);
+    }
+  }
+
+  function drawEntropyChart(p) {
+    const q = 1 - p;
+    const w = entropyCanvas.width;
+    const h = entropyCanvas.height;
+    ectx.clearRect(0, 0, w, h);
+
+    const padding = 44;
+
+    ectx.strokeStyle = "#374151";
+    ectx.lineWidth = 1;
+    for (let i = 0; i <= 4; i++) {
+      const y = padding + (i * (h - padding * 2)) / 4;
+      ectx.beginPath();
+      ectx.moveTo(padding, y);
+      ectx.lineTo(w - padding, y);
+      ectx.stroke();
+    }
+
+    ectx.beginPath();
+    ectx.strokeStyle = "#a78bfa";
+    ectx.lineWidth = 2.5;
+
+    for (let i = 1; i <= 99; i++) {
+      const pxVal = i / 100;
+      const eVal = entropy(pxVal);
+      const x = padding + ((pxVal - 0.01) / 0.98) * (w - padding * 2);
+      const y = h - padding - eVal * (h - padding * 2);
+
+      if (i === 1) ectx.moveTo(x, y);
+      else ectx.lineTo(x, y);
+    }
+
+    ectx.stroke();
+
+    const currentEntropy = entropy(p);
+    const cx = padding + ((p - 0.01) / 0.98) * (w - padding * 2);
+    const cy = h - padding - currentEntropy * (h - padding * 2);
+
+    ectx.beginPath();
+    ectx.strokeStyle = "#60a5fa";
+    ectx.lineWidth = 1.5;
+    ectx.moveTo(cx, h - padding);
+    ectx.lineTo(cx, cy);
+    ectx.stroke();
+
+    ectx.beginPath();
+    ectx.fillStyle = "#8ad7ff";
+    ectx.arc(cx, cy, 5, 0, Math.PI * 2);
+    ectx.fill();
+
+    const barBase = h - 28;
+    const barMaxHeight = 100;
+
+    ectx.fillStyle = "#60a5fa";
+    ectx.fillRect(70, barBase - p * barMaxHeight, 56, p * barMaxHeight);
+
+    ectx.fillStyle = "#34d399";
+    ectx.fillRect(150, barBase - q * barMaxHeight, 56, q * barMaxHeight);
+
+    ectx.fillStyle = "#9ca3af";
+    ectx.font = "13px sans-serif";
+    ectx.fillText("p", 92, barBase + 18);
+    ectx.fillText("1-p", 166, barBase + 18);
+    ectx.fillText("Entropy curve", w - 140, 26);
+    ectx.fillText("Probability bias", w - 135, h - 18);
+    ectx.fillText("Entropy", 16, 24);
+  }
+
+  function updateEntropy() {
+    const p = parseFloat(slider.value);
+    pValue.textContent = p.toFixed(2);
+    const h = entropy(p);
+    entropyValue.textContent = h.toFixed(3);
+    drawEntropyChart(p);
+  }
+
+  const langToggle = document.getElementById("langToggle");
+  let currentLang = localStorage.getItem("siteLang") || "en";
+
+  function applyLanguage(lang) {
+    document.documentElement.lang = lang;
+
+    document.querySelectorAll("[data-en][data-es]").forEach(el => {
+      el.textContent = el.dataset[lang];
+    });
+
+    document.title = lang === "en" ? "Experiment 1 — Entropy" : "Experimento 1 — Entropía";
+
+    langToggle.textContent = lang === "en" ? "ES" : "EN";
+    localStorage.setItem("siteLang", lang);
+    currentLang = lang;
+  }
+
+  pagesSlider.addEventListener("input", updateResults);
+  lettersSlider.addEventListener("input", updateResults);
+  baseSlider.addEventListener("input", updateResults);
+  slider.addEventListener("input", updateEntropy);
+
+  langToggle.addEventListener("click", () => {
+    applyLanguage(currentLang === "en" ? "es" : "en");
+  });
+
+  updateResults();
+  updateEntropy();
+  applyLanguage(currentLang);
+</script>
 
 </body>
 </html>
