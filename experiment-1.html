@@ -466,12 +466,12 @@
     const w = resultsCanvas.width;
     const h = resultsCanvas.height;
     const padding = 64;
+    const fixedMaxPages = 100;
 
     rctx.clearRect(0, 0, w, h);
 
-    const rawMaxY = Math.max(...points.map(p => p.y), 1000);
-    const maxY = rawMaxY * 1.08;
     const minY = 0;
+    const maxY = 260000;
 
     const bgGradient = rctx.createLinearGradient(0, 0, 0, h);
     bgGradient.addColorStop(0, "rgba(17,24,39,0.95)");
@@ -496,7 +496,7 @@
       rctx.fillText(formatNumber(yValue), 8, gy + 4);
     }
 
-    const xTicks = maxPages <= 10 ? maxPages : 10;
+    const xTicks = 11;
 
     for (let i = 0; i < xTicks; i++) {
       const ratio = xTicks === 1 ? 0 : i / (xTicks - 1);
@@ -523,7 +523,7 @@
     rctx.fillText("Bytes", 18, padding - 14);
 
     const coords = points.map(p => {
-      const px = padding + ((p.x - 1) / Math.max(maxPages - 1, 1)) * (w - padding * 2);
+      const px = padding + ((p.x - 1) / (fixedMaxPages - 1)) * (w - padding * 2);
       const py = h - padding - ((p.y - minY) / (maxY - minY)) * (h - padding * 2);
       return { ...p, px, py };
     });
@@ -562,7 +562,7 @@
     const pointRadius = maxPages <= 20 ? 4.5 : 2.5;
     const glowRadius = maxPages <= 20 ? 12 : 6;
     const showPointLabels = maxPages <= 15;
-    const xLabelStep = Math.ceil(maxPages / 10);
+    const xLabelStep = 10;
 
     coords.forEach((c, index) => {
       rctx.beginPath();
