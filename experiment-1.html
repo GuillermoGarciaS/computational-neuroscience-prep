@@ -46,6 +46,7 @@
           <p class="text-xs uppercase tracking-[0.18em] text-blue-300 mb-4" data-en="On this page" data-es="En esta página">On this page</p>
           <nav class="space-y-3 text-sm">
             <a href="#question" class="block text-gray-300 hover:text-blue-300 transition" data-en="Question" data-es="Pregunta">Question</a>
+            <a href="#assignment" class="block text-gray-300 hover:text-blue-300 transition" data-en="Original Assignment" data-es="Tarea original">Original Assignment</a>
             <a href="#redesign" class="block text-gray-300 hover:text-blue-300 transition" data-en="Redesign" data-es="Rediseño">Redesign</a>
             <a href="#variables" class="block text-gray-300 hover:text-blue-300 transition" data-en="Variables" data-es="Variables">Variables</a>
             <a href="#method" class="block text-gray-300 hover:text-blue-300 transition" data-en="Method" data-es="Método">Method</a>
@@ -86,6 +87,32 @@
           >
             How does increasing text length affect file size, and what can file size reveal about structure or predictability?
           </p>
+        </section>
+
+        <section id="assignment" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8">
+          <h2 class="text-2xl font-semibold mb-4" data-en="Original Assignment" data-es="Tarea original">Original Assignment</h2>
+          <div class="rounded-2xl border border-gray-800 bg-gray-900/70 p-5">
+            <p
+              class="text-gray-300 leading-8"
+              data-en="The original homework asks for ten text documents with increasing page counts, measurement of file size in bytes, calculation of differences between files, and a linear regression of size as a function of number of pages."
+              data-es="La tarea original pide diez documentos de texto con un número creciente de páginas, la medición del tamaño del archivo en bytes, el cálculo de diferencias entre archivos y una regresión lineal del tamaño como función del número de páginas."
+            >
+              The original homework asks for ten text documents with increasing page counts, measurement of file size in bytes, calculation of differences between files, and a linear regression of size as a function of number of pages.
+            </p>
+          </div>
+        </section>
+
+        <section id="redesign" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8">
+          <h2 class="text-2xl font-semibold mb-4" data-en="Redesign" data-es="Rediseño">Redesign</h2>
+          <div class="rounded-2xl border border-gray-800 bg-gray-900/70 p-5">
+            <p
+              class="text-gray-300 leading-8"
+              data-en="This version keeps the statistical core of the assignment but reframes it as a first study in the difference between storage growth, formal structure, predictability, and semantic meaning."
+              data-es="Esta versión conserva el núcleo estadístico de la tarea, pero lo replantea como un primer estudio sobre la diferencia entre crecimiento de almacenamiento, estructura formal, predictibilidad y significado semántico."
+            >
+              This version keeps the statistical core of the assignment but reframes it as a first study in the difference between storage growth, formal structure, predictability, and semantic meaning.
+            </p>
+          </div>
         </section>
 
         <section id="variables" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8">
@@ -216,7 +243,7 @@
                   <span data-en="Pages" data-es="Páginas">Pages</span>:
                   <span id="pagesValue">10</span>
                 </label>
-                <input type="range" id="pagesSlider" min="1" max="10" step="1" value="10" class="w-full accent-blue-400">
+                <input type="range" id="pagesSlider" min="1" max="100" step="1" value="10" class="w-full accent-blue-400">
               </div>
 
               <div>
@@ -236,7 +263,7 @@
               </div>
             </div>
 
-            <canvas id="resultsChart" width="760" height="320" class="w-full rounded-xl border border-gray-800 bg-gray-950"></canvas>
+            <canvas id="resultsChart" width="760" height="340" class="w-full rounded-xl border border-gray-800 bg-gray-950"></canvas>
 
             <div class="mt-5 rounded-2xl border border-blue-900/40 bg-blue-950/20 p-5">
               <p class="text-xs uppercase tracking-[0.18em] text-blue-300 mb-3" data-en="Current Model" data-es="Modelo actual">Current Model</p>
@@ -438,11 +465,12 @@
   function drawResultsChart(points, maxPages) {
     const w = resultsCanvas.width;
     const h = resultsCanvas.height;
-    const padding = 56;
+    const padding = 64;
 
     rctx.clearRect(0, 0, w, h);
 
-    const maxY = Math.max(...points.map(p => p.y), 1000) + 250;
+    const rawMaxY = Math.max(...points.map(p => p.y), 1000);
+    const maxY = rawMaxY * 1.08;
     const minY = 0;
 
     const bgGradient = rctx.createLinearGradient(0, 0, 0, h);
@@ -453,16 +481,27 @@
 
     rctx.strokeStyle = "#1f2937";
     rctx.lineWidth = 1;
+    rctx.fillStyle = "#94a3b8";
+    rctx.font = "12px sans-serif";
+
     for (let i = 0; i <= 5; i++) {
       const gy = padding + (i * (h - padding * 2)) / 5;
+      const yValue = Math.round(maxY - (i / 5) * (maxY - minY));
+
       rctx.beginPath();
       rctx.moveTo(padding, gy);
       rctx.lineTo(w - padding, gy);
       rctx.stroke();
+
+      rctx.fillText(formatNumber(yValue), 8, gy + 4);
     }
 
-    for (let i = 0; i < maxPages; i++) {
-      const gx = padding + (i * (w - padding * 2)) / Math.max(maxPages - 1, 1);
+    const xTicks = maxPages <= 10 ? maxPages : 10;
+
+    for (let i = 0; i < xTicks; i++) {
+      const ratio = xTicks === 1 ? 0 : i / (xTicks - 1);
+      const gx = padding + ratio * (w - padding * 2);
+
       rctx.beginPath();
       rctx.moveTo(gx, padding);
       rctx.lineTo(gx, h - padding);
@@ -520,22 +559,52 @@
     });
     rctx.stroke();
 
-    coords.forEach(c => {
+    const pointRadius = maxPages <= 20 ? 4.5 : 2.5;
+    const glowRadius = maxPages <= 20 ? 12 : 6;
+    const showPointLabels = maxPages <= 15;
+    const xLabelStep = Math.ceil(maxPages / 10);
+
+    coords.forEach((c, index) => {
       rctx.beginPath();
       rctx.fillStyle = "rgba(125,211,252,0.18)";
-      rctx.arc(c.px, c.py, 12, 0, Math.PI * 2);
+      rctx.arc(c.px, c.py, glowRadius, 0, Math.PI * 2);
       rctx.fill();
 
       rctx.beginPath();
       rctx.fillStyle = "#8ad7ff";
-      rctx.arc(c.px, c.py, 4.5, 0, Math.PI * 2);
+      rctx.arc(c.px, c.py, pointRadius, 0, Math.PI * 2);
       rctx.fill();
 
-      rctx.fillStyle = "#94a3b8";
-      rctx.font = "11px sans-serif";
-      rctx.fillText(Math.round(c.y), c.px - 14, c.py - 12);
-      rctx.fillText(String(c.x), c.px - 3, h - padding + 18);
+      if (showPointLabels) {
+        rctx.fillStyle = "#94a3b8";
+        rctx.font = "11px sans-serif";
+        rctx.fillText(formatNumber(c.y), c.px - 16, c.py - 12);
+      }
+
+      const shouldLabelX =
+        maxPages <= 10 ||
+        index === 0 ||
+        index === coords.length - 1 ||
+        index % xLabelStep === 0;
+
+      if (shouldLabelX) {
+        rctx.fillStyle = "#94a3b8";
+        rctx.font = "11px sans-serif";
+        rctx.fillText(String(c.x), c.px - 6, h - padding + 18);
+      }
     });
+
+    const last = coords[coords.length - 1];
+    rctx.beginPath();
+    rctx.strokeStyle = "rgba(34,197,94,0.65)";
+    rctx.lineWidth = 1.5;
+    rctx.moveTo(last.px, h - padding);
+    rctx.lineTo(last.px, last.py);
+    rctx.stroke();
+
+    rctx.fillStyle = "#22c55e";
+    rctx.font = "12px sans-serif";
+    rctx.fillText("Final size", Math.max(last.px - 24, padding), last.py - 24);
   }
 
   function animateResults() {
