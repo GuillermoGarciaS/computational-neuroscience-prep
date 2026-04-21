@@ -462,150 +462,172 @@
     formulaResult.textContent = `${formatNumber(finalSize)} bytes`;
   }
 
-  function drawResultsChart(points, maxPages) {
-    const w = resultsCanvas.width;
-    const h = resultsCanvas.height;
-    const padding = 64;
-    const fixedMaxPages = 100;
+function drawResultsChart(points, maxPages) {
+  const w = resultsCanvas.width;
+  const h = resultsCanvas.height;
+  const padding = 64;
 
-    rctx.clearRect(0, 0, w, h);
+  // ===== Fixed axis ranges =====
+  const FIXED_MAX_X = 100;
+  const FIXED_MIN_Y = 0;
+  const FIXED_MAX_Y = 260000; 
+  // You can change this to 100000, 200000, 300000, etc.
 
-    const minY = 0;
-    const maxY = 260000;
+  rctx.clearRect(0, 0, w, h);
 
-    const bgGradient = rctx.createLinearGradient(0, 0, 0, h);
-    bgGradient.addColorStop(0, "rgba(17,24,39,0.95)");
-    bgGradient.addColorStop(1, "rgba(2,6,23,0.98)");
-    rctx.fillStyle = bgGradient;
-    rctx.fillRect(0, 0, w, h);
+  // Background
+  const bgGradient = rctx.createLinearGradient(0, 0, 0, h);
+  bgGradient.addColorStop(0, "rgba(17,24,39,0.95)");
+  bgGradient.addColorStop(1, "rgba(2,6,23,0.98)");
+  rctx.fillStyle = bgGradient;
+  rctx.fillRect(0, 0, w, h);
 
-    rctx.strokeStyle = "#1f2937";
-    rctx.lineWidth = 1;
-    rctx.fillStyle = "#94a3b8";
-    rctx.font = "12px sans-serif";
+  // ===== Grid + Y labels (fixed) =====
+  rctx.strokeStyle = "#1f2937";
+  rctx.lineWidth = 1;
+  rctx.fillStyle = "#94a3b8";
+  rctx.font = "12px sans-serif";
 
-    for (let i = 0; i <= 5; i++) {
-      const gy = padding + (i * (h - padding * 2)) / 5;
-      const yValue = Math.round(maxY - (i / 5) * (maxY - minY));
+  const yTicks = 5;
+  for (let i = 0; i <= yTicks; i++) {
+    const gy = padding + (i * (h - padding * 2)) / yTicks;
+    const yValue = Math.round(FIXED_MAX_Y - (i / yTicks) * (FIXED_MAX_Y - FIXED_MIN_Y));
 
-      rctx.beginPath();
-      rctx.moveTo(padding, gy);
-      rctx.lineTo(w - padding, gy);
-      rctx.stroke();
-
-      rctx.fillText(formatNumber(yValue), 8, gy + 4);
-    }
-
-    const xTicks = 11;
-
-    for (let i = 0; i < xTicks; i++) {
-      const ratio = xTicks === 1 ? 0 : i / (xTicks - 1);
-      const gx = padding + ratio * (w - padding * 2);
-
-      rctx.beginPath();
-      rctx.moveTo(gx, padding);
-      rctx.lineTo(gx, h - padding);
-      rctx.stroke();
-    }
-
-    rctx.strokeStyle = "#94a3b8";
-    rctx.lineWidth = 1.5;
     rctx.beginPath();
-    rctx.moveTo(padding, h - padding);
-    rctx.lineTo(w - padding, h - padding);
-    rctx.moveTo(padding, h - padding);
-    rctx.lineTo(padding, padding);
+    rctx.moveTo(padding, gy);
+    rctx.lineTo(w - padding, gy);
     rctx.stroke();
 
-    rctx.fillStyle = "#9ca3af";
-    rctx.font = "13px sans-serif";
-    rctx.fillText("Pages", w - padding - 8, h - 18);
-    rctx.fillText("Bytes", 18, padding - 14);
+    rctx.fillText(formatNumber(yValue), 8, gy + 4);
+  }
 
-    const coords = points.map(p => {
-      const px = padding + ((p.x - 1) / (fixedMaxPages - 1)) * (w - padding * 2);
-      const py = h - padding - ((p.y - minY) / (maxY - minY)) * (h - padding * 2);
-      return { ...p, px, py };
-    });
-
-    const areaGradient = rctx.createLinearGradient(0, padding, 0, h - padding);
-    areaGradient.addColorStop(0, "rgba(96,165,250,0.40)");
-    areaGradient.addColorStop(0.45, "rgba(56,189,248,0.18)");
-    areaGradient.addColorStop(1, "rgba(96,165,250,0.03)");
+  // ===== Grid + X labels (fixed: 0 to 100) =====
+  const xTicks = 10;
+  for (let i = 0; i <= xTicks; i++) {
+    const ratio = i / xTicks;
+    const gx = padding + ratio * (w - padding * 2);
+    const xValue = Math.round(ratio * FIXED_MAX_X);
 
     rctx.beginPath();
-    rctx.moveTo(coords[0].px, h - padding);
-    coords.forEach(c => rctx.lineTo(c.px, c.py));
-    rctx.lineTo(coords[coords.length - 1].px, h - padding);
-    rctx.closePath();
-    rctx.fillStyle = areaGradient;
+    rctx.moveTo(gx, padding);
+    rctx.lineTo(gx, h - padding);
+    rctx.stroke();
+
+    rctx.fillStyle = "#94a3b8";
+    rctx.font = "11px sans-serif";
+    rctx.fillText(String(xValue), gx - 8, h - padding + 18);
+  }
+
+  // ===== Axes =====
+  rctx.strokeStyle = "#94a3b8";
+  rctx.lineWidth = 1.5;
+  rctx.beginPath();
+  rctx.moveTo(padding, h - padding);
+  rctx.lineTo(w - padding, h - padding);
+  rctx.moveTo(padding, h - padding);
+  rctx.lineTo(padding, padding);
+  rctx.stroke();
+
+  rctx.fillStyle = "#9ca3af";
+  rctx.font = "13px sans-serif";
+  rctx.fillText("Bytes", 18, padding - 14);
+  rctx.fillText("Pages", w - padding - 8, h - 18);
+
+  // ===== Convert data points using FIXED axes =====
+  const coords = points.map(p => {
+    const px = padding + (p.x / FIXED_MAX_X) * (w - padding * 2);
+    const py = h - padding - ((p.y - FIXED_MIN_Y) / (FIXED_MAX_Y - FIXED_MIN_Y)) * (h - padding * 2);
+    return { ...p, px, py };
+  });
+
+  if (coords.length === 0) return;
+
+  // ===== Area fill =====
+  const areaGradient = rctx.createLinearGradient(0, padding, 0, h - padding);
+  areaGradient.addColorStop(0, "rgba(96,165,250,0.36)");
+  areaGradient.addColorStop(0.45, "rgba(56,189,248,0.14)");
+  areaGradient.addColorStop(1, "rgba(96,165,250,0.03)");
+
+  rctx.beginPath();
+  rctx.moveTo(coords[0].px, h - padding);
+  coords.forEach(c => rctx.lineTo(c.px, c.py));
+  rctx.lineTo(coords[coords.length - 1].px, h - padding);
+  rctx.closePath();
+  rctx.fillStyle = areaGradient;
+  rctx.fill();
+
+  // ===== Glow line =====
+  rctx.beginPath();
+  rctx.strokeStyle = "rgba(96,165,250,0.18)";
+  rctx.lineWidth = 10;
+  coords.forEach((c, i) => {
+    if (i === 0) rctx.moveTo(c.px, c.py);
+    else rctx.lineTo(c.px, c.py);
+  });
+  rctx.stroke();
+
+  // ===== Main line =====
+  rctx.beginPath();
+  rctx.strokeStyle = "#7dd3fc";
+  rctx.lineWidth = 3;
+  coords.forEach((c, i) => {
+    if (i === 0) rctx.moveTo(c.px, c.py);
+    else rctx.lineTo(c.px, c.py);
+  });
+  rctx.stroke();
+
+  // ===== Points =====
+  const pointRadius = maxPages <= 20 ? 4 : 2.6;
+  const glowRadius = maxPages <= 20 ? 10 : 5;
+
+  coords.forEach(c => {
+    rctx.beginPath();
+    rctx.fillStyle = "rgba(125,211,252,0.15)";
+    rctx.arc(c.px, c.py, glowRadius, 0, Math.PI * 2);
     rctx.fill();
 
     rctx.beginPath();
-    rctx.strokeStyle = "rgba(96,165,250,0.18)";
-    rctx.lineWidth = 10;
-    coords.forEach((c, i) => {
-      if (i === 0) rctx.moveTo(c.px, c.py);
-      else rctx.lineTo(c.px, c.py);
-    });
-    rctx.stroke();
+    rctx.fillStyle = "#8ad7ff";
+    rctx.arc(c.px, c.py, pointRadius, 0, Math.PI * 2);
+    rctx.fill();
+  });
 
-    rctx.beginPath();
-    rctx.strokeStyle = "#7dd3fc";
-    rctx.lineWidth = 3;
-    coords.forEach((c, i) => {
-      if (i === 0) rctx.moveTo(c.px, c.py);
-      else rctx.lineTo(c.px, c.py);
-    });
-    rctx.stroke();
+  // ===== Final point guide lines =====
+  const last = coords[coords.length - 1];
 
-    const pointRadius = maxPages <= 20 ? 4.5 : 2.5;
-    const glowRadius = maxPages <= 20 ? 12 : 6;
-    const showPointLabels = maxPages <= 15;
-    const xLabelStep = 10;
+  // Vertical line downward
+  rctx.beginPath();
+  rctx.strokeStyle = "rgba(34,197,94,0.45)";
+  rctx.lineWidth = 1.6;
+  rctx.setLineDash([6, 5]);
+  rctx.moveTo(last.px, last.py);
+  rctx.lineTo(last.px, h - padding);
+  rctx.stroke();
 
-    coords.forEach((c, index) => {
-      rctx.beginPath();
-      rctx.fillStyle = "rgba(125,211,252,0.18)";
-      rctx.arc(c.px, c.py, glowRadius, 0, Math.PI * 2);
-      rctx.fill();
+  // Horizontal line to the left
+  rctx.beginPath();
+  rctx.moveTo(last.px, last.py);
+  rctx.lineTo(padding, last.py);
+  rctx.stroke();
 
-      rctx.beginPath();
-      rctx.fillStyle = "#8ad7ff";
-      rctx.arc(c.px, c.py, pointRadius, 0, Math.PI * 2);
-      rctx.fill();
+  rctx.setLineDash([]);
 
-      if (showPointLabels) {
-        rctx.fillStyle = "#94a3b8";
-        rctx.font = "11px sans-serif";
-        rctx.fillText(formatNumber(c.y), c.px - 16, c.py - 12);
-      }
+  // Small highlight on final point
+  rctx.beginPath();
+  rctx.fillStyle = "rgba(34,197,94,0.18)";
+  rctx.arc(last.px, last.py, 12, 0, Math.PI * 2);
+  rctx.fill();
 
-      const shouldLabelX =
-        maxPages <= 10 ||
-        index === 0 ||
-        index === coords.length - 1 ||
-        index % xLabelStep === 0;
+  rctx.beginPath();
+  rctx.fillStyle = "#22c55e";
+  rctx.arc(last.px, last.py, 4.5, 0, Math.PI * 2);
+  rctx.fill();
 
-      if (shouldLabelX) {
-        rctx.fillStyle = "#94a3b8";
-        rctx.font = "11px sans-serif";
-        rctx.fillText(String(c.x), c.px - 6, h - padding + 18);
-      }
-    });
-
-    const last = coords[coords.length - 1];
-    rctx.beginPath();
-    rctx.strokeStyle = "rgba(34,197,94,0.65)";
-    rctx.lineWidth = 1.5;
-    rctx.moveTo(last.px, h - padding);
-    rctx.lineTo(last.px, last.py);
-    rctx.stroke();
-
-    rctx.fillStyle = "#22c55e";
-    rctx.font = "12px sans-serif";
-    rctx.fillText("Final size", Math.max(last.px - 24, padding), last.py - 24);
-  }
+  // Final label
+  rctx.fillStyle = "#22c55e";
+  rctx.font = "12px sans-serif";
+  rctx.fillText("Final size", Math.max(last.px - 24, padding), last.py - 24);
+}
 
   function animateResults() {
     let done = true;
