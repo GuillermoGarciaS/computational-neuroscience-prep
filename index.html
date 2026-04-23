@@ -26,7 +26,7 @@
       background:
         radial-gradient(circle at 15% 15%, rgba(108,168,255,0.16), transparent 24%),
         radial-gradient(circle at 85% 10%, rgba(138,215,255,0.08), transparent 22%),
-        linear-gradient(180deg, #07182f 0%, #08204a 45%, #061426 100%);
+        linear-gradient(180deg, #071224 0%, var(--bg) 45%, #05101f 100%);
       color: var(--text);
       line-height: 1.65;
       min-height: 100vh;
@@ -44,16 +44,6 @@
       mask-image: linear-gradient(to bottom, rgba(0,0,0,0.4), transparent 85%);
       pointer-events: none;
       z-index: 0;
-    }
-
-    #particleCanvas {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.75;
     }
 
     .glow-1, .glow-2 {
@@ -80,7 +70,7 @@
     a {
       color: var(--accent);
       text-decoration: none;
-      transition: color 0.18s ease, border-color 0.18s ease, background 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+      transition: color 0.18s ease, border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
     }
 
     a:hover { color: var(--accent-2); }
@@ -136,7 +126,7 @@
       padding: 4.25rem 0 1.5rem;
     }
 
-    .hero-card, .section-card, .mini-card, .hub-card, .group-shell {
+    .hero-card, .section-card, .mini-card {
       background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.03));
       border: 1px solid var(--border);
       border-radius: var(--radius);
@@ -145,7 +135,7 @@
       overflow: hidden;
     }
 
-    .hero-card::before, .section-card::before, .mini-card::before, .hub-card::before, .group-shell::before {
+    .hero-card::before, .section-card::before, .mini-card::before {
       content: "";
       position: absolute;
       inset: 0;
@@ -163,16 +153,8 @@
       font-size: 0.9rem;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      margin-bottom: 0.55rem;
+      margin-bottom: 1rem;
       font-weight: 700;
-    }
-
-    .hero-name {
-      font-size: 0.98rem;
-      color: rgba(245,247,251,0.86);
-      margin: 0 0 1.15rem;
-      letter-spacing: 0.02em;
-      font-weight: 500;
     }
 
     h1 {
@@ -208,148 +190,8 @@
       padding: 1.2rem;
     }
 
-    .hub-card {
-      padding: 1.35rem;
-    }
-
-    .hub-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 1rem;
-      flex-wrap: wrap;
-      margin-bottom: 1rem;
-    }
-
-    .hub-kicker {
-      font-size: 0.78rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--accent-2);
-      margin-bottom: 0.45rem;
-      font-weight: 700;
-    }
-
-    .hub-title {
-      margin: 0;
-      font-size: 1.25rem;
-      letter-spacing: -0.02em;
-    }
-
-    .hub-note {
-      color: var(--muted);
-      max-width: 62ch;
-      margin: 0;
-    }
-
-    .hub-chips {
-      display: flex;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-      margin-top: 0.75rem;
-    }
-
-    .chip {
-      border: 1px solid rgba(255,255,255,0.1);
-      background: rgba(255,255,255,0.04);
-      color: var(--text);
-      padding: 0.65rem 0.85rem;
-      border-radius: 999px;
-      font-size: 0.92rem;
-    }
-
-    .group-shell {
-      padding: 0.45rem;
-    }
-
-    details.group {
-      border-radius: 16px;
-      overflow: hidden;
-      background: rgba(255,255,255,0.02);
-    }
-
-    details.group[open] {
-      background: rgba(255,255,255,0.03);
-    }
-
-    summary.group-summary {
-      list-style: none;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1rem;
-      padding: 1rem 1rem 0.95rem;
-      border-radius: 16px;
-      transition: background 0.18s ease, border-color 0.18s ease;
-    }
-
-    summary.group-summary::-webkit-details-marker {
-      display: none;
-    }
-
-    summary.group-summary:hover {
-      background: rgba(255,255,255,0.04);
-    }
-
-    .group-meta {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      flex-wrap: wrap;
-    }
-
-    .group-title {
-      margin: 0;
-      font-size: 1.14rem;
-      letter-spacing: -0.02em;
-      color: var(--text);
-    }
-
-    .count-badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 2rem;
-      padding: 0.22rem 0.55rem;
-      border-radius: 999px;
-      background: rgba(108,168,255,0.16);
-      color: var(--accent-2);
-      font-size: 0.82rem;
-      font-weight: 700;
-      border: 1px solid rgba(108,168,255,0.18);
-    }
-
-    .group-desc {
-      margin: 0.35rem 0 0;
-      color: var(--muted);
-      font-size: 0.95rem;
-    }
-
-    .chevron {
-      width: 14px;
-      height: 14px;
-      border-right: 2px solid var(--muted);
-      border-bottom: 2px solid var(--muted);
-      transform: rotate(45deg);
-      transition: transform 0.2s ease, border-color 0.2s ease;
-      margin-right: 0.25rem;
-      flex: 0 0 auto;
-    }
-
-    details[open] .chevron {
-      transform: rotate(225deg);
-      border-color: var(--accent-2);
-    }
-
-    .group-content {
-      padding: 0 0.55rem 0.55rem;
-      display: grid;
-      gap: 0.85rem;
-    }
-
     .section-card {
-      padding: 1.1rem 1.2rem;
+      padding: 1.35rem;
       display: block;
       text-decoration: none;
       color: inherit;
@@ -359,7 +201,6 @@
       border-color: rgba(108,168,255,0.42);
       transform: translateY(-2px);
       background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.045));
-      box-shadow: 0 24px 50px rgba(0,0,0,0.28);
     }
 
     h2 {
@@ -383,6 +224,21 @@
       font-size: 0.95rem;
     }
 
+
+
+    .item-badge {
+      display: inline-flex;
+      margin-bottom: 0.75rem;
+      padding: 0.28rem 0.58rem;
+      border-radius: 999px;
+      border: 1px solid rgba(138, 215, 255, 0.22);
+      color: var(--accent-2);
+      background: rgba(138, 215, 255, 0.08);
+      font-size: 0.74rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
     footer {
       padding: 0 0 3rem;
       color: var(--muted);
@@ -397,27 +253,12 @@
 
     @media (max-width: 700px) {
       header.hero { padding-top: 3.2rem; }
-      .hero-card, .section-card, .mini-card, .hub-card, .group-shell { border-radius: 18px; }
+      .hero-card, .section-card, .mini-card { border-radius: 18px; }
       .hero-card { padding: 1.4rem; }
-      summary.group-summary {
-        align-items: flex-start;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      html { scroll-behavior: auto; }
-      * {
-        animation: none !important;
-        transition: none !important;
-      }
-      #particleCanvas {
-        opacity: 0.28;
-      }
     }
   </style>
 </head>
 <body>
-  <canvas id="particleCanvas" aria-hidden="true"></canvas>
   <div class="glow-1" aria-hidden="true"></div>
   <div class="glow-2" aria-hidden="true"></div>
 
@@ -438,10 +279,6 @@
           Computational Neuroscience Portfolio
         </div>
 
-        <p class="hero-name" data-en="Guillermo G. Sainz" data-es="Guillermo G. Sainz">
-          Guillermo G. Sainz
-        </p>
-
         <h1 data-en="From Entropy to Experience" data-es="De la Entropía a la Experiencia">
           From Entropy to Experience
         </h1>
@@ -451,7 +288,7 @@
           data-en="A long-term project of computational experiments on information, uncertainty, representation, and the limits of explaining subjective experience."
           data-es="Un proyecto a largo plazo de experimentos computacionales sobre información, incertidumbre, representación y los límites de explicar la experiencia subjetiva."
         >
-          A long-term project of computational experiments on information, uncertainty, representation, and the limits of explaining subjective experience.
+          A long-term portfolio of computational experiments on information, uncertainty, representation, and the limits of explaining subjective experience.
         </p>
       </div>
     </div>
@@ -495,168 +332,108 @@
         </div>
       </section>
 
-      <section class="hub-card">
-        <div class="hub-top">
-          <div>
-            <div class="hub-kicker" data-en="Navigation Hub" data-es="Centro de navegación">Navigation Hub</div>
-            <h2 class="hub-title" data-en="Explore by type of work" data-es="Explora por tipo de trabajo">Explore by type of work</h2>
-          </div>
-        </div>
+      <section class="section-card">
+        <h2 data-en="Experiments & Projects" data-es="Experimentos y Proyectos">Experiments & Projects</h2>
 
-        <p
-          class="hub-note"
-          data-en="The site is organized into experiments and projects. Experiments are smaller interactive studies; projects are broader syntheses of method, inference, or modeling."
-          data-es="El sitio está organizado en experimentos y proyectos. Los experimentos son estudios interactivos más pequeños; los proyectos son síntesis más amplias de método, inferencia o modelado."
-        >
-          The site is organized into experiments and projects. Experiments are smaller interactive studies; projects are broader syntheses of method, inference, or modeling.
-        </p>
-
-        <div class="hub-chips">
-          <div class="chip" data-en="Interactive pages" data-es="Páginas interactivas">Interactive pages</div>
-          <div class="chip" data-en="Research framing" data-es="Marco de investigación">Research framing</div>
-          <div class="chip" data-en="Limits and interpretation" data-es="Límites e interpretación">Limits and interpretation</div>
-        </div>
-      </section>
-
-      <section class="stack">
-
-        <div class="group-shell">
-          <details class="group" open>
-            <summary class="group-summary">
-              <div>
-                <div class="group-meta">
-                  <h2 class="group-title" data-en="Experiments" data-es="Experimentos">Experiments</h2>
-                  <span class="count-badge">5</span>
-                </div>
-                <p
-                  class="group-desc"
-                  data-en="Focused studies built around a narrower variable, result, or interactive model."
-                  data-es="Estudios enfocados construidos alrededor de una variable, resultado o modelo interactivo más acotado."
-                >
-                  Focused studies built around a narrower variable, result, or interactive model.
-                </p>
-              </div>
-              <span class="chevron" aria-hidden="true"></span>
-            </summary>
-
-            <div class="group-content">
-              <a href="experiment-1.html" class="section-card experiment-link">
+        <div class="stack">
+          <a href="experiment-1.html" class="section-card experiment-link">
+            <span class="item-badge" data-en="Interactive study" data-es="Estudio interactivo">Interactive study</span>
                 <h3 data-en="Experiment 1 — File Size, Structure, and Predictability" data-es="Experimento 1 — Tamaño de Archivo, Estructura y Predictibilidad">
-                  Experiment 1 — File Size, Structure, and Predictability
-                </h3>
-                <p
-                  class="small"
-                  data-en="An interactive first study of how text length becomes measurable structure, and why predictability should not be confused with meaning."
-                  data-es="Un primer estudio interactivo de cómo la longitud del texto se convierte en estructura medible, y por qué la predictibilidad no debe confundirse con significado."
-                >
-                  An interactive first study of how text length becomes measurable structure, and why predictability should not be confused with meaning.
-                </p>
-              </a>
+              Experiment 1 — File Size, Structure, and Predictability
+            </h3>
+            <p
+              class="small"
+              data-en="A first study in how file size, repetition, and predictability relate without collapsing into meaning."
+              data-es="Un primer estudio sobre cómo se relacionan el tamaño de archivo, la repetición y la predictibilidad sin reducirse al significado."
+            >
+              A first study in how file size, repetition, and predictability relate without collapsing into meaning.
+            </p>
+          </a>
 
-              <a href="experiment-2.html" class="section-card experiment-link">
+          <a href="experiment-2.html" class="section-card experiment-link">
+            <span class="item-badge" data-en="Interactive study" data-es="Estudio interactivo">Interactive study</span>
                 <h3 data-en="Experiment 2 — Noise, Speed, and Measurement" data-es="Experimento 2 — Ruido, Velocidad y Medición">
-                  Experiment 2 — Noise, Speed, and Measurement
-                </h3>
-                <p
-                  class="small"
-                  data-en="A comparison of measured performance under noise, variability, and changing technical conditions."
-                  data-es="Una comparación del rendimiento medido bajo ruido, variabilidad y condiciones técnicas cambiantes."
-                >
-                  A comparison of measured performance under noise, variability, and changing technical conditions.
-                </p>
-              </a>
+              Experiment 2 — Noise, Speed, and Measurement
+            </h3>
+            <p
+              class="small"
+              data-en="A comparison of measured performance under noise, variability, and changing technical conditions."
+              data-es="Una comparación del rendimiento medido bajo ruido, variabilidad y condiciones técnicas cambiantes."
+            >
+              A comparison of measured performance under noise, variability, and changing technical conditions.
+            </p>
+          </a>
 
-              <a href="experiment-3.html" class="section-card experiment-link">
+          <a href="experiment-3.html" class="section-card experiment-link">
+            <span class="item-badge" data-en="Interactive study" data-es="Estudio interactivo">Interactive study</span>
                 <h3 data-en="Experiment 3 — Variability Across Sources" data-es="Experimento 3 — Variabilidad Entre Fuentes">
-                  Experiment 3 — Variability Across Sources
-                </h3>
-                <p
-                  class="small"
-                  data-en="An analysis of whether variation across sources is random or reflects deeper structural differences."
-                  data-es="Un análisis de si la variación entre fuentes es aleatoria o refleja diferencias estructurales más profundas."
-                >
-                  An analysis of whether variation across sources is random or reflects deeper structural differences.
-                </p>
-              </a>
+              Experiment 3 — Variability Across Sources
+            </h3>
+            <p
+              class="small"
+              data-en="An analysis of whether variation across sources is random or reflects deeper structural differences."
+              data-es="Un análisis de si la variación entre fuentes es aleatoria o refleja diferencias estructurales más profundas."
+            >
+              An analysis of whether variation across sources is random or reflects deeper structural differences.
+            </p>
+          </a>
 
-              <a href="experiment-4.html" class="section-card experiment-link">
+          <a href="experiment-4.html" class="section-card experiment-link">
+            <span class="item-badge" data-en="Interactive study" data-es="Estudio interactivo">Interactive study</span>
                 <h3 data-en="Experiment 4 — Stability, Repetition, and Comparison" data-es="Experimento 4 — Estabilidad, Repetición y Comparación">
-                  Experiment 4 — Stability, Repetition, and Comparison
-                </h3>
-                <p
-                  class="small"
-                  data-en="A study of repeated measurements, stability through time, and the limits of comparing treatments."
-                  data-es="Un estudio de mediciones repetidas, estabilidad a través del tiempo y los límites de comparar tratamientos."
-                >
-                  A study of repeated measurements, stability through time, and the limits of comparing treatments.
-                </p>
-              </a>
+              Experiment 4 — Stability, Repetition, and Comparison
+            </h3>
+            <p
+              class="small"
+              data-en="A study of repeated measurements, stability through time, and the limits of comparing treatments."
+              data-es="Un estudio de mediciones repetidas, estabilidad a través del tiempo y los límites de comparar tratamientos."
+            >
+              A study of repeated measurements, stability through time, and the limits of comparing treatments.
+            </p>
+          </a>
 
-              <a href="experiment-5.html" class="section-card experiment-link">
+          <a href="experiment-5.html" class="section-card experiment-link">
+            <span class="item-badge" data-en="Interactive study" data-es="Estudio interactivo">Interactive study</span>
                 <h3 data-en="Experiment 5 — Procedures, Constraints, and Output" data-es="Experimento 5 — Procedimientos, Restricciones y Resultado">
-                  Experiment 5 — Procedures, Constraints, and Output
-                </h3>
-                <p
-                  class="small"
-                  data-en="An exploration of how different procedures and constraints change output form and efficiency."
-                  data-es="Una exploración de cómo distintos procedimientos y restricciones cambian la forma y la eficiencia del resultado."
-                >
-                  An exploration of how different procedures and constraints change output form and efficiency.
-                </p>
-              </a>
-            </div>
-          </details>
-        </div>
+              Experiment 5 — Procedures, Constraints, and Output
+            </h3>
+            <p
+              class="small"
+              data-en="An exploration of how different procedures and constraints change output form and efficiency."
+              data-es="Una exploración de cómo distintos procedimientos y restricciones cambian la forma y la eficiencia del resultado."
+            >
+              An exploration of how different procedures and constraints change output form and efficiency.
+            </p>
+          </a>
 
-        <div class="group-shell">
-          <details class="group">
-            <summary class="group-summary">
-              <div>
-                <div class="group-meta">
-                  <h2 class="group-title" data-en="Projects" data-es="Proyectos">Projects</h2>
-                  <span class="count-badge">2</span>
-                </div>
-                <p
-                  class="group-desc"
-                  data-en="Broader pages that connect methodology, inference, and explanation across multiple ideas."
-                  data-es="Páginas más amplias que conectan metodología, inferencia y explicación a través de múltiples ideas."
-                >
-                  Broader pages that connect methodology, inference, and explanation across multiple ideas.
-                </p>
-              </div>
-              <span class="chevron" aria-hidden="true"></span>
-            </summary>
-
-            <div class="group-content">
-              <a href="project-1.html" class="section-card experiment-link">
+          <a href="project-1.html" class="section-card experiment-link">
+            <span class="item-badge" data-en="Research synthesis" data-es="Síntesis de investigación">Research synthesis</span>
                 <h3 data-en="Project 1 — Experimental Design and Inference" data-es="Proyecto 1 — Diseño Experimental e Inferencia">
-                  Project 1 — Experimental Design and Inference
-                </h3>
-                <p
-                  class="small"
-                  data-en="A foundational review of experimental design, hypothesis testing, and what statistical inference can justify."
-                  data-es="Una revisión fundacional del diseño experimental, las pruebas de hipótesis y lo que la inferencia estadística puede justificar."
-                >
-                  A foundational review of experimental design, hypothesis testing, and what statistical inference can justify.
-                </p>
-              </a>
+              Project 1 — Experimental Design and Inference
+            </h3>
+            <p
+              class="small"
+              data-en="A foundational review of experimental design, hypothesis testing, and what statistical inference can justify."
+              data-es="Una revisión fundacional del diseño experimental, las pruebas de hipótesis y lo que la inferencia estadística puede justificar."
+            >
+              A foundational review of experimental design, hypothesis testing, and what statistical inference can justify.
+            </p>
+          </a>
 
-              <a href="project-2.html" class="section-card experiment-link">
+          <a href="project-2.html" class="section-card experiment-link">
+            <span class="item-badge" data-en="Research synthesis" data-es="Síntesis de investigación">Research synthesis</span>
                 <h3 data-en="Project 2 — Weather, Response Variables, and Model Limits" data-es="Proyecto 2 — Clima, Variables de Respuesta y Límites del Modelo">
-                  Project 2 — Weather, Response Variables, and Model Limits
-                </h3>
-                <p
-                  class="small"
-                  data-en="A model of precipitation as a response variable, used to examine prediction, factor choice, and explanatory limits."
-                  data-es="Un modelo de precipitación como variable de respuesta, usado para examinar predicción, elección de factores y límites explicativos."
-                >
-                  A model of precipitation as a response variable, used to examine prediction, factor choice, and explanatory limits.
-                </p>
-              </a>
-            </div>
-          </details>
+              Project 2 — Weather, Response Variables, and Model Limits
+            </h3>
+            <p
+              class="small"
+              data-en="A model of precipitation as a response variable, used to examine prediction, factor choice, and explanatory limits."
+              data-es="Un modelo de precipitación como variable de respuesta, usado para examinar predicción, elección de factores y límites explicativos."
+            >
+              A model of precipitation as a response variable, used to examine prediction, factor choice, and explanatory limits.
+            </p>
+          </a>
         </div>
-
       </section>
     </div>
   </main>
@@ -696,107 +473,6 @@
     });
 
     applyLanguage(currentLang);
-
-    const canvas = document.getElementById("particleCanvas");
-    const ctx = canvas.getContext("2d");
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    let particles = [];
-    let animationId;
-    let particleCount = Math.min(window.innerWidth < 700 ? 22 : 40, 42);
-
-    function resizeCanvas() {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = Math.floor(window.innerWidth * dpr);
-      canvas.height = Math.floor(window.innerHeight * dpr);
-      canvas.style.width = window.innerWidth + "px";
-      canvas.style.height = window.innerHeight + "px";
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    }
-
-    function randomBetween(min, max) {
-      return Math.random() * (max - min) + min;
-    }
-
-    function createParticles() {
-      particles = Array.from({ length: particleCount }, () => ({
-        x: randomBetween(0, window.innerWidth),
-        y: randomBetween(0, window.innerHeight),
-        r: randomBetween(0.7, 2.1),
-        vx: randomBetween(-0.28, 0.28),
-        vy: randomBetween(-0.18, 0.18),
-        a: randomBetween(0.14, 0.5)
-      }));
-    }
-
-    function drawParticles() {
-      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-
-      for (let i = 0; i < particles.length; i++) {
-        const p = particles[i];
-
-        p.x += p.vx;
-        p.y += p.vy;
-
-        if (p.x < -20) p.x = window.innerWidth + 20;
-        if (p.x > window.innerWidth + 20) p.x = -20;
-        if (p.y < -20) p.y = window.innerHeight + 20;
-        if (p.y > window.innerHeight + 20) p.y = -20;
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(180,220,255,${p.a})`;
-        ctx.fill();
-      }
-
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const p1 = particles[i];
-          const p2 = particles[j];
-          const dx = p1.x - p2.x;
-          const dy = p1.y - p2.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-
-          if (dist < 120) {
-            ctx.beginPath();
-            ctx.moveTo(p1.x, p1.y);
-            ctx.lineTo(p2.x, p2.y);
-            ctx.strokeStyle = `rgba(120,190,255,${0.075 * (1 - dist / 120)})`;
-            ctx.lineWidth = 1;
-            ctx.stroke();
-          }
-        }
-      }
-
-      animationId = requestAnimationFrame(drawParticles);
-    }
-
-    function drawStaticParticles() {
-      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-      for (const p of particles) {
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255,255,255,${Math.min(p.a, 0.22)})`;
-        ctx.fill();
-      }
-    }
-
-    function setupParticles() {
-      particleCount = Math.min(window.innerWidth < 700 ? 22 : 40, 42);
-      resizeCanvas();
-      createParticles();
-
-      if (animationId) cancelAnimationFrame(animationId);
-
-      if (reducedMotion) {
-        drawStaticParticles();
-      } else {
-        drawParticles();
-      }
-    }
-
-    window.addEventListener("resize", setupParticles);
-    setupParticles();
   </script>
 </body>
 </html>
