@@ -46,6 +46,16 @@
       z-index: 0;
     }
 
+    #particleCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.75;
+    }
+
     .glow-1, .glow-2 {
       position: fixed;
       pointer-events: none;
@@ -153,8 +163,16 @@
       font-size: 0.9rem;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      margin-bottom: 1rem;
+      margin-bottom: 0.55rem;
       font-weight: 700;
+    }
+
+    .hero-name {
+      font-size: 0.98rem;
+      color: rgba(245,247,251,0.86);
+      margin: 0 0 1.15rem;
+      letter-spacing: 0.02em;
+      font-weight: 500;
     }
 
     h1 {
@@ -385,9 +403,21 @@
         align-items: flex-start;
       }
     }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      * {
+        animation: none !important;
+        transition: none !important;
+      }
+      #particleCanvas {
+        opacity: 0.28;
+      }
+    }
   </style>
 </head>
 <body>
+  <canvas id="particleCanvas" aria-hidden="true"></canvas>
   <div class="glow-1" aria-hidden="true"></div>
   <div class="glow-2" aria-hidden="true"></div>
 
@@ -405,9 +435,12 @@
     <div class="container">
       <div class="hero-card">
         <div class="eyebrow" data-en="Computational Neuroscience Portfolio" data-es="Portafolio de Neurociencia Computacional">
-          <div class="eyebrow" data-en="Guillermo G. Sainz" data-es="Guillermo G. Sainz">
           Computational Neuroscience Portfolio
         </div>
+
+        <p class="hero-name" data-en="Guillermo G. Sainz" data-es="Guillermo G. Sainz">
+          Guillermo G. Sainz
+        </p>
 
         <h1 data-en="From Entropy to Experience" data-es="De la Entropía a la Experiencia">
           From Entropy to Experience
@@ -421,7 +454,6 @@
           A long-term project of computational experiments on information, uncertainty, representation, and the limits of explaining subjective experience.
         </p>
       </div>
-     </div>
     </div>
   </header>
 
@@ -433,8 +465,8 @@
           <h2 data-en="Core Question" data-es="Pregunta central">Core Question</h2>
           <p
             class="small"
-            data-en="To what extent can reducing entropy in computational systems explain structured representation and perception, and whether does it help to account for subjective experience?"
-            data-es="¿Hasta qué punto la reducción de entropía en sistemas computacionales puede explicar la representación estructurada y la percepción, y si logra dar cuenta de la experiencia subjetiva?"
+            data-en="To what extent can reducing entropy in computational systems explain structured representation and perception, and why does it fail to account for subjective experience?"
+            data-es="¿Hasta qué punto la reducción de entropía en sistemas computacionales puede explicar la representación estructurada y la percepción, y por qué no logra dar cuenta de la experiencia subjetiva?"
           >
             To what extent can reducing entropy in computational systems explain structured representation and perception, and why does it fail to account for subjective experience?
           </p>
@@ -664,6 +696,107 @@
     });
 
     applyLanguage(currentLang);
+
+    const canvas = document.getElementById("particleCanvas");
+    const ctx = canvas.getContext("2d");
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    let particles = [];
+    let animationId;
+    let particleCount = Math.min(window.innerWidth < 700 ? 22 : 40, 42);
+
+    function resizeCanvas() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.floor(window.innerWidth * dpr);
+      canvas.height = Math.floor(window.innerHeight * dpr);
+      canvas.style.width = window.innerWidth + "px";
+      canvas.style.height = window.innerHeight + "px";
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function randomBetween(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    function createParticles() {
+      particles = Array.from({ length: particleCount }, () => ({
+        x: randomBetween(0, window.innerWidth),
+        y: randomBetween(0, window.innerHeight),
+        r: randomBetween(0.7, 2.1),
+        vx: randomBetween(-0.12, 0.12),
+        vy: randomBetween(-0.08, 0.08),
+        a: randomBetween(0.14, 0.5)
+      }));
+    }
+
+    function drawParticles() {
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.x < -20) p.x = window.innerWidth + 20;
+        if (p.x > window.innerWidth + 20) p.x = -20;
+        if (p.y < -20) p.y = window.innerHeight + 20;
+        if (p.y > window.innerHeight + 20) p.y = -20;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${p.a})`;
+        ctx.fill();
+      }
+
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const p1 = particles[i];
+          const p2 = particles[j];
+          const dx = p1.x - p2.x;
+          const dy = p1.y - p2.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < 120) {
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.strokeStyle = `rgba(180,210,255,${0.05 * (1 - dist / 120)})`;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        }
+      }
+
+      animationId = requestAnimationFrame(drawParticles);
+    }
+
+    function drawStaticParticles() {
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      for (const p of particles) {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${Math.min(p.a, 0.22)})`;
+        ctx.fill();
+      }
+    }
+
+    function setupParticles() {
+      particleCount = Math.min(window.innerWidth < 700 ? 22 : 40, 42);
+      resizeCanvas();
+      createParticles();
+
+      if (animationId) cancelAnimationFrame(animationId);
+
+      if (reducedMotion) {
+        drawStaticParticles();
+      } else {
+        drawParticles();
+      }
+    }
+
+    window.addEventListener("resize", setupParticles);
+    setupParticles();
   </script>
 </body>
 </html>
