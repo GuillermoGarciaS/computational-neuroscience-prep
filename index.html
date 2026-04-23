@@ -26,7 +26,7 @@
       background:
         radial-gradient(circle at 15% 15%, rgba(108,168,255,0.16), transparent 24%),
         radial-gradient(circle at 85% 10%, rgba(138,215,255,0.08), transparent 22%),
-        linear-gradient(180deg, #071224 0%, var(--bg) 45%, #05101f 100%);
+        linear-gradient(180deg, #07182f 0%, #08204a 45%, #061426 100%);
       color: var(--text);
       line-height: 1.65;
       min-height: 100vh;
@@ -723,8 +723,8 @@
         x: randomBetween(0, window.innerWidth),
         y: randomBetween(0, window.innerHeight),
         r: randomBetween(0.7, 2.1),
-        vx: randomBetween(-0.12, 0.12),
-        vy: randomBetween(-0.08, 0.08),
+        vx: randomBetween(-0.28, 0.28),
+        vy: randomBetween(-0.18, 0.18),
         a: randomBetween(0.14, 0.5)
       }));
     }
@@ -745,7 +745,7 @@
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255,255,255,${p.a})`;
+        ctx.fillStyle = `rgba(180,220,255,${p.a})`;
         ctx.fill();
       }
 
@@ -761,7 +761,7 @@
             ctx.beginPath();
             ctx.moveTo(p1.x, p1.y);
             ctx.lineTo(p2.x, p2.y);
-            ctx.strokeStyle = `rgba(180,210,255,${0.05 * (1 - dist / 120)})`;
+            ctx.strokeStyle = `rgba(120,190,255,${0.075 * (1 - dist / 120)})`;
             ctx.lineWidth = 1;
             ctx.stroke();
           }
