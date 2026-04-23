@@ -34,6 +34,68 @@
       background: rgba(108, 168, 255, 0.28);
       color: white;
     }
+
+
+    :root {
+      --page-accent: #8ad7ff;
+      --page-accent-soft: rgba(138, 215, 255, 0.12);
+      --page-accent-border: rgba(138, 215, 255, 0.28);
+    }
+
+    body {
+      background:
+        radial-gradient(circle at 12% 8%, rgba(96, 165, 250, 0.08), transparent 26%),
+        radial-gradient(circle at 88% 22%, rgba(138, 215, 255, 0.06), transparent 24%),
+        #030712;
+    }
+
+    .reading-block { max-width: 68ch; }
+    .reading-block p { line-height: 1.9; }
+
+    .section-intro {
+      color: #cbd5e1;
+      font-size: 1.05rem;
+      line-height: 1.85;
+      max-width: 66ch;
+    }
+
+    .concept-card {
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      background:
+        linear-gradient(180deg, rgba(15, 23, 42, 0.92), rgba(15, 23, 42, 0.72)),
+        radial-gradient(circle at top left, var(--page-accent-soft), transparent 38%);
+      border-radius: 1.25rem;
+      padding: 1.4rem;
+    }
+
+    .concept-card-strong {
+      border-color: var(--page-accent-border);
+      background:
+        linear-gradient(180deg, rgba(15, 23, 42, 0.88), rgba(15, 23, 42, 0.68)),
+        radial-gradient(circle at top left, rgba(96, 165, 250, 0.18), transparent 42%);
+    }
+
+    .concept-card summary::-webkit-details-marker { display: none; }
+
+    .concept-kicker {
+      color: var(--page-accent);
+      font-size: 0.76rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 0.7rem;
+    }
+
+    .concept-title {
+      color: white;
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.45rem;
+    }
+
+    .readable-card p {
+      max-width: 68ch;
+      line-height: 1.9;
+    }
   </style>
 </head>
 
@@ -80,8 +142,8 @@
           <h2 class="text-2xl font-semibold mb-4" data-en="Introduction" data-es="Introducción">Introduction</h2>
 
           <div class="space-y-4">
-            <div class="rounded-2xl border border-gray-800 bg-gray-900/70 p-5">
-              <p class="text-xs uppercase tracking-[0.18em] text-blue-300 mb-2" data-en="Central question" data-es="Pregunta central">Central question</p>
+            <div class="concept-card">
+              <p class="concept-kicker" data-en="Central question" data-es="Pregunta central">Central question</p>
               <p
                 class="text-gray-300 leading-8"
                 data-en="How does increasing text length affect file size, and what can file size reveal about structure or predictability?"
@@ -91,19 +153,37 @@
               </p>
             </div>
 
-            <div class="rounded-2xl border border-gray-800 bg-gray-900/70 p-5">
-              <p class="text-xs uppercase tracking-[0.18em] text-blue-300 mb-2" data-en="Adaptation" data-es="Adaptación">Adaptation</p>
-              <p
-                class="text-gray-300 leading-8"
-                data-en="The original homework asks for ten text documents with increasing page counts, measurement of file size in bytes, calculation of differences between files, and a linear regression of size as a function of number of pages. This version preserves that statistical core, but reframes it as an interactive first study of storage growth, formal structure, predictability, and the distinction between measurable regularity and semantic meaning."
-                data-es="La tarea original pide diez documentos de texto con un número creciente de páginas, la medición del tamaño del archivo en bytes, el cálculo de diferencias entre archivos y una regresión lineal del tamaño como función del número de páginas. Esta versión conserva ese núcleo estadístico, pero lo replantea como un primer estudio interactivo sobre crecimiento de almacenamiento, estructura formal, predictibilidad y la distinción entre regularidad medible y significado semántico."
-              >
-                The original homework asks for ten text documents with increasing page counts, measurement of file size in bytes, calculation of differences between files, and a linear regression of size as a function of number of pages. This version preserves that statistical core, but reframes it as an interactive first study of storage growth, formal structure, predictability, and the distinction between measurable regularity and semantic meaning.
-              </p>
-            </div>
+            <details class="concept-card group">
+              <summary class="cursor-pointer list-none">
+                <p class="concept-kicker" data-en="Adaptation" data-es="Adaptación">Adaptation</p>
+                <h3 class="concept-title" data-en="From homework to experiment" data-es="De tarea a experimento">
+                  From homework to experiment
+                </h3>
+                <p
+                  class="text-gray-300 leading-8"
+                  data-en="This version keeps the statistical core of the assignment, but reframes it as an interactive study of structure, predictability, and measurement."
+                  data-es="Esta versión conserva el núcleo estadístico de la tarea, pero lo replantea como un estudio interactivo de estructura, predictibilidad y medición."
+                >
+                  This version keeps the statistical core of the assignment, but reframes it as an interactive study of structure, predictability, and measurement.
+                </p>
+                <p class="mt-3 text-sm text-blue-300" data-en="Open details ↓" data-es="Abrir detalles ↓">
+                  Open details ↓
+                </p>
+              </summary>
 
-            <div class="rounded-2xl border border-blue-900/40 bg-blue-950/20 p-5">
-              <p class="text-xs uppercase tracking-[0.18em] text-blue-300 mb-2" data-en="Why it matters" data-es="Por qué importa">Why it matters</p>
+              <div class="mt-5 border-t border-gray-800 pt-5">
+                <p
+                  class="text-gray-400 leading-8"
+                  data-en="The original homework asks for ten text documents with increasing page counts, measurement of file size in bytes, calculation of differences between files, and a linear regression of size as a function of number of pages. This longer detail is still available, but it no longer interrupts the first reading of the page."
+                  data-es="La tarea original pide diez documentos de texto con un número creciente de páginas, la medición del tamaño del archivo en bytes, el cálculo de diferencias entre archivos y una regresión lineal del tamaño como función del número de páginas. Este detalle más largo sigue disponible, pero ya no interrumpe la primera lectura de la página."
+                >
+                  The original homework asks for ten text documents with increasing page counts, measurement of file size in bytes, calculation of differences between files, and a linear regression of size as a function of number of pages. This longer detail is still available, but it no longer interrupts the first reading of the page.
+                </p>
+              </div>
+            </details>
+
+            <div class="concept-card concept-card-strong">
+              <p class="concept-kicker" data-en="Why it matters" data-es="Por qué importa">Why it matters</p>
               <p
                 class="text-gray-200 leading-8"
                 data-en="This experiment offers a minimal case of how structured input can become measurable output. It does not explain semantics, perception, or subjective experience, but it does help map a first layer of the broader project: how computational systems transform input into quantifiable form."
@@ -237,6 +317,19 @@
           </p>
 
           <div class="rounded-2xl border border-gray-800 bg-gray-900/70 p-5">
+            <div class="mb-5 rounded-2xl border border-blue-900/40 bg-blue-950/20 p-5">
+              <p class="concept-kicker" data-en="Before interacting" data-es="Antes de interactuar">
+                Before interacting
+              </p>
+              <p
+                class="text-gray-200 leading-8"
+                data-en="Try to predict what will change the final file size the most: page count, letters per page, or base file overhead."
+                data-es="Intenta predecir qué cambiará más el tamaño final del archivo: el número de páginas, las letras por página o el costo base del archivo."
+              >
+                Try to predict what will change the final file size the most: page count, letters per page, or base file overhead.
+              </p>
+            </div>
+
             <div class="grid gap-4 md:grid-cols-3 mb-5">
               <div>
                 <label class="text-sm text-gray-300 block mb-2">
@@ -282,6 +375,15 @@
               <p class="text-gray-200 leading-8">
                 <span data-en="Estimated result:" data-es="Resultado estimado:">Estimated result:</span>
                 <strong class="text-blue-300 font-mono" id="formulaResult">12,200 bytes</strong>
+              </p>
+            </div>
+
+            <div class="mt-5 rounded-2xl border border-gray-800 bg-gray-950/70 p-5">
+              <p class="concept-kicker" data-en="Current interpretation" data-es="Interpretación actual">
+                Current interpretation
+              </p>
+              <p id="modelInterpretation" class="text-gray-300 leading-8">
+                The model is showing a small file with relatively low storage growth.
               </p>
             </div>
 
@@ -433,6 +535,7 @@
 
   const formulaSubstitution = document.getElementById("formulaSubstitution");
   const formulaResult = document.getElementById("formulaResult");
+  const modelInterpretation = document.getElementById("modelInterpretation");
 
   let animatedPoints = [];
   let targetPoints = [];
@@ -467,18 +570,22 @@ function drawResultsChart(points, maxPages) {
   const h = resultsCanvas.height;
   const padding = 64;
 
+  // ===== Fixed axis ranges =====
   const FIXED_MAX_X = 100;
   const FIXED_MIN_Y = 0;
-  const FIXED_MAX_Y = 260000;
+  const FIXED_MAX_Y = 260000; 
+  // You can change this to 100000, 200000, 300000, etc.
 
   rctx.clearRect(0, 0, w, h);
 
+  // Background
   const bgGradient = rctx.createLinearGradient(0, 0, 0, h);
   bgGradient.addColorStop(0, "rgba(17,24,39,0.95)");
   bgGradient.addColorStop(1, "rgba(2,6,23,0.98)");
   rctx.fillStyle = bgGradient;
   rctx.fillRect(0, 0, w, h);
 
+  // ===== Grid + Y labels (fixed) =====
   rctx.strokeStyle = "#1f2937";
   rctx.lineWidth = 1;
   rctx.fillStyle = "#94a3b8";
@@ -497,6 +604,7 @@ function drawResultsChart(points, maxPages) {
     rctx.fillText(formatNumber(yValue), 8, gy + 4);
   }
 
+  // ===== Grid + X labels (fixed: 0 to 100) =====
   const xTicks = 10;
   for (let i = 0; i <= xTicks; i++) {
     const ratio = i / xTicks;
@@ -513,6 +621,7 @@ function drawResultsChart(points, maxPages) {
     rctx.fillText(String(xValue), gx - 8, h - padding + 18);
   }
 
+  // ===== Axes =====
   rctx.strokeStyle = "#94a3b8";
   rctx.lineWidth = 1.5;
   rctx.beginPath();
@@ -527,6 +636,7 @@ function drawResultsChart(points, maxPages) {
   rctx.fillText("Bytes", 18, padding - 14);
   rctx.fillText("Pages", w - padding - 8, h - 18);
 
+  // ===== Convert data points using FIXED axes =====
   const coords = points.map(p => {
     const px = padding + (p.x / FIXED_MAX_X) * (w - padding * 2);
     const py = h - padding - ((p.y - FIXED_MIN_Y) / (FIXED_MAX_Y - FIXED_MIN_Y)) * (h - padding * 2);
@@ -535,6 +645,7 @@ function drawResultsChart(points, maxPages) {
 
   if (coords.length === 0) return;
 
+  // ===== Area fill =====
   const areaGradient = rctx.createLinearGradient(0, padding, 0, h - padding);
   areaGradient.addColorStop(0, "rgba(96,165,250,0.36)");
   areaGradient.addColorStop(0.45, "rgba(56,189,248,0.14)");
@@ -548,6 +659,7 @@ function drawResultsChart(points, maxPages) {
   rctx.fillStyle = areaGradient;
   rctx.fill();
 
+  // ===== Glow line =====
   rctx.beginPath();
   rctx.strokeStyle = "rgba(96,165,250,0.18)";
   rctx.lineWidth = 10;
@@ -557,6 +669,7 @@ function drawResultsChart(points, maxPages) {
   });
   rctx.stroke();
 
+  // ===== Main line =====
   rctx.beginPath();
   rctx.strokeStyle = "#7dd3fc";
   rctx.lineWidth = 3;
@@ -566,6 +679,7 @@ function drawResultsChart(points, maxPages) {
   });
   rctx.stroke();
 
+  // ===== Points =====
   const pointRadius = maxPages <= 20 ? 4 : 2.6;
   const glowRadius = maxPages <= 20 ? 10 : 5;
 
@@ -581,8 +695,10 @@ function drawResultsChart(points, maxPages) {
     rctx.fill();
   });
 
+  // ===== Final point guide lines =====
   const last = coords[coords.length - 1];
 
+  // Vertical line downward
   rctx.beginPath();
   rctx.strokeStyle = "rgba(34,197,94,0.45)";
   rctx.lineWidth = 1.6;
@@ -591,6 +707,7 @@ function drawResultsChart(points, maxPages) {
   rctx.lineTo(last.px, h - padding);
   rctx.stroke();
 
+  // Horizontal line to the left
   rctx.beginPath();
   rctx.moveTo(last.px, last.py);
   rctx.lineTo(padding, last.py);
@@ -598,6 +715,7 @@ function drawResultsChart(points, maxPages) {
 
   rctx.setLineDash([]);
 
+  // Small highlight on final point
   rctx.beginPath();
   rctx.fillStyle = "rgba(34,197,94,0.18)";
   rctx.arc(last.px, last.py, 12, 0, Math.PI * 2);
@@ -608,6 +726,7 @@ function drawResultsChart(points, maxPages) {
   rctx.arc(last.px, last.py, 4.5, 0, Math.PI * 2);
   rctx.fill();
 
+  // Final label
   rctx.fillStyle = "#22c55e";
   rctx.font = "12px sans-serif";
   rctx.fillText("Final size", Math.max(last.px - 24, padding), last.py - 24);
@@ -634,6 +753,31 @@ function drawResultsChart(points, maxPages) {
     }
   }
 
+
+  function updateModelInterpretation(maxPages, lettersPerPage, baseOverhead) {
+    if (!modelInterpretation) return;
+
+    const finalSize = baseOverhead + (lettersPerPage * maxPages);
+
+    if (currentLang === "en") {
+      if (finalSize < 50000) {
+        modelInterpretation.textContent = "The model is showing a small file with relatively low storage growth. The relationship is easy to predict because the input remains simple and controlled.";
+      } else if (finalSize < 160000) {
+        modelInterpretation.textContent = "The model is showing moderate growth: the structure is still predictable, but the output becomes visibly larger as input scale increases.";
+      } else {
+        modelInterpretation.textContent = "The model is showing strong growth: small changes in input scale produce a much larger measurable output, even though this still says nothing by itself about meaning.";
+      }
+    } else {
+      if (finalSize < 50000) {
+        modelInterpretation.textContent = "El modelo muestra un archivo pequeño con crecimiento de almacenamiento relativamente bajo. La relación es fácil de predecir porque la entrada sigue siendo simple y controlada.";
+      } else if (finalSize < 160000) {
+        modelInterpretation.textContent = "El modelo muestra un crecimiento moderado: la estructura sigue siendo predecible, pero la salida se vuelve visiblemente más grande conforme aumenta la escala de entrada.";
+      } else {
+        modelInterpretation.textContent = "El modelo muestra un crecimiento fuerte: pequeños cambios en la escala de entrada producen una salida medible mucho mayor, aunque esto por sí solo todavía no dice nada sobre significado.";
+      }
+    }
+  }
+
   function updateResults() {
     const maxPages = parseInt(pagesSlider.value, 10);
     const lettersPerPage = parseInt(lettersSlider.value, 10);
@@ -644,6 +788,7 @@ function drawResultsChart(points, maxPages) {
     baseValue.textContent = baseOverhead;
 
     updateFormula(maxPages, lettersPerPage, baseOverhead);
+    updateModelInterpretation(maxPages, lettersPerPage, baseOverhead);
 
     targetPoints = buildResultPoints(maxPages, lettersPerPage, baseOverhead);
 
@@ -751,6 +896,14 @@ function drawResultsChart(points, maxPages) {
     langToggle.textContent = lang === "en" ? "ES" : "EN";
     localStorage.setItem("siteLang", lang);
     currentLang = lang;
+
+    if (pagesSlider && lettersSlider && baseSlider) {
+      updateModelInterpretation(
+        parseInt(pagesSlider.value, 10),
+        parseInt(lettersSlider.value, 10),
+        parseInt(baseSlider.value, 10)
+      );
+    }
   }
 
   pagesSlider.addEventListener("input", updateResults);
