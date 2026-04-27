@@ -210,6 +210,25 @@
       color: #bae6fd;
     }
 
+    .term-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      line-height: 1.8;
+    }
+
+    .term-pill {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid rgba(138, 215, 255, 0.18);
+      background: rgba(14, 165, 233, 0.08);
+      border-radius: 0.8rem;
+      padding: 0.4rem 0.55rem;
+      color: #dbeafe;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 0.82rem;
+    }
+
     .bit-ladder {
       display: grid;
       grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -229,25 +248,6 @@
       border-color: rgba(138, 215, 255, 0.55);
       background: rgba(14, 165, 233, 0.13);
       color: white;
-    }
-
-    .term-strip {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.45rem;
-      line-height: 1.8;
-    }
-
-    .term-pill {
-      display: inline-flex;
-      align-items: center;
-      border: 1px solid rgba(138, 215, 255, 0.18);
-      background: rgba(14, 165, 233, 0.08);
-      border-radius: 0.8rem;
-      padding: 0.4rem 0.55rem;
-      color: #dbeafe;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-      font-size: 0.82rem;
     }
 
     .insight-grid {
@@ -305,16 +305,6 @@
       background: rgba(15, 23, 42, 0.45);
     }
 
-    @media (max-width: 768px) {
-      .insight-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .choice-grid {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-      }
-    }
-
     .mini-table {
       width: 100%;
       border-collapse: collapse;
@@ -335,6 +325,12 @@
       text-transform: uppercase;
       font-weight: 700;
     }
+
+    @media (max-width: 768px) {
+      .insight-grid { grid-template-columns: 1fr; }
+      .choice-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    }
+
   </style>
 </head>
 
@@ -531,7 +527,6 @@
                 <div class="bit-step" data-bit-step="4"><strong>4</strong><br><span data-en="bits" data-es="bits">bits</span><br><span class="text-xs">16</span></div>
                 <div class="bit-step" data-bit-step="5"><strong>5</strong><br><span data-en="bits" data-es="bits">bits</span><br><span class="text-xs">32</span></div>
               </div>
-              <canvas id="bitsCanvas" width="820" height="270" aria-label="Bits meaning visualization"></canvas>
               <p id="bitsNote" class="mt-4 text-sm text-gray-400 leading-7"></p>
             </div>
           </div>
@@ -605,12 +600,12 @@
   const formulaSummary = document.getElementById("formulaSummary");
   const contributionLine = document.getElementById("contributionLine");
   const contributionRows = document.getElementById("contributionRows");
+  const expandedFormula = document.getElementById("expandedFormula");
+  const formulaTotal = document.getElementById("formulaTotal");
   const formulaTextA = document.getElementById("formulaTextA");
   const formulaTextB = document.getElementById("formulaTextB");
   const bitsSummary = document.getElementById("bitsSummary");
   const bitsNote = document.getElementById("bitsNote");
-  const expandedFormula = document.getElementById("expandedFormula");
-  const formulaTotal = document.getElementById("formulaTotal");
   const equivalentChoicesEl = document.getElementById("equivalentChoices");
   const questionsValue = document.getElementById("questionsValue");
   const messageBitsValue = document.getElementById("messageBitsValue");
@@ -619,8 +614,6 @@
   const choiceGridNote = document.getElementById("choiceGridNote");
   const canvas = document.getElementById("entropyCanvas");
   const ctx = canvas.getContext("2d");
-  const bitsCanvas = document.getElementById("bitsCanvas");
-  const bitsCtx = bitsCanvas.getContext("2d");
   const langToggle = document.getElementById("langToggle");
 
   let currentLang = localStorage.getItem("siteLang") || "en";
@@ -723,8 +716,8 @@
 
   function displaySymbol(symbol) {
     if (symbol === " ") return "space";
-    if (symbol === "
-") return "\n";
+    if (symbol === "\n") return "\\n";
+    if (symbol === "\t") return "\\t";
     if (symbol.length > 12) return symbol.slice(0, 12) + "…";
     return symbol;
   }
@@ -733,148 +726,6 @@
     return Math.pow(2, bits);
   }
 
-  function drawBitsChart(aEntropy, bEntropy) {
-    const w = bitsCanvas.width;
-    const h = bitsCanvas.height;
-    const padding = 44;
-    const maxBits = Math.max(1, aEntropy, bEntropy, 5);
-    const maxChoices = Math.pow(2, maxBits);
-
-    bitsCtx.clearRect(0, 0, w, h);
-    bitsCtx.strokeStyle = "rgba(148, 163, 184, 0.18)";
-    bitsCtx.lineWidth = 1;
-    bitsCtx.font = "13px sans-serif";
-    bitsCtx.fillStyle = "#94a3b8";
-
-    for (let i = 0; i <= 4; i++) {
-      const y = padding + (i * (h - padding * 2)) / 4;
-      bitsCtx.beginPath();
-      bitsCtx.moveTo(padding, y);
-      bitsCtx.lineTo(w - padding, y);
-      bitsCtx.stroke();
-    }
-
-    const baseY = h - padding;
-    const areaW = w - padding * 2;
-    const barW = 110;
-    const ax = padding + areaW * 0.28 - barW / 2;
-    const bx = padding + areaW * 0.72 - barW / 2;
-
-    function heightFor(bits) {
-      const choices = Math.pow(2, bits);
-      return (choices / maxChoices) * (h - padding * 2);
-    }
-
-    const aH = heightFor(aEntropy);
-    const bH = heightFor(bEntropy);
-
-    const gradA = bitsCtx.createLinearGradient(0, baseY - aH, 0, baseY);
-    gradA.addColorStop(0, "rgba(138, 215, 255, 0.95)");
-    gradA.addColorStop(1, "rgba(96, 165, 250, 0.35)");
-    const gradB = bitsCtx.createLinearGradient(0, baseY - bH, 0, baseY);
-    gradB.addColorStop(0, "rgba(167, 139, 250, 0.95)");
-    gradB.addColorStop(1, "rgba(96, 165, 250, 0.30)");
-
-    bitsCtx.fillStyle = gradA;
-    bitsCtx.fillRect(ax, baseY - aH, barW, aH);
-    bitsCtx.fillStyle = gradB;
-    bitsCtx.fillRect(bx, baseY - bH, barW, bH);
-
-    bitsCtx.fillStyle = "#e0f2fe";
-    bitsCtx.font = "14px sans-serif";
-    bitsCtx.fillText(`A ≈ ${effectiveChoices(aEntropy).toFixed(1)} choices`, ax - 8, baseY - aH - 12);
-    bitsCtx.fillText(`B ≈ ${effectiveChoices(bEntropy).toFixed(1)} choices`, bx - 8, baseY - bH - 12);
-    bitsCtx.fillStyle = "#cbd5e1";
-    bitsCtx.fillText("Text A", ax + 31, baseY + 27);
-    bitsCtx.fillText("Text B", bx + 31, baseY + 27);
-    bitsCtx.fillStyle = "#94a3b8";
-    bitsCtx.fillText("Effective alternatives per symbol: 2ᴴ", w - 255, 26);
-  }
-
-  function updateFormulaPanel(tokensA, tokensB, hA, hB) {
-    const tokens = formulaFocus === "A" ? tokensA : tokensB;
-    const entropyValue = formulaFocus === "A" ? hA : hB;
-    const details = entropyDetails(tokens);
-    const topRows = details.rows.slice(0, 6);
-    const visibleTerms = details.rows.slice(0, 5);
-    const omittedTerms = Math.max(0, details.rows.length - visibleTerms.length);
-    const example = topRows[0];
-
-    formulaTextA.classList.toggle("active", formulaFocus === "A");
-    formulaTextB.classList.toggle("active", formulaFocus === "B");
-
-    if (currentLang === "en") {
-      formulaSummary.textContent = `For Text ${formulaFocus}, the formula adds ${details.rows.length} symbol contributions. Together they produce H(X) = ${entropyValue.toFixed(3)} bits per ${currentMode === "words" ? "word" : currentMode === "bigrams" ? "bigram" : "character"}.`;
-    } else {
-      formulaSummary.textContent = `Para el Texto ${formulaFocus}, la fórmula suma ${details.rows.length} contribuciones de símbolos. Juntas producen H(X) = ${entropyValue.toFixed(3)} bits por ${currentMode === "words" ? "palabra" : currentMode === "bigrams" ? "bigrama" : "carácter"}.`;
-    }
-
-    if (!example) {
-      contributionLine.textContent = currentLang === "en" ? "Add text to see a live contribution." : "Agrega texto para ver una contribución en vivo.";
-      contributionRows.innerHTML = "";
-      expandedFormula.innerHTML = "";
-      formulaTotal.textContent = currentLang === "en" ? "Once the text has symbols, each term p(x)·(-log₂p(x)) contributes a small amount to the final entropy." : "Una vez que el texto tenga símbolos, cada término p(x)·(-log₂p(x)) aporta una pequeña cantidad a la entropía final.";
-      return;
-    }
-
-    const sx = displaySymbol(example.symbol);
-    contributionLine.innerHTML = `<span class="formula-token">${sx}</span> &nbsp; p(x)=${example.probability.toFixed(3)} → -log₂(p)=${example.surprise.toFixed(3)} → p·surprise=${example.weighted.toFixed(3)}`;
-
-    contributionRows.innerHTML = topRows.map(row => `
-      <tr>
-        <td><span class="formula-token">${displaySymbol(row.symbol)}</span></td>
-        <td>${row.probability.toFixed(3)}</td>
-        <td>${row.surprise.toFixed(3)}</td>
-        <td>${row.weighted.toFixed(3)}</td>
-      </tr>
-    `).join("");
-
-    expandedFormula.innerHTML = visibleTerms.map(row => `
-      <span class="term-pill">(${row.probability.toFixed(3)} × ${row.surprise.toFixed(3)})</span>
-    `).join("") + (omittedTerms ? `<span class="term-pill">… + ${omittedTerms} more</span>` : "");
-
-    if (currentLang === "en") {
-      formulaTotal.textContent = `Read it like this: each term is one symbol's probability multiplied by its surprise. Add those weighted surprises and you get H(X) ≈ ${entropyValue.toFixed(3)}.`;
-    } else {
-      formulaTotal.textContent = `Léelo así: cada término es la probabilidad de un símbolo multiplicada por su sorpresa. Al sumar esas sorpresas ponderadas obtienes H(X) ≈ ${entropyValue.toFixed(3)}.`;
-    }
-  }
-
-  function updateBitsPanel(hA, hB, tokensA, tokensB) {
-    const focusEntropy = formulaFocus === "A" ? hA : hB;
-    const focusTokens = formulaFocus === "A" ? tokensA : tokensB;
-    const choices = effectiveChoices(focusEntropy);
-    const rounded = Math.max(1, Math.min(5, Math.round(focusEntropy)));
-    const totalBits = focusEntropy * focusTokens.length;
-    const approxBytes = totalBits / 8;
-    const displayChoices = Math.max(2, Math.min(24, Math.round(choices)));
-
-    document.querySelectorAll("[data-bit-step]").forEach(step => {
-      const n = Number(step.dataset.bitStep);
-      step.classList.toggle("active", n <= rounded);
-    });
-
-    equivalentChoicesEl.textContent = `${choices.toFixed(1)} ${currentLang === "en" ? "choices / symbol" : "opciones / símbolo"}`;
-    questionsValue.textContent = `${focusEntropy.toFixed(2)} ${currentLang === "en" ? "questions" : "preguntas"}`;
-    messageBitsValue.textContent = `${totalBits.toFixed(1)} ${currentLang === "en" ? "bits" : "bits"}`;
-    messageBytesValue.textContent = `${approxBytes.toFixed(1)} ${currentLang === "en" ? "bytes" : "bytes"}`;
-
-    choiceGrid.innerHTML = Array.from({ length: displayChoices }, (_, i) => `<div class="choice-dot">${i + 1}</div>`).join("") + (choices > displayChoices ? `<div class="choice-dot faded">…</div>` : "");
-
-    if (currentLang === "en") {
-      bitsSummary.textContent = `A value of ${focusEntropy.toFixed(3)} bits means the selected text behaves roughly like choosing among ${choices.toFixed(1)} equally likely alternatives per symbol. This is not total meaning; it is average uncertainty.`;
-      bitsNote.textContent = "Why 2ᴴ? Because one bit splits possibilities in two. Two bits split them into four. Three bits split them into eight. Entropy generalizes that idea to uneven probabilities.";
-      choiceGridNote.textContent = `If every symbol were perfectly balanced, about ${choices.toFixed(1)} equally likely options would create the same uncertainty. For the current sample of ${focusTokens.length} analyzed ${currentMode === "words" ? "tokens" : currentMode === "bigrams" ? "bigrams" : "characters"}, that is about ${totalBits.toFixed(1)} bits in total.`;
-    } else {
-      bitsSummary.textContent = `Un valor de ${focusEntropy.toFixed(3)} bits significa que el texto seleccionado se comporta aproximadamente como elegir entre ${choices.toFixed(1)} alternativas igualmente probables por símbolo. No es significado total; es incertidumbre promedio.`;
-      bitsNote.textContent = "¿Por qué 2ᴴ? Porque un bit divide las posibilidades en dos. Dos bits las dividen en cuatro. Tres bits en ocho. La entropía generaliza esa idea para probabilidades desiguales.";
-      choiceGridNote.textContent = `Si cada símbolo estuviera perfectamente balanceado, unas ${choices.toFixed(1)} opciones igualmente probables producirían la misma incertidumbre. Para la muestra actual de ${focusTokens.length} ${currentMode === "words" ? "tokens" : currentMode === "bigrams" ? "bigramas" : "caracteres"} analizados, eso equivale a unos ${totalBits.toFixed(1)} bits en total.`;
-    }
-
-    drawBitsChart(hA, hB);
-  }
-
-
   function drawChart(aEntropy, bEntropy, aUnique, bUnique) {
     const w = canvas.width;
     const h = canvas.height;
@@ -882,7 +733,6 @@
     const maxValue = Math.max(1, aEntropy, bEntropy) * 1.22;
 
     ctx.clearRect(0, 0, w, h);
-
     ctx.strokeStyle = "rgba(148, 163, 184, 0.20)";
     ctx.lineWidth = 1;
     ctx.font = "13px sans-serif";
@@ -908,7 +758,6 @@
     const gradA = ctx.createLinearGradient(0, baseY - aHeight, 0, baseY);
     gradA.addColorStop(0, "rgba(138, 215, 255, 0.95)");
     gradA.addColorStop(1, "rgba(96, 165, 250, 0.42)");
-
     const gradB = ctx.createLinearGradient(0, baseY - bHeight, 0, baseY);
     gradB.addColorStop(0, "rgba(167, 139, 250, 0.95)");
     gradB.addColorStop(1, "rgba(96, 165, 250, 0.32)");
@@ -922,16 +771,90 @@
     ctx.font = "15px sans-serif";
     ctx.fillText("Text A", ax + 30, baseY + 28);
     ctx.fillText("Text B", bx + 30, baseY + 28);
-
     ctx.fillStyle = "#cbd5e1";
     ctx.font = "13px sans-serif";
     ctx.fillText(`${aEntropy.toFixed(3)} bits`, ax + 18, baseY - aHeight - 14);
     ctx.fillText(`${bEntropy.toFixed(3)} bits`, bx + 18, baseY - bHeight - 14);
-
     ctx.fillStyle = "#94a3b8";
     ctx.fillText(`unique: ${aUnique}`, ax + 20, baseY + 48);
     ctx.fillText(`unique: ${bUnique}`, bx + 20, baseY + 48);
     ctx.fillText("Entropy comparison", w - 185, 28);
+  }
+
+  function updateFormulaPanel(tokensA, tokensB, hA, hB) {
+    const tokens = formulaFocus === "A" ? tokensA : tokensB;
+    const entropyValue = formulaFocus === "A" ? hA : hB;
+    const details = entropyDetails(tokens);
+    const topRows = details.rows.slice(0, 6);
+    const visibleTerms = details.rows.slice(0, 5);
+    const omittedTerms = Math.max(0, details.rows.length - visibleTerms.length);
+    const example = topRows[0];
+
+    formulaTextA.classList.toggle("active", formulaFocus === "A");
+    formulaTextB.classList.toggle("active", formulaFocus === "B");
+
+    formulaSummary.textContent = currentLang === "en"
+      ? `For Text ${formulaFocus}, the formula adds ${details.rows.length} symbol contributions. Together they produce H(X) = ${entropyValue.toFixed(3)} bits per ${currentMode === "words" ? "word" : currentMode === "bigrams" ? "bigram" : "character"}.`
+      : `Para el Texto ${formulaFocus}, la fórmula suma ${details.rows.length} contribuciones de símbolos. Juntas producen H(X) = ${entropyValue.toFixed(3)} bits por ${currentMode === "words" ? "palabra" : currentMode === "bigrams" ? "bigrama" : "carácter"}.`;
+
+    if (!example) {
+      contributionLine.textContent = currentLang === "en" ? "Add text to see a live contribution." : "Agrega texto para ver una contribución en vivo.";
+      contributionRows.innerHTML = "";
+      expandedFormula.innerHTML = "";
+      formulaTotal.textContent = "";
+      return;
+    }
+
+    contributionLine.innerHTML = `<span class="formula-token">${displaySymbol(example.symbol)}</span> &nbsp; p(x)=${example.probability.toFixed(3)} → -log₂(p)=${example.surprise.toFixed(3)} → p·surprise=${example.weighted.toFixed(3)}`;
+
+    contributionRows.innerHTML = topRows.map(row => `
+      <tr>
+        <td><span class="formula-token">${displaySymbol(row.symbol)}</span></td>
+        <td>${row.probability.toFixed(3)}</td>
+        <td>${row.surprise.toFixed(3)}</td>
+        <td>${row.weighted.toFixed(3)}</td>
+      </tr>
+    `).join("");
+
+    expandedFormula.innerHTML = visibleTerms.map(row => `
+      <span class="term-pill">(${row.probability.toFixed(3)} × ${row.surprise.toFixed(3)})</span>
+    `).join("") + (omittedTerms ? `<span class="term-pill">… + ${omittedTerms} more</span>` : "");
+
+    formulaTotal.textContent = currentLang === "en"
+      ? `Each term is one symbol's probability multiplied by its surprise. Add those weighted surprises and you get H(X) ≈ ${entropyValue.toFixed(3)}.`
+      : `Cada término es la probabilidad de un símbolo multiplicada por su sorpresa. Al sumar esas sorpresas ponderadas obtienes H(X) ≈ ${entropyValue.toFixed(3)}.`;
+  }
+
+  function updateBitsPanel(hA, hB, tokensA, tokensB) {
+    const focusEntropy = formulaFocus === "A" ? hA : hB;
+    const focusTokens = formulaFocus === "A" ? tokensA : tokensB;
+    const choices = effectiveChoices(focusEntropy);
+    const rounded = Math.max(1, Math.min(5, Math.round(focusEntropy)));
+    const totalBits = focusEntropy * focusTokens.length;
+    const approxBytes = totalBits / 8;
+    const displayChoices = Math.max(2, Math.min(24, Math.round(choices)));
+
+    document.querySelectorAll("[data-bit-step]").forEach(step => {
+      const n = Number(step.dataset.bitStep);
+      step.classList.toggle("active", n <= rounded);
+    });
+
+    equivalentChoicesEl.textContent = `${choices.toFixed(1)} ${currentLang === "en" ? "choices / symbol" : "opciones / símbolo"}`;
+    questionsValue.textContent = `${focusEntropy.toFixed(2)} ${currentLang === "en" ? "questions" : "preguntas"}`;
+    messageBitsValue.textContent = `${totalBits.toFixed(1)} bits`;
+    messageBytesValue.textContent = `${approxBytes.toFixed(1)} bytes`;
+
+    choiceGrid.innerHTML = Array.from({ length: displayChoices }, (_, i) => `<div class="choice-dot">${i + 1}</div>`).join("") + (choices > displayChoices ? `<div class="choice-dot faded">…</div>` : "");
+
+    if (currentLang === "en") {
+      bitsSummary.textContent = `A value of ${focusEntropy.toFixed(3)} bits means the selected text behaves roughly like choosing among ${choices.toFixed(1)} equally likely alternatives per symbol. This is not total meaning; it is average uncertainty.`;
+      bitsNote.textContent = "Why 2ᴴ? Because one bit splits possibilities in two. Two bits split them into four. Three bits split them into eight. Entropy generalizes that idea to uneven probabilities.";
+      choiceGridNote.textContent = `If every symbol were perfectly balanced, about ${choices.toFixed(1)} equally likely options would create the same uncertainty. For the current sample of ${focusTokens.length} analyzed ${currentMode === "words" ? "tokens" : currentMode === "bigrams" ? "bigrams" : "characters"}, that is about ${totalBits.toFixed(1)} bits in total.`;
+    } else {
+      bitsSummary.textContent = `Un valor de ${focusEntropy.toFixed(3)} bits significa que el texto seleccionado se comporta aproximadamente como elegir entre ${choices.toFixed(1)} alternativas igualmente probables por símbolo. No es significado total; es incertidumbre promedio.`;
+      bitsNote.textContent = "¿Por qué 2ᴴ? Porque un bit divide las posibilidades en dos. Dos bits las dividen en cuatro. Tres bits en ocho. La entropía generaliza esa idea para probabilidades desiguales.";
+      choiceGridNote.textContent = `Si cada símbolo estuviera perfectamente balanceado, unas ${choices.toFixed(1)} opciones igualmente probables producirían la misma incertidumbre. Para la muestra actual de ${focusTokens.length} ${currentMode === "words" ? "tokens" : currentMode === "bigrams" ? "bigramas" : "caracteres"} analizados, eso equivale a unos ${totalBits.toFixed(1)} bits en total.`;
+    }
   }
 
   function updateInterpretation(aH, bH) {
@@ -939,17 +862,13 @@
     const higher = aH > bH ? "A" : "B";
 
     if (currentLang === "en") {
-      if (diff < 0.05) {
-        liveInterpretation.textContent = "Both samples have almost the same entropy under the current representation. This does not mean they have the same meaning; it only means their symbol distributions look similarly uncertain.";
-      } else {
-        liveInterpretation.textContent = `Text ${higher} has higher entropy under the current representation. It is less predictable from symbol frequency alone, but that does not automatically make it more meaningful.`;
-      }
+      liveInterpretation.textContent = diff < 0.05
+        ? "Both samples have almost the same entropy under the current representation. This does not mean they have the same meaning; it only means their symbol distributions look similarly uncertain."
+        : `Text ${higher} has higher entropy under the current representation. It is less predictable from symbol frequency alone, but that does not automatically make it more meaningful.`;
     } else {
-      if (diff < 0.05) {
-        liveInterpretation.textContent = "Ambas muestras tienen casi la misma entropía bajo la representación actual. Esto no significa que tengan el mismo significado; solo significa que sus distribuciones de símbolos se ven igual de inciertas.";
-      } else {
-        liveInterpretation.textContent = `El texto ${higher} tiene mayor entropía bajo la representación actual. Es menos predecible solo desde la frecuencia de símbolos, pero eso no lo vuelve automáticamente más significativo.`;
-      }
+      liveInterpretation.textContent = diff < 0.05
+        ? "Ambas muestras tienen casi la misma entropía bajo la representación actual. Esto no significa que tengan el mismo significado; solo significa que sus distribuciones de símbolos se ven igual de inciertas."
+        : `El texto ${higher} tiene mayor entropía bajo la representación actual. Es menos predecible solo desde la frecuencia de símbolos, pero eso no lo vuelve automáticamente más significativo.`;
     }
   }
 
@@ -982,15 +901,12 @@
 
   function applyLanguage(lang) {
     document.documentElement.lang = lang;
-
     document.querySelectorAll("[data-en][data-es]").forEach(el => {
       el.textContent = el.dataset[lang];
     });
-
     document.title = lang === "en"
       ? "Experiment 2 — Entropy, Content, and Representation"
       : "Experimento 2 — Entropía, Contenido y Representación";
-
     langToggle.textContent = lang === "en" ? "ES" : "EN";
     localStorage.setItem("siteLang", lang);
     currentLang = lang;
