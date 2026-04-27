@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Experiment 2 — Entropy, Content, and Representation</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    html {
+      scrollbar-width: thin;
+      scrollbar-color: #8ad7ff #081120;
+    }
+
+    ::-webkit-scrollbar { width: 12px; }
+
+    ::-webkit-scrollbar-track {
+      background: linear-gradient(180deg, #071224, #05101f);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #8ad7ff, #6ca8ff);
+      border-radius: 999px;
+      border: 2px solid #081120;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(180deg, #b6ecff, #8ad7ff);
+    }
+
+    ::selection {
+      background: rgba(138, 215, 255, 0.28);
+      color: white;
+    }
+
+    :root {
+      --page-accent: #8ad7ff;
+      --page-accent-soft: rgba(138, 215, 255, 0.12);
+      --page-accent-border: rgba(138, 215, 255, 0.28);
+      --panel: rgba(15, 23, 42, 0.78);
+      --panel-strong: rgba(15, 23, 42, 0.92);
+    }
+
+    body {
+      background:
+        radial-gradient(circle at 12% 8%, rgba(96, 165, 250, 0.10), transparent 26%),
+        radial-gradient(circle at 88% 22%, rgba(138, 215, 255, 0.07), transparent 24%),
+        radial-gradient(circle at 50% 100%, rgba(168, 85, 247, 0.08), transparent 32%),
+        #030712;
+    }
+
+    .reading-block { max-width: 68ch; }
+    .reading-block p { line-height: 1.9; }
+
+    .section-intro {
+      color: #cbd5e1;
+      font-size: 1.05rem;
+      line-height: 1.85;
+      max-width: 68ch;
+    }
+
+    .concept-card {
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      background:
+        linear-gradient(180deg, var(--panel-strong), var(--panel)),
+        radial-gradient(circle at top left, var(--page-accent-soft), transparent 38%);
+      border-radius: 1.25rem;
+      padding: 1.4rem;
+      box-shadow: 0 20px 55px rgba(0,0,0,0.20);
+    }
+
+    .concept-card-strong {
+      border-color: var(--page-accent-border);
+      background:
+        linear-gradient(180deg, rgba(15, 23, 42, 0.90), rgba(15, 23, 42, 0.70)),
+        radial-gradient(circle at top left, rgba(96, 165, 250, 0.18), transparent 42%);
+    }
+
+    .concept-card summary::-webkit-details-marker { display: none; }
+
+    .concept-kicker {
+      color: var(--page-accent);
+      font-size: 0.76rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 0.7rem;
+      font-weight: 700;
+    }
+
+    .concept-title {
+      color: white;
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.45rem;
+    }
+
+    .formula-card {
+      border: 1px solid rgba(138, 215, 255, 0.22);
+      background: rgba(2, 6, 23, 0.56);
+      border-radius: 1rem;
+      padding: 1rem;
+      overflow-x: auto;
+    }
+
+    .formula {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      color: #e0f2fe;
+      font-size: clamp(0.9rem, 2vw, 1.05rem);
+      white-space: nowrap;
+    }
+
+    textarea {
+      min-height: 190px;
+      resize: vertical;
+    }
+
+    .metric {
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      background: rgba(2, 6, 23, 0.36);
+      border-radius: 1rem;
+      padding: 1rem;
+    }
+
+    .metric-label {
+      color: #94a3b8;
+      font-size: 0.76rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 0.35rem;
+    }
+
+    .metric-value {
+      color: white;
+      font-size: 1.55rem;
+      font-weight: 750;
+      letter-spacing: -0.03em;
+    }
+
+    .preset-button, .mode-button {
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      background: rgba(15, 23, 42, 0.72);
+      color: #dbeafe;
+      border-radius: 0.85rem;
+      padding: 0.65rem 0.8rem;
+      font-size: 0.88rem;
+      transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
+    }
+
+    .preset-button:hover, .mode-button:hover {
+      border-color: rgba(138, 215, 255, 0.46);
+      background: rgba(30, 41, 59, 0.82);
+      transform: translateY(-1px);
+    }
+
+    .mode-button.active {
+      border-color: rgba(138, 215, 255, 0.70);
+      background: rgba(14, 165, 233, 0.18);
+      color: white;
+    }
+
+    canvas {
+      width: 100%;
+      height: auto;
+      background: rgba(2, 6, 23, 0.42);
+      border: 1px solid rgba(148, 163, 184, 0.16);
+      border-radius: 1rem;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      background: rgba(15, 23, 42, 0.62);
+      border-radius: 999px;
+      padding: 0.45rem 0.7rem;
+      color: #cbd5e1;
+      font-size: 0.84rem;
+    }
+
+
+    .formula-live {
+      display: grid;
+      gap: 0.8rem;
+    }
+
+    .formula-token {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 2.3rem;
+      border: 1px solid rgba(138, 215, 255, 0.24);
+      background: rgba(14, 165, 233, 0.10);
+      border-radius: 0.75rem;
+      padding: 0.35rem 0.55rem;
+      color: #e0f2fe;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 0.9rem;
+    }
+
+    .formula-step {
+      border: 1px solid rgba(148, 163, 184, 0.16);
+      background: rgba(2, 6, 23, 0.34);
+      border-radius: 0.95rem;
+      padding: 0.85rem;
+    }
+
+    .mono-soft {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      color: #bae6fd;
+    }
+
+    .bit-ladder {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 0.55rem;
+    }
+
+    .bit-step {
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      background: rgba(2, 6, 23, 0.34);
+      border-radius: 0.9rem;
+      padding: 0.75rem 0.55rem;
+      text-align: center;
+      color: #94a3b8;
+    }
+
+    .bit-step.active {
+      border-color: rgba(138, 215, 255, 0.55);
+      background: rgba(14, 165, 233, 0.13);
+      color: white;
+    }
+
+    .term-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      line-height: 1.8;
+    }
+
+    .term-pill {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid rgba(138, 215, 255, 0.18);
+      background: rgba(14, 165, 233, 0.08);
+      border-radius: 0.8rem;
+      padding: 0.4rem 0.55rem;
+      color: #dbeafe;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 0.82rem;
+    }
+
+    .insight-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.8rem;
+      margin-bottom: 1rem;
+    }
+
+    .insight-card {
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      background: rgba(2, 6, 23, 0.30);
+      border-radius: 0.95rem;
+      padding: 0.85rem;
+    }
+
+    .insight-card-label {
+      color: #94a3b8;
+      font-size: 0.72rem;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
+    .insight-card-value {
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .choice-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 0.45rem;
+      margin-top: 0.75rem;
+    }
+
+    .choice-dot {
+      border: 1px solid rgba(138, 215, 255, 0.20);
+      background: rgba(14, 165, 233, 0.08);
+      border-radius: 0.75rem;
+      min-height: 2.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #e0f2fe;
+      font-size: 0.76rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    }
+
+    .choice-dot.faded {
+      color: #64748b;
+      border-style: dashed;
+      background: rgba(15, 23, 42, 0.45);
+    }
+
+    @media (max-width: 768px) {
+      .insight-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .choice-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+    }
+
+    .mini-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.86rem;
+    }
+
+    .mini-table th,
+    .mini-table td {
+      border-bottom: 1px solid rgba(148, 163, 184, 0.13);
+      padding: 0.55rem 0.35rem;
+      text-align: left;
+    }
+
+    .mini-table th {
+      color: #93c5fd;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-950 text-white">
+  <div class="max-w-7xl mx-auto px-6 py-8 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-[220px_minmax(0,1fr)_260px] gap-8">
+
+      <aside class="hidden lg:block">
+        <div class="sticky top-8 rounded-2xl border border-gray-800 bg-gray-900/70 backdrop-blur p-4">
+          <p class="text-xs uppercase tracking-[0.18em] text-blue-300 mb-4" data-en="On this page" data-es="En esta página">On this page</p>
+          <nav class="space-y-3 text-sm">
+            <a href="#intro" class="block text-gray-300 hover:text-blue-300 transition" data-en="Introduction" data-es="Introducción">Introduction</a>
+            <a href="#theory" class="block text-gray-300 hover:text-blue-300 transition" data-en="Theory" data-es="Teoría">Theory</a>
+            <a href="#lab" class="block text-gray-300 hover:text-blue-300 transition" data-en="Interactive lab" data-es="Laboratorio interactivo">Interactive lab</a>
+            <a href="#method" class="block text-gray-300 hover:text-blue-300 transition" data-en="Method" data-es="Método">Method</a>
+            <a href="#interpretation" class="block text-gray-300 hover:text-blue-300 transition" data-en="Interpretation" data-es="Interpretación">Interpretation</a>
+            <a href="#limits" class="block text-gray-300 hover:text-blue-300 transition" data-en="Limits" data-es="Límites">Limits</a>
+          </nav>
+        </div>
+      </aside>
+
+      <main class="max-w-3xl">
+        <div class="flex justify-between items-center gap-4 mb-6">
+          <a href="index.html" class="text-blue-400 hover:text-blue-300 transition" data-en="← Back" data-es="← Volver">← Back</a>
+          <button id="langToggle" class="rounded-xl border border-gray-800 bg-gray-900/70 px-4 py-2 text-sm text-gray-200 hover:border-blue-400/40 hover:text-white transition">ES</button>
+        </div>
+
+        <h1 class="text-4xl font-bold mt-4 mb-6 tracking-tight" data-en="Experiment #2 — Entropy, Content, and Representation" data-es="Experimento #2 — Entropía, Contenido y Representación">Experiment #2 — Entropy, Content, and Representation</h1>
+
+        <p class="section-intro mb-10" data-en="The first experiment measured how text size grows. This second experiment asks a harder question: if two texts have the same length, can one still contain more information than the other?" data-es="El primer experimento midió cómo crece el tamaño del texto. Este segundo experimento hace una pregunta más difícil: si dos textos tienen la misma longitud, ¿puede uno contener más información que el otro?">The first experiment measured how text size grows. This second experiment asks a harder question: if two texts have the same length, can one still contain more information than the other?</p>
+
+        <section id="intro" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8">
+          <h2 class="text-2xl font-semibold mb-4" data-en="Introduction" data-es="Introducción">Introduction</h2>
+          <div class="space-y-4">
+            <div class="concept-card concept-card-strong">
+              <p class="concept-kicker" data-en="Central question" data-es="Pregunta central">Central question</p>
+              <p class="text-gray-300 leading-8" data-en="Given two texts of equal length, which one contains more information—and how can we measure that without confusing information with meaning?" data-es="Dados dos textos de la misma longitud, ¿cuál contiene más información, y cómo podemos medirlo sin confundir información con significado?">Given two texts of equal length, which one contains more information—and how can we measure that without confusing information with meaning?</p>
+            </div>
+
+            <details class="concept-card group">
+              <summary class="cursor-pointer list-none">
+                <p class="concept-kicker" data-en="Why this matters" data-es="Por qué importa">Why this matters</p>
+                <h3 class="concept-title" data-en="Length is not the same as information" data-es="Longitud no es lo mismo que información">Length is not the same as information</h3>
+                <p class="text-gray-300 leading-8" data-en="A repetitive text, a meaningful sentence, and a random string can have the same number of characters. Their file size may be similar, but their predictability can be very different." data-es="Un texto repetitivo, una oración significativa y una cadena aleatoria pueden tener el mismo número de caracteres. Su tamaño de archivo puede ser parecido, pero su predictibilidad puede ser muy distinta.">A repetitive text, a meaningful sentence, and a random string can have the same number of characters. Their file size may be similar, but their predictability can be very different.</p>
+                <p class="mt-3 text-sm text-blue-300" data-en="Open details ↓" data-es="Abrir detalles ↓">Open details ↓</p>
+              </summary>
+              <div class="mt-5 border-t border-gray-800 pt-5 text-gray-400 leading-8">
+                <p data-en="This experiment studies information at the level of symbol distributions. It does not claim to measure semantic meaning, intelligence, or consciousness. That limitation is part of the point." data-es="Este experimento estudia la información al nivel de distribuciones de símbolos. No afirma medir significado semántico, inteligencia o consciencia. Ese límite es parte del punto.">This experiment studies information at the level of symbol distributions. It does not claim to measure semantic meaning, intelligence, or consciousness. That limitation is part of the point.</p>
+              </div>
+            </details>
+          </div>
+        </section>
+
+        <section id="theory" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8">
+          <h2 class="text-2xl font-semibold mb-4" data-en="Theory" data-es="Teoría">Theory</h2>
+          <div class="space-y-5 reading-block text-gray-300">
+            <p data-en="Shannon entropy treats a text as a source of symbols. First, we count how often each symbol appears. Then we convert those counts into probabilities. Finally, we calculate the average surprise of the source." data-es="La entropía de Shannon trata un texto como una fuente de símbolos. Primero contamos cuántas veces aparece cada símbolo. Después convertimos esos conteos en probabilidades. Finalmente calculamos la sorpresa promedio de la fuente.">Shannon entropy treats a text as a source of symbols. First, we count how often each symbol appears. Then we convert those counts into probabilities. Finally, we calculate the average surprise of the source.</p>
+
+            <div class="formula-card">
+              <p class="formula">H(X) = - Σ p(x) log₂ p(x)</p>
+            </div>
+
+            <p data-en="In this experiment, H(X) is the entropy of the selected text representation. The symbol x may be a character, a word, or a pair of characters depending on the mode. The probability p(x) is estimated from the text itself." data-es="En este experimento, H(X) es la entropía de la representación seleccionada del texto. El símbolo x puede ser un carácter, una palabra o un par de caracteres según el modo. La probabilidad p(x) se estima a partir del propio texto.">In this experiment, H(X) is the entropy of the selected text representation. The symbol x may be a character, a word, or a pair of characters depending on the mode. The probability p(x) is estimated from the text itself.</p>
+          </div>
+        </section>
+
+        <section id="lab" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8">
+          <h2 class="text-2xl font-semibold mb-4" data-en="Interactive lab" data-es="Laboratorio interactivo">Interactive lab</h2>
+          <p class="section-intro mb-6" data-en="Use the presets or edit both texts. The comparison keeps the samples at equal character length so the result depends more on distribution than on raw size." data-es="Usa los ejemplos o edita ambos textos. La comparación mantiene las muestras con la misma longitud de caracteres para que el resultado dependa más de la distribución que del tamaño bruto.">Use the presets or edit both texts. The comparison keeps the samples at equal character length so the result depends more on distribution than on raw size.</p>
+
+          <div class="concept-card mb-6">
+            <p class="concept-kicker" data-en="Representation mode" data-es="Modo de representación">Representation mode</p>
+            <div class="flex flex-wrap gap-3">
+              <button class="mode-button active" data-mode="chars" data-en="Characters" data-es="Caracteres">Characters</button>
+              <button class="mode-button" data-mode="words" data-en="Words" data-es="Palabras">Words</button>
+              <button class="mode-button" data-mode="bigrams" data-en="Bigrams" data-es="Bigramas">Bigrams</button>
+            </div>
+            <p id="modeExplanation" class="mt-4 text-gray-400 leading-8"></p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
+            <button class="preset-button" data-preset="repetition" data-en="Repetition vs variation" data-es="Repetición vs variación">Repetition vs variation</button>
+            <button class="preset-button" data-preset="meaning" data-en="Meaningful vs random" data-es="Significativo vs aleatorio">Meaningful vs random</button>
+            <button class="preset-button" data-preset="sameletters" data-en="Same letters, different order" data-es="Mismas letras, distinto orden">Same letters, different order</button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+            <div class="concept-card">
+              <label for="textA" class="concept-kicker block" data-en="Text A" data-es="Texto A">Text A</label>
+              <textarea id="textA" class="w-full rounded-2xl border border-gray-800 bg-gray-950/70 p-4 text-gray-100 outline-none focus:border-blue-300/60"></textarea>
+              <p class="mt-3 text-sm text-gray-400"><span data-en="Characters analyzed:" data-es="Caracteres analizados:">Characters analyzed:</span> <span id="lenA">0</span></p>
+            </div>
+
+            <div class="concept-card">
+              <label for="textB" class="concept-kicker block" data-en="Text B" data-es="Texto B">Text B</label>
+              <textarea id="textB" class="w-full rounded-2xl border border-gray-800 bg-gray-950/70 p-4 text-gray-100 outline-none focus:border-blue-300/60"></textarea>
+              <p class="mt-3 text-sm text-gray-400"><span data-en="Characters analyzed:" data-es="Caracteres analizados:">Characters analyzed:</span> <span id="lenB">0</span></p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div class="metric">
+              <p class="metric-label" data-en="Entropy A" data-es="Entropía A">Entropy A</p>
+              <p class="metric-value"><span id="entropyA">0.000</span></p>
+              <p class="text-sm text-gray-400" data-en="bits per symbol" data-es="bits por símbolo">bits per symbol</p>
+            </div>
+            <div class="metric">
+              <p class="metric-label" data-en="Entropy B" data-es="Entropía B">Entropy B</p>
+              <p class="metric-value"><span id="entropyB">0.000</span></p>
+              <p class="text-sm text-gray-400" data-en="bits per symbol" data-es="bits por símbolo">bits per symbol</p>
+            </div>
+            <div class="metric">
+              <p class="metric-label" data-en="Difference" data-es="Diferencia">Difference</p>
+              <p class="metric-value"><span id="entropyDiff">0.000</span></p>
+              <p class="text-sm text-gray-400" data-en="absolute gap" data-es="brecha absoluta">absolute gap</p>
+            </div>
+          </div>
+
+          <canvas id="entropyCanvas" width="820" height="360" aria-label="Entropy comparison chart"></canvas>
+
+          <div class="grid grid-cols-1 xl:grid-cols-2 gap-5 mt-6">
+            <div class="concept-card concept-card-strong">
+              <p class="concept-kicker" data-en="Live Shannon formula" data-es="Fórmula de Shannon en vivo">Live Shannon formula</p>
+              <h3 class="concept-title" data-en="How the symbols change the result" data-es="Cómo los símbolos cambian el resultado">How the symbols change the result</h3>
+              <div class="formula-card mt-4">
+                <p class="formula">H(X) = - Σ p(x) log₂ p(x)</p>
+              </div>
+              <p id="formulaSummary" class="mt-4 text-gray-300 leading-8"></p>
+              <div class="formula-live mt-4">
+                <div class="formula-step">
+                  <p class="text-sm text-gray-400 mb-2" data-en="Selected text" data-es="Texto seleccionado">Selected text</p>
+                  <div class="flex gap-2">
+                    <button id="formulaTextA" class="mode-button active" type="button">A</button>
+                    <button id="formulaTextB" class="mode-button" type="button">B</button>
+                  </div>
+                </div>
+                <div class="formula-step">
+                  <p class="text-sm text-gray-400 mb-2" data-en="Example contribution" data-es="Contribución de ejemplo">Example contribution</p>
+                  <p id="contributionLine" class="mono-soft text-sm leading-7"></p>
+                </div>
+                <div class="formula-step">
+                  <p class="text-sm text-gray-400 mb-2" data-en="Expanded live sum" data-es="Suma expandida en vivo">Expanded live sum</p>
+                  <div id="expandedFormula" class="term-strip"></div>
+                  <p id="formulaTotal" class="mt-3 text-sm text-blue-200 leading-7"></p>
+                </div>
+                <div class="formula-step overflow-x-auto">
+                  <p class="text-sm text-gray-400 mb-2" data-en="Top symbol contributions" data-es="Principales contribuciones por símbolo">Top symbol contributions</p>
+                  <table class="mini-table">
+                    <thead>
+                      <tr>
+                        <th data-en="symbol" data-es="símbolo">symbol</th>
+                        <th>p(x)</th>
+                        <th>-log₂p</th>
+                        <th data-en="weighted" data-es="ponderado">weighted</th>
+                      </tr>
+                    </thead>
+                    <tbody id="contributionRows"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div class="concept-card">
+              <p class="concept-kicker" data-en="What bits mean" data-es="Qué significan los bits">What bits mean</p>
+              <h3 class="concept-title" data-en="Bits as yes/no questions" data-es="Bits como preguntas sí/no">Bits as yes/no questions</h3>
+              <p id="bitsSummary" class="text-gray-300 leading-8 mb-4"></p>
+              <div class="insight-grid">
+                <div class="insight-card">
+                  <p class="insight-card-label" data-en="Equivalent choices" data-es="Opciones equivalentes">Equivalent choices</p>
+                  <p id="equivalentChoices" class="insight-card-value">0</p>
+                </div>
+                <div class="insight-card">
+                  <p class="insight-card-label" data-en="Yes/no questions" data-es="Preguntas sí/no">Yes/no questions</p>
+                  <p id="questionsValue" class="insight-card-value">0</p>
+                </div>
+                <div class="insight-card">
+                  <p class="insight-card-label" data-en="Whole sample bits" data-es="Bits de la muestra">Whole sample bits</p>
+                  <p id="messageBitsValue" class="insight-card-value">0</p>
+                </div>
+                <div class="insight-card">
+                  <p class="insight-card-label" data-en="Approx. bytes" data-es="Bytes aprox.">Approx. bytes</p>
+                  <p id="messageBytesValue" class="insight-card-value">0</p>
+                </div>
+              </div>
+              <div class="formula-step mb-4">
+                <p class="text-sm text-gray-400 mb-2" data-en="Visualizing equally likely choices" data-es="Visualizando opciones igualmente probables">Visualizing equally likely choices</p>
+                <div id="choiceGrid" class="choice-grid"></div>
+                <p id="choiceGridNote" class="mt-3 text-sm text-gray-400 leading-7"></p>
+              </div>
+              <div class="bit-ladder mb-5" aria-label="Bits ladder">
+                <div class="bit-step" data-bit-step="1"><strong>1</strong><br><span data-en="bit" data-es="bit">bit</span><br><span class="text-xs">2</span></div>
+                <div class="bit-step" data-bit-step="2"><strong>2</strong><br><span data-en="bits" data-es="bits">bits</span><br><span class="text-xs">4</span></div>
+                <div class="bit-step" data-bit-step="3"><strong>3</strong><br><span data-en="bits" data-es="bits">bits</span><br><span class="text-xs">8</span></div>
+                <div class="bit-step" data-bit-step="4"><strong>4</strong><br><span data-en="bits" data-es="bits">bits</span><br><span class="text-xs">16</span></div>
+                <div class="bit-step" data-bit-step="5"><strong>5</strong><br><span data-en="bits" data-es="bits">bits</span><br><span class="text-xs">32</span></div>
+              </div>
+              <canvas id="bitsCanvas" width="820" height="270" aria-label="Bits meaning visualization"></canvas>
+              <p id="bitsNote" class="mt-4 text-sm text-gray-400 leading-7"></p>
+            </div>
+          </div>
+
+          <div class="concept-card mt-6">
+            <p class="concept-kicker" data-en="Current interpretation" data-es="Interpretación actual">Current interpretation</p>
+            <p id="liveInterpretation" class="text-gray-300 leading-8"></p>
+          </div>
+        </section>
+
+        <section id="method" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8">
+          <h2 class="text-2xl font-semibold mb-4" data-en="Method" data-es="Método">Method</h2>
+          <div class="space-y-4">
+            <div class="concept-card">
+              <p class="concept-kicker" data-en="Controls" data-es="Controles">Controls</p>
+              <p class="text-gray-300 leading-8" data-en="Both texts are trimmed to the same character length before analysis. This prevents the longer text from winning simply because it contains more symbols." data-es="Ambos textos se recortan a la misma longitud de caracteres antes del análisis. Esto evita que el texto más largo gane simplemente porque contiene más símbolos.">Both texts are trimmed to the same character length before analysis. This prevents the longer text from winning simply because it contains more symbols.</p>
+            </div>
+            <div class="concept-card">
+              <p class="concept-kicker" data-en="Variables" data-es="Variables">Variables</p>
+              <div class="flex flex-wrap gap-2">
+                <span class="pill" data-en="Independent: type of content" data-es="Independiente: tipo de contenido">Independent: type of content</span>
+                <span class="pill" data-en="Controlled: length" data-es="Controlada: longitud">Controlled: length</span>
+                <span class="pill" data-en="Dependent: entropy" data-es="Dependiente: entropía">Dependent: entropy</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="interpretation" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8">
+          <h2 class="text-2xl font-semibold mb-4" data-en="Interpretation" data-es="Interpretación">Interpretation</h2>
+          <div class="reading-block space-y-5 text-gray-300">
+            <p data-en="If a text has high entropy, its symbols are harder to predict from frequency alone. If it has low entropy, its symbols are more repetitive or unevenly distributed." data-es="Si un texto tiene alta entropía, sus símbolos son más difíciles de predecir solo a partir de la frecuencia. Si tiene baja entropía, sus símbolos son más repetitivos o están distribuidos de forma desigual.">If a text has high entropy, its symbols are harder to predict from frequency alone. If it has low entropy, its symbols are more repetitive or unevenly distributed.</p>
+            <p data-en="The important twist is that a random text can score higher than a meaningful sentence. This shows why Shannon entropy is powerful but limited: it measures uncertainty, not semantic meaning." data-es="El giro importante es que un texto aleatorio puede obtener una puntuación más alta que una oración significativa. Esto muestra por qué la entropía de Shannon es poderosa pero limitada: mide incertidumbre, no significado semántico.">The important twist is that a random text can score higher than a meaningful sentence. This shows why Shannon entropy is powerful but limited: it measures uncertainty, not semantic meaning.</p>
+          </div>
+        </section>
+
+        <section id="limits" class="scroll-mt-24 mb-16">
+          <h2 class="text-2xl font-semibold mb-4" data-en="Limits" data-es="Límites">Limits</h2>
+          <div class="concept-card concept-card-strong">
+            <p class="concept-kicker" data-en="Main limitation" data-es="Límite principal">Main limitation</p>
+            <p class="text-gray-300 leading-8" data-en="Entropy is exact only after a representation has been chosen. Character entropy, word entropy, and bigram entropy are not interchangeable. The same document can look different depending on the lens used to measure it." data-es="La entropía es exacta solo después de elegir una representación. La entropía por caracteres, por palabras y por bigramas no son intercambiables. El mismo documento puede verse distinto dependiendo del lente usado para medirlo.">Entropy is exact only after a representation has been chosen. Character entropy, word entropy, and bigram entropy are not interchangeable. The same document can look different depending on the lens used to measure it.</p>
+          </div>
+        </section>
+      </main>
+
+      <aside class="hidden xl:block">
+        <div class="sticky top-8 space-y-4">
+          <div class="concept-card">
+            <p class="concept-kicker" data-en="Core idea" data-es="Idea central">Core idea</p>
+            <p class="text-gray-300 leading-7" data-en="Same length does not mean same information. Distribution matters." data-es="Misma longitud no significa misma información. La distribución importa.">Same length does not mean same information. Distribution matters.</p>
+          </div>
+          <div class="concept-card">
+            <p class="concept-kicker" data-en="Warning" data-es="Advertencia">Warning</p>
+            <p class="text-gray-400 leading-7" data-en="High entropy can mean randomness, not depth." data-es="Alta entropía puede significar aleatoriedad, no profundidad.">High entropy can mean randomness, not depth.</p>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+<script>
+  const textA = document.getElementById("textA");
+  const textB = document.getElementById("textB");
+  const lenA = document.getElementById("lenA");
+  const lenB = document.getElementById("lenB");
+  const entropyAEl = document.getElementById("entropyA");
+  const entropyBEl = document.getElementById("entropyB");
+  const entropyDiffEl = document.getElementById("entropyDiff");
+  const liveInterpretation = document.getElementById("liveInterpretation");
+  const modeExplanation = document.getElementById("modeExplanation");
+  const formulaSummary = document.getElementById("formulaSummary");
+  const contributionLine = document.getElementById("contributionLine");
+  const contributionRows = document.getElementById("contributionRows");
+  const formulaTextA = document.getElementById("formulaTextA");
+  const formulaTextB = document.getElementById("formulaTextB");
+  const bitsSummary = document.getElementById("bitsSummary");
+  const bitsNote = document.getElementById("bitsNote");
+  const expandedFormula = document.getElementById("expandedFormula");
+  const formulaTotal = document.getElementById("formulaTotal");
+  const equivalentChoicesEl = document.getElementById("equivalentChoices");
+  const questionsValue = document.getElementById("questionsValue");
+  const messageBitsValue = document.getElementById("messageBitsValue");
+  const messageBytesValue = document.getElementById("messageBytesValue");
+  const choiceGrid = document.getElementById("choiceGrid");
+  const choiceGridNote = document.getElementById("choiceGridNote");
+  const canvas = document.getElementById("entropyCanvas");
+  const ctx = canvas.getContext("2d");
+  const bitsCanvas = document.getElementById("bitsCanvas");
+  const bitsCtx = bitsCanvas.getContext("2d");
+  const langToggle = document.getElementById("langToggle");
+
+  let currentLang = localStorage.getItem("siteLang") || "en";
+  let currentMode = "chars";
+  let formulaFocus = "A";
+
+  const presetTexts = {
+    repetition: {
+      a: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      b: "abcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghij"
+    },
+    meaning: {
+      a: "The brain does not receive the world passively; it predicts patterns, corrects errors, and builds a useful model from uncertainty.",
+      b: "xQ7!mLp2@zR9#vT4$kN8%aB1&wY6*dC3?eH5+fJ0=qS2^uG7~rV9"
+    },
+    sameletters: {
+      a: "information information information information information information information information",
+      b: "noitamrofni noitamrofni noitamrofni noitamrofni noitamrofni noitamrofni noitamrofni noitamrofni"
+    }
+  };
+
+  const modeText = {
+    en: {
+      chars: "Character mode treats each letter, space, or punctuation mark as a symbol. This is the cleanest starting point for Shannon entropy.",
+      words: "Word mode treats each word as a symbol. This often changes the result because meaning-bearing units are larger than letters.",
+      bigrams: "Bigram mode treats pairs of neighboring characters as symbols. This begins to capture local structure, such as repeated pairs and patterns."
+    },
+    es: {
+      chars: "El modo de caracteres trata cada letra, espacio o signo como símbolo. Es el punto de partida más limpio para la entropía de Shannon.",
+      words: "El modo de palabras trata cada palabra como símbolo. Esto suele cambiar el resultado porque las unidades con significado son más grandes que las letras.",
+      bigrams: "El modo de bigramas trata pares de caracteres vecinos como símbolos. Esto empieza a capturar estructura local, como pares repetidos y patrones."
+    }
+  };
+
+  function normalizeText(value) {
+    return value.replace(/\s+/g, " ").trim();
+  }
+
+  function equalizeTexts(a, b) {
+    const minLength = Math.min(a.length, b.length);
+    return [a.slice(0, minLength), b.slice(0, minLength)];
+  }
+
+  function tokenize(value, mode) {
+    const clean = normalizeText(value.toLowerCase());
+    if (!clean) return [];
+
+    if (mode === "words") {
+      return clean.match(/[a-záéíóúüñ0-9]+/gi) || [];
+    }
+
+    if (mode === "bigrams") {
+      const chars = Array.from(clean);
+      const pairs = [];
+      for (let i = 0; i < chars.length - 1; i++) {
+        pairs.push(chars[i] + chars[i + 1]);
+      }
+      return pairs;
+    }
+
+    return Array.from(clean);
+  }
+
+  function frequencies(tokens) {
+    const map = new Map();
+    tokens.forEach(token => map.set(token, (map.get(token) || 0) + 1));
+    return map;
+  }
+
+  function entropy(tokens) {
+    if (!tokens.length) return 0;
+    const freq = frequencies(tokens);
+    let h = 0;
+    freq.forEach(count => {
+      const p = count / tokens.length;
+      h += p * Math.log2(p);
+    });
+    return -h;
+  }
+
+  function uniqueCount(tokens) {
+    return new Set(tokens).size;
+  }
+
+  function entropyDetails(tokens) {
+    if (!tokens.length) return { entropy: 0, rows: [] };
+    const freq = frequencies(tokens);
+    const rows = [];
+    let h = 0;
+    freq.forEach((count, symbol) => {
+      const probability = count / tokens.length;
+      const surprise = -Math.log2(probability);
+      const weighted = probability * surprise;
+      h += weighted;
+      rows.push({ symbol, count, probability, surprise, weighted });
+    });
+    rows.sort((a, b) => b.weighted - a.weighted);
+    return { entropy: h, rows };
+  }
+
+  function displaySymbol(symbol) {
+    if (symbol === " ") return "space";
+    if (symbol === "
+") return "\n";
+    if (symbol.length > 12) return symbol.slice(0, 12) + "…";
+    return symbol;
+  }
+
+  function effectiveChoices(bits) {
+    return Math.pow(2, bits);
+  }
+
+  function drawBitsChart(aEntropy, bEntropy) {
+    const w = bitsCanvas.width;
+    const h = bitsCanvas.height;
+    const padding = 44;
+    const maxBits = Math.max(1, aEntropy, bEntropy, 5);
+    const maxChoices = Math.pow(2, maxBits);
+
+    bitsCtx.clearRect(0, 0, w, h);
+    bitsCtx.strokeStyle = "rgba(148, 163, 184, 0.18)";
+    bitsCtx.lineWidth = 1;
+    bitsCtx.font = "13px sans-serif";
+    bitsCtx.fillStyle = "#94a3b8";
+
+    for (let i = 0; i <= 4; i++) {
+      const y = padding + (i * (h - padding * 2)) / 4;
+      bitsCtx.beginPath();
+      bitsCtx.moveTo(padding, y);
+      bitsCtx.lineTo(w - padding, y);
+      bitsCtx.stroke();
+    }
+
+    const baseY = h - padding;
+    const areaW = w - padding * 2;
+    const barW = 110;
+    const ax = padding + areaW * 0.28 - barW / 2;
+    const bx = padding + areaW * 0.72 - barW / 2;
+
+    function heightFor(bits) {
+      const choices = Math.pow(2, bits);
+      return (choices / maxChoices) * (h - padding * 2);
+    }
+
+    const aH = heightFor(aEntropy);
+    const bH = heightFor(bEntropy);
+
+    const gradA = bitsCtx.createLinearGradient(0, baseY - aH, 0, baseY);
+    gradA.addColorStop(0, "rgba(138, 215, 255, 0.95)");
+    gradA.addColorStop(1, "rgba(96, 165, 250, 0.35)");
+    const gradB = bitsCtx.createLinearGradient(0, baseY - bH, 0, baseY);
+    gradB.addColorStop(0, "rgba(167, 139, 250, 0.95)");
+    gradB.addColorStop(1, "rgba(96, 165, 250, 0.30)");
+
+    bitsCtx.fillStyle = gradA;
+    bitsCtx.fillRect(ax, baseY - aH, barW, aH);
+    bitsCtx.fillStyle = gradB;
+    bitsCtx.fillRect(bx, baseY - bH, barW, bH);
+
+    bitsCtx.fillStyle = "#e0f2fe";
+    bitsCtx.font = "14px sans-serif";
+    bitsCtx.fillText(`A ≈ ${effectiveChoices(aEntropy).toFixed(1)} choices`, ax - 8, baseY - aH - 12);
+    bitsCtx.fillText(`B ≈ ${effectiveChoices(bEntropy).toFixed(1)} choices`, bx - 8, baseY - bH - 12);
+    bitsCtx.fillStyle = "#cbd5e1";
+    bitsCtx.fillText("Text A", ax + 31, baseY + 27);
+    bitsCtx.fillText("Text B", bx + 31, baseY + 27);
+    bitsCtx.fillStyle = "#94a3b8";
+    bitsCtx.fillText("Effective alternatives per symbol: 2ᴴ", w - 255, 26);
+  }
+
+  function updateFormulaPanel(tokensA, tokensB, hA, hB) {
+    const tokens = formulaFocus === "A" ? tokensA : tokensB;
+    const entropyValue = formulaFocus === "A" ? hA : hB;
+    const details = entropyDetails(tokens);
+    const topRows = details.rows.slice(0, 6);
+    const visibleTerms = details.rows.slice(0, 5);
+    const omittedTerms = Math.max(0, details.rows.length - visibleTerms.length);
+    const example = topRows[0];
+
+    formulaTextA.classList.toggle("active", formulaFocus === "A");
+    formulaTextB.classList.toggle("active", formulaFocus === "B");
+
+    if (currentLang === "en") {
+      formulaSummary.textContent = `For Text ${formulaFocus}, the formula adds ${details.rows.length} symbol contributions. Together they produce H(X) = ${entropyValue.toFixed(3)} bits per ${currentMode === "words" ? "word" : currentMode === "bigrams" ? "bigram" : "character"}.`;
+    } else {
+      formulaSummary.textContent = `Para el Texto ${formulaFocus}, la fórmula suma ${details.rows.length} contribuciones de símbolos. Juntas producen H(X) = ${entropyValue.toFixed(3)} bits por ${currentMode === "words" ? "palabra" : currentMode === "bigrams" ? "bigrama" : "carácter"}.`;
+    }
+
+    if (!example) {
+      contributionLine.textContent = currentLang === "en" ? "Add text to see a live contribution." : "Agrega texto para ver una contribución en vivo.";
+      contributionRows.innerHTML = "";
+      expandedFormula.innerHTML = "";
+      formulaTotal.textContent = currentLang === "en" ? "Once the text has symbols, each term p(x)·(-log₂p(x)) contributes a small amount to the final entropy." : "Una vez que el texto tenga símbolos, cada término p(x)·(-log₂p(x)) aporta una pequeña cantidad a la entropía final.";
+      return;
+    }
+
+    const sx = displaySymbol(example.symbol);
+    contributionLine.innerHTML = `<span class="formula-token">${sx}</span> &nbsp; p(x)=${example.probability.toFixed(3)} → -log₂(p)=${example.surprise.toFixed(3)} → p·surprise=${example.weighted.toFixed(3)}`;
+
+    contributionRows.innerHTML = topRows.map(row => `
+      <tr>
+        <td><span class="formula-token">${displaySymbol(row.symbol)}</span></td>
+        <td>${row.probability.toFixed(3)}</td>
+        <td>${row.surprise.toFixed(3)}</td>
+        <td>${row.weighted.toFixed(3)}</td>
+      </tr>
+    `).join("");
+
+    expandedFormula.innerHTML = visibleTerms.map(row => `
+      <span class="term-pill">(${row.probability.toFixed(3)} × ${row.surprise.toFixed(3)})</span>
+    `).join("") + (omittedTerms ? `<span class="term-pill">… + ${omittedTerms} more</span>` : "");
+
+    if (currentLang === "en") {
+      formulaTotal.textContent = `Read it like this: each term is one symbol's probability multiplied by its surprise. Add those weighted surprises and you get H(X) ≈ ${entropyValue.toFixed(3)}.`;
+    } else {
+      formulaTotal.textContent = `Léelo así: cada término es la probabilidad de un símbolo multiplicada por su sorpresa. Al sumar esas sorpresas ponderadas obtienes H(X) ≈ ${entropyValue.toFixed(3)}.`;
+    }
+  }
+
+  function updateBitsPanel(hA, hB, tokensA, tokensB) {
+    const focusEntropy = formulaFocus === "A" ? hA : hB;
+    const focusTokens = formulaFocus === "A" ? tokensA : tokensB;
+    const choices = effectiveChoices(focusEntropy);
+    const rounded = Math.max(1, Math.min(5, Math.round(focusEntropy)));
+    const totalBits = focusEntropy * focusTokens.length;
+    const approxBytes = totalBits / 8;
+    const displayChoices = Math.max(2, Math.min(24, Math.round(choices)));
+
+    document.querySelectorAll("[data-bit-step]").forEach(step => {
+      const n = Number(step.dataset.bitStep);
+      step.classList.toggle("active", n <= rounded);
+    });
+
+    equivalentChoicesEl.textContent = `${choices.toFixed(1)} ${currentLang === "en" ? "choices / symbol" : "opciones / símbolo"}`;
+    questionsValue.textContent = `${focusEntropy.toFixed(2)} ${currentLang === "en" ? "questions" : "preguntas"}`;
+    messageBitsValue.textContent = `${totalBits.toFixed(1)} ${currentLang === "en" ? "bits" : "bits"}`;
+    messageBytesValue.textContent = `${approxBytes.toFixed(1)} ${currentLang === "en" ? "bytes" : "bytes"}`;
+
+    choiceGrid.innerHTML = Array.from({ length: displayChoices }, (_, i) => `<div class="choice-dot">${i + 1}</div>`).join("") + (choices > displayChoices ? `<div class="choice-dot faded">…</div>` : "");
+
+    if (currentLang === "en") {
+      bitsSummary.textContent = `A value of ${focusEntropy.toFixed(3)} bits means the selected text behaves roughly like choosing among ${choices.toFixed(1)} equally likely alternatives per symbol. This is not total meaning; it is average uncertainty.`;
+      bitsNote.textContent = "Why 2ᴴ? Because one bit splits possibilities in two. Two bits split them into four. Three bits split them into eight. Entropy generalizes that idea to uneven probabilities.";
+      choiceGridNote.textContent = `If every symbol were perfectly balanced, about ${choices.toFixed(1)} equally likely options would create the same uncertainty. For the current sample of ${focusTokens.length} analyzed ${currentMode === "words" ? "tokens" : currentMode === "bigrams" ? "bigrams" : "characters"}, that is about ${totalBits.toFixed(1)} bits in total.`;
+    } else {
+      bitsSummary.textContent = `Un valor de ${focusEntropy.toFixed(3)} bits significa que el texto seleccionado se comporta aproximadamente como elegir entre ${choices.toFixed(1)} alternativas igualmente probables por símbolo. No es significado total; es incertidumbre promedio.`;
+      bitsNote.textContent = "¿Por qué 2ᴴ? Porque un bit divide las posibilidades en dos. Dos bits las dividen en cuatro. Tres bits en ocho. La entropía generaliza esa idea para probabilidades desiguales.";
+      choiceGridNote.textContent = `Si cada símbolo estuviera perfectamente balanceado, unas ${choices.toFixed(1)} opciones igualmente probables producirían la misma incertidumbre. Para la muestra actual de ${focusTokens.length} ${currentMode === "words" ? "tokens" : currentMode === "bigrams" ? "bigramas" : "caracteres"} analizados, eso equivale a unos ${totalBits.toFixed(1)} bits en total.`;
+    }
+
+    drawBitsChart(hA, hB);
+  }
+
+
+  function drawChart(aEntropy, bEntropy, aUnique, bUnique) {
+    const w = canvas.width;
+    const h = canvas.height;
+    const padding = 54;
+    const maxValue = Math.max(1, aEntropy, bEntropy) * 1.22;
+
+    ctx.clearRect(0, 0, w, h);
+
+    ctx.strokeStyle = "rgba(148, 163, 184, 0.20)";
+    ctx.lineWidth = 1;
+    ctx.font = "13px sans-serif";
+    ctx.fillStyle = "#94a3b8";
+
+    for (let i = 0; i <= 4; i++) {
+      const y = padding + (i * (h - padding * 2)) / 4;
+      const value = maxValue - (i * maxValue / 4);
+      ctx.beginPath();
+      ctx.moveTo(padding, y);
+      ctx.lineTo(w - padding, y);
+      ctx.stroke();
+      ctx.fillText(value.toFixed(1), 14, y + 4);
+    }
+
+    const barWidth = 105;
+    const baseY = h - padding;
+    const aHeight = (aEntropy / maxValue) * (h - padding * 2);
+    const bHeight = (bEntropy / maxValue) * (h - padding * 2);
+    const ax = w * 0.33 - barWidth / 2;
+    const bx = w * 0.67 - barWidth / 2;
+
+    const gradA = ctx.createLinearGradient(0, baseY - aHeight, 0, baseY);
+    gradA.addColorStop(0, "rgba(138, 215, 255, 0.95)");
+    gradA.addColorStop(1, "rgba(96, 165, 250, 0.42)");
+
+    const gradB = ctx.createLinearGradient(0, baseY - bHeight, 0, baseY);
+    gradB.addColorStop(0, "rgba(167, 139, 250, 0.95)");
+    gradB.addColorStop(1, "rgba(96, 165, 250, 0.32)");
+
+    ctx.fillStyle = gradA;
+    ctx.fillRect(ax, baseY - aHeight, barWidth, aHeight);
+    ctx.fillStyle = gradB;
+    ctx.fillRect(bx, baseY - bHeight, barWidth, bHeight);
+
+    ctx.fillStyle = "#e0f2fe";
+    ctx.font = "15px sans-serif";
+    ctx.fillText("Text A", ax + 30, baseY + 28);
+    ctx.fillText("Text B", bx + 30, baseY + 28);
+
+    ctx.fillStyle = "#cbd5e1";
+    ctx.font = "13px sans-serif";
+    ctx.fillText(`${aEntropy.toFixed(3)} bits`, ax + 18, baseY - aHeight - 14);
+    ctx.fillText(`${bEntropy.toFixed(3)} bits`, bx + 18, baseY - bHeight - 14);
+
+    ctx.fillStyle = "#94a3b8";
+    ctx.fillText(`unique: ${aUnique}`, ax + 20, baseY + 48);
+    ctx.fillText(`unique: ${bUnique}`, bx + 20, baseY + 48);
+    ctx.fillText("Entropy comparison", w - 185, 28);
+  }
+
+  function updateInterpretation(aH, bH) {
+    const diff = Math.abs(aH - bH);
+    const higher = aH > bH ? "A" : "B";
+
+    if (currentLang === "en") {
+      if (diff < 0.05) {
+        liveInterpretation.textContent = "Both samples have almost the same entropy under the current representation. This does not mean they have the same meaning; it only means their symbol distributions look similarly uncertain.";
+      } else {
+        liveInterpretation.textContent = `Text ${higher} has higher entropy under the current representation. It is less predictable from symbol frequency alone, but that does not automatically make it more meaningful.`;
+      }
+    } else {
+      if (diff < 0.05) {
+        liveInterpretation.textContent = "Ambas muestras tienen casi la misma entropía bajo la representación actual. Esto no significa que tengan el mismo significado; solo significa que sus distribuciones de símbolos se ven igual de inciertas.";
+      } else {
+        liveInterpretation.textContent = `El texto ${higher} tiene mayor entropía bajo la representación actual. Es menos predecible solo desde la frecuencia de símbolos, pero eso no lo vuelve automáticamente más significativo.`;
+      }
+    }
+  }
+
+  function updateExperiment() {
+    const [aEqual, bEqual] = equalizeTexts(textA.value, textB.value);
+    const tokensA = tokenize(aEqual, currentMode);
+    const tokensB = tokenize(bEqual, currentMode);
+    const hA = entropy(tokensA);
+    const hB = entropy(tokensB);
+    const diff = Math.abs(hA - hB);
+
+    lenA.textContent = aEqual.length;
+    lenB.textContent = bEqual.length;
+    entropyAEl.textContent = hA.toFixed(3);
+    entropyBEl.textContent = hB.toFixed(3);
+    entropyDiffEl.textContent = diff.toFixed(3);
+    modeExplanation.textContent = modeText[currentLang][currentMode];
+
+    drawChart(hA, hB, uniqueCount(tokensA), uniqueCount(tokensB));
+    updateFormulaPanel(tokensA, tokensB, hA, hB);
+    updateBitsPanel(hA, hB, tokensA, tokensB);
+    updateInterpretation(hA, hB);
+  }
+
+  function setPreset(name) {
+    textA.value = presetTexts[name].a;
+    textB.value = presetTexts[name].b;
+    updateExperiment();
+  }
+
+  function applyLanguage(lang) {
+    document.documentElement.lang = lang;
+
+    document.querySelectorAll("[data-en][data-es]").forEach(el => {
+      el.textContent = el.dataset[lang];
+    });
+
+    document.title = lang === "en"
+      ? "Experiment 2 — Entropy, Content, and Representation"
+      : "Experimento 2 — Entropía, Contenido y Representación";
+
+    langToggle.textContent = lang === "en" ? "ES" : "EN";
+    localStorage.setItem("siteLang", lang);
+    currentLang = lang;
+    updateExperiment();
+  }
+
+  document.querySelectorAll(".preset-button").forEach(button => {
+    button.addEventListener("click", () => setPreset(button.dataset.preset));
+  });
+
+  document.querySelectorAll(".mode-button[data-mode]").forEach(button => {
+    button.addEventListener("click", () => {
+      document.querySelectorAll(".mode-button[data-mode]").forEach(btn => btn.classList.remove("active"));
+      button.classList.add("active");
+      currentMode = button.dataset.mode;
+      updateExperiment();
+    });
+  });
+
+  formulaTextA.addEventListener("click", () => {
+    formulaFocus = "A";
+    updateExperiment();
+  });
+
+  formulaTextB.addEventListener("click", () => {
+    formulaFocus = "B";
+    updateExperiment();
+  });
+
+  textA.addEventListener("input", updateExperiment);
+  textB.addEventListener("input", updateExperiment);
+  langToggle.addEventListener("click", () => applyLanguage(currentLang === "en" ? "es" : "en"));
+
+  setPreset("meaning");
+  applyLanguage(currentLang);
+</script>
+</body>
+</html>
