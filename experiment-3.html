@@ -2,207 +2,781 @@
 <html lang="en" class="scroll-smooth">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Experiment 3 — Signals Over Time</title>
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    html {
+      scrollbar-width: thin;
+      scrollbar-color: #8ad7ff #081120;
+    }
+
+    ::-webkit-scrollbar { width: 12px; }
+
+    ::-webkit-scrollbar-track {
+      background: linear-gradient(180deg, #071224, #05101f);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #8ad7ff, #6ca8ff);
+      border-radius: 999px;
+      border: 2px solid #081120;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(180deg, #b6ecff, #8ad7ff);
+    }
+
+    ::selection {
+      background: rgba(138, 215, 255, 0.28);
+      color: white;
+    }
+
+    :root {
+      --page-accent: #8ad7ff;
+      --page-accent-soft: rgba(138, 215, 255, 0.12);
+      --page-accent-border: rgba(138, 215, 255, 0.28);
+      --panel: rgba(15, 23, 42, 0.78);
+      --panel-strong: rgba(15, 23, 42, 0.92);
+    }
+
+    body {
+      background:
+        radial-gradient(circle at 12% 8%, rgba(96, 165, 250, 0.10), transparent 26%),
+        radial-gradient(circle at 88% 22%, rgba(138, 215, 255, 0.07), transparent 24%),
+        radial-gradient(circle at 50% 100%, rgba(168, 85, 247, 0.08), transparent 32%),
+        #030712;
+    }
+
+    .reading-block { max-width: 68ch; }
+    .reading-block p { line-height: 1.9; }
+
+    .section-intro {
+      color: #cbd5e1;
+      font-size: 1.05rem;
+      line-height: 1.85;
+      max-width: 68ch;
+    }
+
+    .concept-card {
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      background:
+        linear-gradient(180deg, var(--panel-strong), var(--panel)),
+        radial-gradient(circle at top left, var(--page-accent-soft), transparent 38%);
+      border-radius: 1.25rem;
+      padding: 1.4rem;
+      box-shadow: 0 20px 55px rgba(0,0,0,0.20);
+    }
+
+    .concept-card-strong {
+      border-color: var(--page-accent-border);
+      background:
+        linear-gradient(180deg, rgba(15, 23, 42, 0.90), rgba(15, 23, 42, 0.70)),
+        radial-gradient(circle at top left, rgba(96, 165, 250, 0.18), transparent 42%);
+    }
+
+    .concept-kicker {
+      color: var(--page-accent);
+      font-size: 0.76rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 0.7rem;
+      font-weight: 700;
+    }
+
+    .concept-title {
+      color: white;
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.45rem;
+    }
+
+    .formula-card {
+      border: 1px solid rgba(138, 215, 255, 0.22);
+      background: rgba(2, 6, 23, 0.56);
+      border-radius: 1rem;
+      padding: 1rem;
+      overflow-x: auto;
+    }
+
+    .formula {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      color: #e0f2fe;
+      font-size: clamp(0.9rem, 2vw, 1.05rem);
+      white-space: nowrap;
+    }
+
+    .metric {
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      background: rgba(2, 6, 23, 0.36);
+      border-radius: 1rem;
+      padding: 1rem;
+    }
+
+    .metric-label {
+      color: #94a3b8;
+      font-size: 0.76rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 0.35rem;
+    }
+
+    .metric-value {
+      color: white;
+      font-size: 1.55rem;
+      font-weight: 750;
+      letter-spacing: -0.03em;
+    }
+
+    .control-button, select, input[type="range"] {
+      accent-color: #8ad7ff;
+    }
+
+    select {
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      background: rgba(15, 23, 42, 0.72);
+      color: #dbeafe;
+      border-radius: 0.85rem;
+      padding: 0.65rem 0.8rem;
+      font-size: 0.92rem;
+      width: 100%;
+    }
+
+    canvas {
+      width: 100%;
+      height: auto;
+      background: rgba(2, 6, 23, 0.42);
+      border: 1px solid rgba(148, 163, 184, 0.16);
+      border-radius: 1rem;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      background: rgba(15, 23, 42, 0.62);
+      border-radius: 999px;
+      padding: 0.45rem 0.7rem;
+      color: #cbd5e1;
+      font-size: 0.84rem;
+    }
+
+    .mini-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.86rem;
+    }
+
+    .mini-table th,
+    .mini-table td {
+      border-bottom: 1px solid rgba(148, 163, 184, 0.13);
+      padding: 0.55rem 0.35rem;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .mini-table th {
+      color: #93c5fd;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .example-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.8rem;
+    }
+
+    @media (max-width: 900px) {
+      .example-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 
 <body class="bg-gray-950 text-white">
+  <div class="max-w-7xl mx-auto px-6 py-8 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-[220px_minmax(0,1fr)_260px] gap-8">
 
-<div class="max-w-6xl mx-auto px-6 py-10">
+      <aside class="hidden lg:block">
+        <div class="sticky top-8 rounded-2xl border border-gray-800 bg-gray-900/70 backdrop-blur p-4">
+          <p class="text-xs uppercase tracking-[0.18em] text-blue-300 mb-4" data-en="On this page" data-es="En esta página">On this page</p>
+          <nav class="space-y-3 text-sm">
+            <a href="#intro" class="block text-gray-300 hover:text-blue-300 transition" data-en="Introduction" data-es="Introducción">Introduction</a>
+            <a href="#theory" class="block text-gray-300 hover:text-blue-300 transition" data-en="Theory" data-es="Teoría">Theory</a>
+            <a href="#lab" class="block text-gray-300 hover:text-blue-300 transition" data-en="Interactive lab" data-es="Laboratorio interactivo">Interactive lab</a>
+            <a href="#examples" class="block text-gray-300 hover:text-blue-300 transition" data-en="Examples" data-es="Ejemplos">Examples</a>
+            <a href="#method" class="block text-gray-300 hover:text-blue-300 transition" data-en="Method" data-es="Método">Method</a>
+            <a href="#interpretation" class="block text-gray-300 hover:text-blue-300 transition" data-en="Interpretation" data-es="Interpretación">Interpretation</a>
+            <a href="#limits" class="block text-gray-300 hover:text-blue-300 transition" data-en="Limits" data-es="Límites">Limits</a>
+          </nav>
+        </div>
+      </aside>
 
-  <div class="flex justify-between items-center mb-6">
-    <a href="index.html" class="text-blue-400" data-en="← Back" data-es="← Volver">← Back</a>
-    <button id="langToggle" class="px-4 py-2 border border-gray-700 rounded">ES</button>
-  </div>
+      <main class="max-w-3xl">
+        <div class="flex justify-between items-center gap-4 mb-6">
+          <a href="index.html" class="text-blue-400 hover:text-blue-300 transition" data-en="← Back" data-es="← Volver">← Back</a>
+          <button id="langToggle" class="rounded-xl border border-gray-800 bg-gray-900/70 px-4 py-2 text-sm text-gray-200 hover:border-blue-400/40 hover:text-white transition">ES</button>
+        </div>
 
-  <h1 class="text-3xl font-bold mb-4"
-    data-en="Experiment 3 — Signals Over Time"
-    data-es="Experimento 3 — Señales en el Tiempo">
-    Experiment 3 — Signals Over Time
-  </h1>
+        <h1 class="text-4xl font-bold mt-4 mb-6 tracking-tight"
+            data-en="Experiment #3 — Signals Over Time"
+            data-es="Experimento #3 — Señales a Través del Tiempo">
+          Experiment #3 — Signals Over Time
+        </h1>
 
-  <p class="text-gray-400 mb-8 max-w-2xl"
-    data-en="This experiment studies how structure appears across time. Entropy is computed locally using a sliding window."
-    data-es="Este experimento estudia cómo la estructura aparece a lo largo del tiempo. La entropía se calcula localmente usando una ventana deslizante.">
-    This experiment studies how structure appears across time.
-  </p>
+        <p class="section-intro mb-10"
+           data-en="The previous experiments treated information mostly as a static distribution. This experiment adds time. Instead of asking only how symbols are distributed, it asks how structure appears or disappears depending on the observation window."
+           data-es="Los experimentos anteriores trataron la información principalmente como una distribución estática. Este experimento añade el tiempo. En lugar de preguntar solo cómo se distribuyen los símbolos, pregunta cómo la estructura aparece o desaparece según la ventana de observación.">
+          The previous experiments treated information mostly as a static distribution. This experiment adds time. Instead of asking only how symbols are distributed, it asks how structure appears or disappears depending on the observation window.
+        </p>
 
-  <!-- Controls -->
-  <div class="bg-gray-900 p-5 rounded-xl border border-gray-800 mb-6">
+        <section id="intro" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8">
+          <h2 class="text-2xl font-semibold mb-4" data-en="Introduction" data-es="Introducción">Introduction</h2>
 
-    <label class="text-sm text-gray-400"
-      data-en="Signal type"
-      data-es="Tipo de señal">Signal type</label>
+          <div class="space-y-4">
+            <div class="concept-card concept-card-strong">
+              <p class="concept-kicker" data-en="Central question" data-es="Pregunta central">Central question</p>
+              <p class="text-gray-300 leading-8"
+                 data-en="If a signal changes over time, does entropy measure the signal itself—or the signal as seen through a particular window?"
+                 data-es="Si una señal cambia a través del tiempo, ¿la entropía mide la señal en sí misma o la señal vista a través de una ventana particular?">
+                If a signal changes over time, does entropy measure the signal itself—or the signal as seen through a particular window?
+              </p>
+            </div>
 
-    <select id="signalType" class="w-full mt-2 p-2 bg-gray-800 rounded">
-      <option value="random">Random</option>
-      <option value="periodic">Periodic</option>
-      <option value="noisy">Noisy Pattern</option>
-    </select>
+            <div class="concept-card">
+              <p class="concept-kicker" data-en="Why this matters" data-es="Por qué importa">Why this matters</p>
+              <h3 class="concept-title" data-en="Time changes what counts as structure" data-es="El tiempo cambia lo que cuenta como estructura">Time changes what counts as structure</h3>
+              <p class="text-gray-300 leading-8"
+                 data-en="A signal can look random at a small scale and structured at a larger scale. The reverse can also happen: a signal can look simple locally, but complex when observed across a longer interval."
+                 data-es="Una señal puede parecer aleatoria a pequeña escala y estructurada a una escala mayor. También puede ocurrir lo contrario: una señal puede parecer simple localmente, pero compleja cuando se observa durante un intervalo más largo.">
+                A signal can look random at a small scale and structured at a larger scale. The reverse can also happen: a signal can look simple locally, but complex when observed across a longer interval.
+              </p>
+            </div>
+          </div>
+        </section>
 
-    <label class="block mt-4 text-sm text-gray-400">
-      <span data-en="Length" data-es="Longitud">Length</span>: <span id="lengthLabel">200</span>
-    </label>
-    <input id="length" type="range" min="50" max="400" value="200" class="w-full"/>
+        <section id="theory" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8">
+          <h2 class="text-2xl font-semibold mb-4" data-en="Theory" data-es="Teoría">Theory</h2>
 
-    <label class="block mt-4 text-sm text-gray-400">
-      <span data-en="Window size" data-es="Tamaño de ventana">Window size</span>: <span id="windowLabel">10</span>
-    </label>
-    <input id="windowSize" type="range" min="5" max="80" value="10" class="w-full"/>
+          <div class="reading-block space-y-5 text-gray-300">
+            <p data-en="A signal can be described as a sequence of values across time. In this page, the signal is deliberately simple: a binary sequence made of 0s and 1s. This is not meant to simulate the brain directly. It is a controlled model for studying temporal structure."
+               data-es="Una señal puede describirse como una secuencia de valores a través del tiempo. En esta página, la señal es deliberadamente simple: una secuencia binaria formada por 0s y 1s. No pretende simular el cerebro directamente. Es un modelo controlado para estudiar estructura temporal.">
+              A signal can be described as a sequence of values across time. In this page, the signal is deliberately simple: a binary sequence made of 0s and 1s. This is not meant to simulate the brain directly. It is a controlled model for studying temporal structure.
+            </p>
 
-  </div>
+            <div class="formula-card">
+              <p class="formula">S = [x₁, x₂, x₃, ..., xₜ]</p>
+            </div>
 
-  <!-- Visualization -->
-  <canvas id="signalCanvas" width="800" height="200" class="mb-6"></canvas>
-  <canvas id="entropyCanvas" width="800" height="200"></canvas>
+            <p data-en="Here, S is the signal and each xₜ is the value of the signal at time t. A binary signal has only two possible values, but the order of those values can still create patterns."
+               data-es="Aquí, S es la señal y cada xₜ es el valor de la señal en el tiempo t. Una señal binaria solo tiene dos valores posibles, pero el orden de esos valores aún puede crear patrones.">
+              Here, S is the signal and each xₜ is the value of the signal at time t. A binary signal has only two possible values, but the order of those values can still create patterns.
+            </p>
 
-  <!-- Metrics -->
-  <div class="grid grid-cols-2 gap-4 mt-6">
-    <div class="bg-gray-900 p-4 rounded border border-gray-800">
-      <p class="text-sm text-gray-400"
-        data-en="Average Entropy"
-        data-es="Entropía Promedio">Average Entropy</p>
-      <p id="avgEntropy" class="text-2xl font-bold">0</p>
+            <div class="formula-card">
+              <p class="formula">H(Wₜ) = - Σ p(x) log₂ p(x)</p>
+            </div>
+
+            <p data-en="Instead of calculating entropy for the entire signal at once, this experiment calculates entropy inside a sliding window. The window moves across the signal, producing a local entropy value at each position."
+               data-es="En lugar de calcular la entropía de toda la señal de una sola vez, este experimento calcula la entropía dentro de una ventana deslizante. La ventana se mueve a través de la señal y produce un valor de entropía local en cada posición.">
+              Instead of calculating entropy for the entire signal at once, this experiment calculates entropy inside a sliding window. The window moves across the signal, producing a local entropy value at each position.
+            </p>
+
+            <div class="formula-card">
+              <p class="formula">Wₜ = [xₜ, xₜ₊₁, ..., xₜ₊ₖ₋₁]</p>
+            </div>
+
+            <p data-en="The value k is the window size. A small k focuses on local structure. A large k captures broader structure, but may also smooth away short irregularities."
+               data-es="El valor k es el tamaño de la ventana. Un k pequeño se enfoca en estructura local. Un k grande captura estructura más amplia, pero también puede suavizar irregularidades cortas.">
+              The value k is the window size. A small k focuses on local structure. A large k captures broader structure, but may also smooth away short irregularities.
+            </p>
+          </div>
+        </section>
+
+        <section id="lab" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8">
+          <h2 class="text-2xl font-semibold mb-4" data-en="Interactive lab" data-es="Laboratorio interactivo">Interactive lab</h2>
+
+          <p class="section-intro mb-6"
+             data-en="Generate a signal, adjust the observation window, and add noise. The upper chart shows the signal. The lower chart shows local entropy across time."
+             data-es="Genera una señal, ajusta la ventana de observación y añade ruido. La gráfica superior muestra la señal. La gráfica inferior muestra la entropía local a través del tiempo.">
+            Generate a signal, adjust the observation window, and add noise. The upper chart shows the signal. The lower chart shows local entropy across time.
+          </p>
+
+          <div class="concept-card mb-6">
+            <p class="concept-kicker" data-en="Controls" data-es="Controles">Controls</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div>
+                <label class="block mb-2 text-sm text-gray-400" data-en="Signal type" data-es="Tipo de señal">Signal type</label>
+                <select id="signalType">
+                  <option value="random" data-en="Random" data-es="Aleatoria">Random</option>
+                  <option value="periodic" data-en="Periodic" data-es="Periódica">Periodic</option>
+                  <option value="blocks" data-en="Long blocks" data-es="Bloques largos">Long blocks</option>
+                  <option value="noisy" data-en="Noisy pattern" data-es="Patrón con ruido">Noisy pattern</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block mb-2 text-sm text-gray-400">
+                  <span data-en="Signal length" data-es="Longitud de señal">Signal length</span>:
+                  <span id="lengthLabel">200</span>
+                </label>
+                <input id="length" type="range" min="60" max="500" value="200" class="w-full" />
+              </div>
+
+              <div>
+                <label class="block mb-2 text-sm text-gray-400">
+                  <span data-en="Window size" data-es="Tamaño de ventana">Window size</span>:
+                  <span id="windowLabel">20</span>
+                </label>
+                <input id="windowSize" type="range" min="5" max="100" value="20" class="w-full" />
+              </div>
+
+              <div>
+                <label class="block mb-2 text-sm text-gray-400">
+                  <span data-en="Noise level" data-es="Nivel de ruido">Noise level</span>:
+                  <span id="noiseLabel">20</span>%
+                </label>
+                <input id="noiseLevel" type="range" min="0" max="50" value="20" class="w-full" />
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div class="metric">
+              <p class="metric-label" data-en="Average entropy" data-es="Entropía promedio">Average entropy</p>
+              <p class="metric-value"><span id="avgEntropy">0.000</span></p>
+              <p class="text-sm text-gray-400" data-en="bits per window" data-es="bits por ventana">bits per window</p>
+            </div>
+
+            <div class="metric">
+              <p class="metric-label" data-en="Minimum entropy" data-es="Entropía mínima">Minimum entropy</p>
+              <p class="metric-value"><span id="minEntropy">0.000</span></p>
+              <p class="text-sm text-gray-400" data-en="most predictable window" data-es="ventana más predecible">most predictable window</p>
+            </div>
+
+            <div class="metric">
+              <p class="metric-label" data-en="Maximum entropy" data-es="Entropía máxima">Maximum entropy</p>
+              <p class="metric-value"><span id="maxEntropy">0.000</span></p>
+              <p class="text-sm text-gray-400" data-en="least predictable window" data-es="ventana menos predecible">least predictable window</p>
+            </div>
+          </div>
+
+          <div class="concept-card mb-6">
+            <p class="concept-kicker" data-en="Signal" data-es="Señal">Signal</p>
+            <canvas id="signalCanvas" width="820" height="260" aria-label="Signal chart"></canvas>
+          </div>
+
+          <div class="concept-card mb-6">
+            <p class="concept-kicker" data-en="Sliding-window entropy" data-es="Entropía por ventana deslizante">Sliding-window entropy</p>
+            <canvas id="entropyCanvas" width="820" height="260" aria-label="Sliding entropy chart"></canvas>
+          </div>
+
+          <div class="concept-card concept-card-strong">
+            <p class="concept-kicker" data-en="Live interpretation" data-es="Interpretación en vivo">Live interpretation</p>
+            <p id="liveInterpretation" class="text-gray-300 leading-8"></p>
+          </div>
+        </section>
+
+        <section id="examples" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8">
+          <h2 class="text-2xl font-semibold mb-4" data-en="Examples" data-es="Ejemplos">Examples</h2>
+
+          <div class="example-grid">
+            <div class="concept-card">
+              <p class="concept-kicker" data-en="Random signal" data-es="Señal aleatoria">Random signal</p>
+              <h3 class="concept-title" data-en="High uncertainty" data-es="Alta incertidumbre">High uncertainty</h3>
+              <p class="text-gray-300 leading-8"
+                 data-en="A random signal tends to produce high entropy because each window contains a relatively unpredictable mix of 0s and 1s."
+                 data-es="Una señal aleatoria tiende a producir alta entropía porque cada ventana contiene una mezcla relativamente impredecible de 0s y 1s.">
+                A random signal tends to produce high entropy because each window contains a relatively unpredictable mix of 0s and 1s.
+              </p>
+            </div>
+
+            <div class="concept-card">
+              <p class="concept-kicker" data-en="Periodic signal" data-es="Señal periódica">Periodic signal</p>
+              <h3 class="concept-title" data-en="Scale-dependent structure" data-es="Estructura dependiente de escala">Scale-dependent structure</h3>
+              <p class="text-gray-300 leading-8"
+                 data-en="A periodic signal may look simple in one window and balanced in another. Its entropy depends strongly on how much of the cycle the window contains."
+                 data-es="Una señal periódica puede parecer simple en una ventana y balanceada en otra. Su entropía depende mucho de cuánto ciclo contiene la ventana.">
+                A periodic signal may look simple in one window and balanced in another. Its entropy depends strongly on how much of the cycle the window contains.
+              </p>
+            </div>
+
+            <div class="concept-card">
+              <p class="concept-kicker" data-en="Noisy pattern" data-es="Patrón con ruido">Noisy pattern</p>
+              <h3 class="concept-title" data-en="Structure plus disturbance" data-es="Estructura más perturbación">Structure plus disturbance</h3>
+              <p class="text-gray-300 leading-8"
+                 data-en="Noise pushes entropy upward, but it does not always erase the pattern immediately. The original structure can still shape the resulting entropy curve."
+                 data-es="El ruido empuja la entropía hacia arriba, pero no siempre borra el patrón de inmediato. La estructura original todavía puede moldear la curva de entropía resultante.">
+                Noise pushes entropy upward, but it does not always erase the pattern immediately. The original structure can still shape the resulting entropy curve.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section id="method" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8">
+          <h2 class="text-2xl font-semibold mb-4" data-en="Method" data-es="Método">Method</h2>
+
+          <div class="space-y-4">
+            <div class="concept-card">
+              <p class="concept-kicker" data-en="Variables" data-es="Variables">Variables</p>
+              <div class="flex flex-wrap gap-2">
+                <span class="pill" data-en="Independent: signal type" data-es="Independiente: tipo de señal">Independent: signal type</span>
+                <span class="pill" data-en="Independent: window size" data-es="Independiente: tamaño de ventana">Independent: window size</span>
+                <span class="pill" data-en="Independent: noise level" data-es="Independiente: nivel de ruido">Independent: noise level</span>
+                <span class="pill" data-en="Dependent: local entropy" data-es="Dependiente: entropía local">Dependent: local entropy</span>
+              </div>
+            </div>
+
+            <div class="concept-card">
+              <p class="concept-kicker" data-en="Procedure" data-es="Procedimiento">Procedure</p>
+              <table class="mini-table">
+                <thead>
+                  <tr>
+                    <th data-en="Step" data-es="Paso">Step</th>
+                    <th data-en="Action" data-es="Acción">Action</th>
+                    <th data-en="Reason" data-es="Razón">Reason</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td data-en="Generate a binary signal." data-es="Generar una señal binaria.">Generate a binary signal.</td>
+                    <td data-en="Keep the system simple enough to inspect." data-es="Mantener el sistema lo suficientemente simple para inspeccionarlo.">Keep the system simple enough to inspect.</td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td data-en="Move a window across the signal." data-es="Mover una ventana a través de la señal.">Move a window across the signal.</td>
+                    <td data-en="Measure local structure instead of only global frequency." data-es="Medir estructura local en vez de solo frecuencia global.">Measure local structure instead of only global frequency.</td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td data-en="Calculate entropy inside each window." data-es="Calcular entropía dentro de cada ventana.">Calculate entropy inside each window.</td>
+                    <td data-en="Track how uncertainty changes over time." data-es="Rastrear cómo cambia la incertidumbre a través del tiempo.">Track how uncertainty changes over time.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section id="interpretation" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8">
+          <h2 class="text-2xl font-semibold mb-4" data-en="Interpretation" data-es="Interpretación">Interpretation</h2>
+
+          <div class="reading-block space-y-5 text-gray-300">
+            <p data-en="The important result is that entropy is not only a property of the signal. It is also a property of the way the signal is observed. Changing the window size changes the scale at which structure becomes visible."
+               data-es="El resultado importante es que la entropía no es solo una propiedad de la señal. También es una propiedad de la forma en que la señal se observa. Cambiar el tamaño de la ventana cambia la escala en la que la estructura se vuelve visible.">
+              The important result is that entropy is not only a property of the signal. It is also a property of the way the signal is observed. Changing the window size changes the scale at which structure becomes visible.
+            </p>
+
+            <p data-en="This matters for the larger project because perception also depends on scale, resolution, and transformation. A system does not encounter raw reality all at once. It samples, filters, compresses, and organizes signals through constraints."
+               data-es="Esto importa para el proyecto mayor porque la percepción también depende de escala, resolución y transformación. Un sistema no encuentra la realidad cruda de golpe. Muestrea, filtra, comprime y organiza señales mediante restricciones.">
+              This matters for the larger project because perception also depends on scale, resolution, and transformation. A system does not encounter raw reality all at once. It samples, filters, compresses, and organizes signals through constraints.
+            </p>
+          </div>
+        </section>
+
+        <section id="limits" class="scroll-mt-24 mb-16">
+          <h2 class="text-2xl font-semibold mb-4" data-en="Limits" data-es="Límites">Limits</h2>
+
+          <div class="concept-card concept-card-strong">
+            <p class="concept-kicker" data-en="Main limitation" data-es="Límite principal">Main limitation</p>
+            <p class="text-gray-300 leading-8"
+               data-en="This experiment only measures the balance of 0s and 1s inside each window. It does not yet detect higher-order patterns, long-range repetition, causality, or meaning. A sequence can have the same local entropy as another sequence while having a very different temporal organization."
+               data-es="Este experimento solo mide el balance de 0s y 1s dentro de cada ventana. Todavía no detecta patrones de orden superior, repetición de largo alcance, causalidad o significado. Una secuencia puede tener la misma entropía local que otra y aun así tener una organización temporal muy distinta.">
+              This experiment only measures the balance of 0s and 1s inside each window. It does not yet detect higher-order patterns, long-range repetition, causality, or meaning. A sequence can have the same local entropy as another sequence while having a very different temporal organization.
+            </p>
+          </div>
+        </section>
+      </main>
+
+      <aside class="hidden xl:block">
+        <div class="sticky top-8 space-y-4">
+          <div class="concept-card">
+            <p class="concept-kicker" data-en="Core idea" data-es="Idea central">Core idea</p>
+            <p class="text-gray-300 leading-7"
+               data-en="Entropy depends on the signal and the observation window."
+               data-es="La entropía depende de la señal y de la ventana de observación.">
+              Entropy depends on the signal and the observation window.
+            </p>
+          </div>
+
+          <div class="concept-card">
+            <p class="concept-kicker" data-en="Warning" data-es="Advertencia">Warning</p>
+            <p class="text-gray-400 leading-7"
+               data-en="A window can reveal structure, but it can also hide it."
+               data-es="Una ventana puede revelar estructura, pero también puede ocultarla.">
+              A window can reveal structure, but it can also hide it.
+            </p>
+          </div>
+        </div>
+      </aside>
+
     </div>
-
-    <div class="bg-gray-900 p-4 rounded border border-gray-800">
-      <p class="text-sm text-gray-400"
-        data-en="Interpretation"
-        data-es="Interpretación">Interpretation</p>
-      <p id="interpretation" class="text-sm text-gray-300"></p>
-    </div>
   </div>
-
-</div>
 
 <script>
-let currentLang = localStorage.getItem("siteLang") || "en";
+  const langToggle = document.getElementById("langToggle");
 
-const langToggle = document.getElementById("langToggle");
+  const signalTypeEl = document.getElementById("signalType");
+  const lengthEl = document.getElementById("length");
+  const windowSizeEl = document.getElementById("windowSize");
+  const noiseLevelEl = document.getElementById("noiseLevel");
 
-function applyLanguage(lang){
-  document.documentElement.lang = lang;
-  document.querySelectorAll("[data-en][data-es]").forEach(el=>{
-    el.textContent = el.dataset[lang];
-  });
-  langToggle.textContent = lang === "en" ? "ES" : "EN";
-  localStorage.setItem("siteLang", lang);
-  currentLang = lang;
-}
-langToggle.onclick = ()=>applyLanguage(currentLang==="en"?"es":"en");
+  const lengthLabel = document.getElementById("lengthLabel");
+  const windowLabel = document.getElementById("windowLabel");
+  const noiseLabel = document.getElementById("noiseLabel");
 
-const signalCanvas = document.getElementById("signalCanvas");
-const entropyCanvas = document.getElementById("entropyCanvas");
-const sctx = signalCanvas.getContext("2d");
-const ectx = entropyCanvas.getContext("2d");
+  const avgEntropyEl = document.getElementById("avgEntropy");
+  const minEntropyEl = document.getElementById("minEntropy");
+  const maxEntropyEl = document.getElementById("maxEntropy");
+  const liveInterpretation = document.getElementById("liveInterpretation");
 
-const signalTypeEl = document.getElementById("signalType");
-const lengthEl = document.getElementById("length");
-const windowEl = document.getElementById("windowSize");
+  const signalCanvas = document.getElementById("signalCanvas");
+  const entropyCanvas = document.getElementById("entropyCanvas");
 
-const lengthLabel = document.getElementById("lengthLabel");
-const windowLabel = document.getElementById("windowLabel");
-const avgEntropyEl = document.getElementById("avgEntropy");
-const interpretationEl = document.getElementById("interpretation");
+  const sctx = signalCanvas.getContext("2d");
+  const ectx = entropyCanvas.getContext("2d");
 
-let WINDOW = 10;
+  let currentLang = localStorage.getItem("siteLang") || "en";
 
-function generateSignal(type, length){
-  let s=[];
-  for(let i=0;i<length;i++){
-    if(type==="random"){
-      s.push(Math.random()>0.5?1:0);
+  function applyLanguage(lang) {
+    document.documentElement.lang = lang;
+
+    document.querySelectorAll("[data-en][data-es]").forEach(el => {
+      el.textContent = el.dataset[lang];
+    });
+
+    document.querySelectorAll("option[data-en][data-es]").forEach(option => {
+      option.textContent = option.dataset[lang];
+    });
+
+    document.title = lang === "en"
+      ? "Experiment 3 — Signals Over Time"
+      : "Experimento 3 — Señales a Través del Tiempo";
+
+    langToggle.textContent = lang === "en" ? "ES" : "EN";
+    localStorage.setItem("siteLang", lang);
+    currentLang = lang;
+
+    update();
+  }
+
+  function generateSignal(type, length, noiseRate) {
+    const signal = [];
+
+    for (let i = 0; i < length; i++) {
+      let value = 0;
+
+      if (type === "random") {
+        value = Math.random() > 0.5 ? 1 : 0;
+      }
+
+      if (type === "periodic") {
+        value = i % 20 < 10 ? 1 : 0;
+      }
+
+      if (type === "blocks") {
+        value = Math.floor(i / 40) % 2 === 0 ? 1 : 0;
+      }
+
+      if (type === "noisy") {
+        value = i % 20 < 10 ? 1 : 0;
+      }
+
+      if (type !== "random" && Math.random() < noiseRate) {
+        value = 1 - value;
+      }
+
+      signal.push(value);
     }
-    if(type==="periodic"){
-      s.push(i%20<10?1:0);
+
+    return signal;
+  }
+
+  function entropy(values) {
+    if (!values.length) return 0;
+
+    let count0 = 0;
+    let count1 = 0;
+
+    values.forEach(v => {
+      if (v === 0) count0++;
+      else count1++;
+    });
+
+    const total = values.length;
+    const probabilities = [count0 / total, count1 / total];
+
+    let h = 0;
+
+    probabilities.forEach(p => {
+      if (p > 0) h -= p * Math.log2(p);
+    });
+
+    return h;
+  }
+
+  function slidingEntropy(signal, windowSize) {
+    const values = [];
+
+    for (let i = 0; i <= signal.length - windowSize; i++) {
+      const window = signal.slice(i, i + windowSize);
+      values.push(entropy(window));
     }
-    if(type==="noisy"){
-      let base=i%20<10?1:0;
-      if(Math.random()<0.2) base=1-base;
-      s.push(base);
+
+    return values;
+  }
+
+  function drawSignal(signal) {
+    const w = signalCanvas.width;
+    const h = signalCanvas.height;
+    const padding = 36;
+    const usableW = w - padding * 2;
+    const usableH = h - padding * 2;
+    const step = usableW / signal.length;
+
+    sctx.clearRect(0, 0, w, h);
+
+    sctx.strokeStyle = "rgba(148, 163, 184, 0.18)";
+    sctx.lineWidth = 1;
+
+    for (let i = 0; i <= 4; i++) {
+      const y = padding + (i * usableH) / 4;
+      sctx.beginPath();
+      sctx.moveTo(padding, y);
+      sctx.lineTo(w - padding, y);
+      sctx.stroke();
+    }
+
+    signal.forEach((v, i) => {
+      const x = padding + i * step;
+      const barH = v === 1 ? usableH * 0.78 : usableH * 0.18;
+      const y = h - padding - barH;
+
+      sctx.fillStyle = v === 1 ? "rgba(138, 215, 255, 0.86)" : "rgba(30, 41, 59, 0.86)";
+      sctx.fillRect(x, y, Math.max(1, step - 1), barH);
+    });
+
+    sctx.fillStyle = "#94a3b8";
+    sctx.font = "13px sans-serif";
+    sctx.fillText("0", 14, h - padding - usableH * 0.18 + 4);
+    sctx.fillText("1", 14, h - padding - usableH * 0.78 + 4);
+  }
+
+  function drawEntropy(values) {
+    const w = entropyCanvas.width;
+    const h = entropyCanvas.height;
+    const padding = 42;
+    const usableW = w - padding * 2;
+    const usableH = h - padding * 2;
+    const step = usableW / Math.max(1, values.length);
+
+    ectx.clearRect(0, 0, w, h);
+
+    ectx.strokeStyle = "rgba(148, 163, 184, 0.18)";
+    ectx.lineWidth = 1;
+    ectx.font = "13px sans-serif";
+    ectx.fillStyle = "#94a3b8";
+
+    for (let i = 0; i <= 4; i++) {
+      const y = padding + (i * usableH) / 4;
+      const value = 1 - i / 4;
+
+      ectx.beginPath();
+      ectx.moveTo(padding, y);
+      ectx.lineTo(w - padding, y);
+      ectx.stroke();
+
+      ectx.fillText(value.toFixed(2), 8, y + 4);
+    }
+
+    values.forEach((v, i) => {
+      const barH = v * usableH;
+      const x = padding + i * step;
+      const y = h - padding - barH;
+
+      ectx.fillStyle = "rgba(167, 139, 250, 0.88)";
+      ectx.fillRect(x, y, Math.max(1, step - 1), barH);
+    });
+
+    ectx.fillStyle = "#cbd5e1";
+    ectx.fillText("Local entropy H(Wₜ)", w - 175, 24);
+  }
+
+  function updateInterpretation(type, avg, min, max, windowSize, noiseRate) {
+    if (currentLang === "en") {
+      if (type === "random") {
+        liveInterpretation.textContent =
+          `This random signal stays near high entropy because each window tends to contain a relatively balanced mix of 0s and 1s. Increasing the window size usually stabilizes the estimate instead of revealing a strong hidden structure.`;
+      } else if (type === "periodic") {
+        liveInterpretation.textContent =
+          `This periodic signal shows how entropy depends on scale. A small window may fall mostly inside one part of the cycle, while a larger window may include both 0s and 1s. The pattern is not only in the values; it is in their order over time.`;
+      } else if (type === "blocks") {
+        liveInterpretation.textContent =
+          `This block signal contains long stable regions. Small windows inside a block produce low entropy, but windows crossing a boundary produce higher entropy. The entropy curve therefore tracks transitions.`;
+      } else {
+        liveInterpretation.textContent =
+          `This noisy pattern shows that noise increases uncertainty, but does not always erase structure immediately. With ${Math.round(noiseRate * 100)}% noise and a window of ${windowSize}, the average entropy is ${avg.toFixed(3)} bits.`;
+      }
+    } else {
+      if (type === "random") {
+        liveInterpretation.textContent =
+          `Esta señal aleatoria se mantiene cerca de una entropía alta porque cada ventana tiende a contener una mezcla relativamente balanceada de 0s y 1s. Aumentar el tamaño de la ventana suele estabilizar la estimación, no revelar una estructura oculta fuerte.`;
+      } else if (type === "periodic") {
+        liveInterpretation.textContent =
+          `Esta señal periódica muestra cómo la entropía depende de la escala. Una ventana pequeña puede caer casi toda dentro de una parte del ciclo, mientras que una ventana más grande puede incluir tanto 0s como 1s. El patrón no está solo en los valores; está en su orden temporal.`;
+      } else if (type === "blocks") {
+        liveInterpretation.textContent =
+          `Esta señal de bloques contiene regiones largas y estables. Las ventanas pequeñas dentro de un bloque producen baja entropía, pero las ventanas que cruzan un borde producen mayor entropía. Por eso la curva de entropía rastrea transiciones.`;
+      } else {
+        liveInterpretation.textContent =
+          `Este patrón con ruido muestra que el ruido aumenta la incertidumbre, pero no siempre borra la estructura de inmediato. Con ${Math.round(noiseRate * 100)}% de ruido y una ventana de ${windowSize}, la entropía promedio es ${avg.toFixed(3)} bits.`;
+      }
     }
   }
-  return s;
-}
 
-function entropy(arr){
-  let c0=0,c1=0;
-  arr.forEach(v=>v?c1++:c0++);
-  let h=0;
-  [c0,c1].forEach(c=>{
-    if(c>0){
-      let p=c/arr.length;
-      h-=p*Math.log2(p);
-    }
-  });
-  return h;
-}
+  function update() {
+    const type = signalTypeEl.value;
+    const length = parseInt(lengthEl.value);
+    const windowSize = parseInt(windowSizeEl.value);
+    const noiseRate = parseInt(noiseLevelEl.value) / 100;
 
-function sliding(signal){
-  let out=[];
-  for(let i=0;i<signal.length-WINDOW;i++){
-    out.push(entropy(signal.slice(i,i+WINDOW)));
+    lengthLabel.textContent = length;
+    windowLabel.textContent = windowSize;
+    noiseLabel.textContent = Math.round(noiseRate * 100);
+
+    const signal = generateSignal(type, length, noiseRate);
+    const entropyValues = slidingEntropy(signal, Math.min(windowSize, length));
+
+    const avg = entropyValues.reduce((sum, value) => sum + value, 0) / entropyValues.length;
+    const min = Math.min(...entropyValues);
+    const max = Math.max(...entropyValues);
+
+    avgEntropyEl.textContent = avg.toFixed(3);
+    minEntropyEl.textContent = min.toFixed(3);
+    maxEntropyEl.textContent = max.toFixed(3);
+
+    drawSignal(signal);
+    drawEntropy(entropyValues);
+    updateInterpretation(type, avg, min, max, windowSize, noiseRate);
   }
-  return out;
-}
 
-function drawSignal(signal){
-  sctx.clearRect(0,0,800,200);
-  const step=800/signal.length;
-  signal.forEach((v,i)=>{
-    sctx.fillStyle=v?"#8ad7ff":"#1e293b";
-    sctx.fillRect(i*step,200-v*180,step-1,v*180);
+  signalTypeEl.addEventListener("change", update);
+  lengthEl.addEventListener("input", update);
+  windowSizeEl.addEventListener("input", update);
+  noiseLevelEl.addEventListener("input", update);
+
+  langToggle.addEventListener("click", () => {
+    applyLanguage(currentLang === "en" ? "es" : "en");
   });
-}
 
-function drawEntropy(values){
-  ectx.clearRect(0,0,800,200);
-  const step=800/values.length;
-  values.forEach((v,i)=>{
-    ectx.fillStyle="#a78bfa";
-    ectx.fillRect(i*step,200-v*180,step-1,v*180);
-  });
-}
-
-function interpret(avg){
-  if(currentLang==="en"){
-    if(avg>0.9) return "High uncertainty: signal behaves close to random.";
-    if(avg>0.5) return "Moderate uncertainty: pattern partially disrupted.";
-    return "Low uncertainty: structure dominates.";
-  }else{
-    if(avg>0.9) return "Alta incertidumbre: señal cercana al ruido.";
-    if(avg>0.5) return "Incertidumbre media: patrón parcialmente alterado.";
-    return "Baja incertidumbre: domina la estructura.";
-  }
-}
-
-function update(){
-  const type=signalTypeEl.value;
-  const length=parseInt(lengthEl.value);
-  WINDOW=parseInt(windowEl.value);
-
-  lengthLabel.textContent=length;
-  windowLabel.textContent=WINDOW;
-
-  const signal=generateSignal(type,length);
-  const ent=sliding(signal);
-
-  drawSignal(signal);
-  drawEntropy(ent);
-
-  const avg=ent.reduce((a,b)=>a+b,0)/ent.length;
-  avgEntropyEl.textContent=avg.toFixed(3);
-  interpretationEl.textContent=interpret(avg);
-}
-
-signalTypeEl.onchange=update;
-lengthEl.oninput=update;
-windowEl.oninput=update;
-
-applyLanguage(currentLang);
-update();
+  applyLanguage(currentLang);
 </script>
-
 </body>
 </html>
