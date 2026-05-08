@@ -1,65 +1,97 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Experiment 3 — Signals Over Time</title>
-<script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Experiment 3 — Signals Over Time</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body class="bg-gray-950 text-white">
 
-<div class="max-w-5xl mx-auto px-6 py-10">
+<div class="max-w-6xl mx-auto px-6 py-10">
 
-<a href="index.html" class="text-blue-400 hover:text-blue-300">← Back</a>
+  <div class="flex justify-between items-center mb-6">
+    <a href="index.html" class="text-blue-400" data-en="← Back" data-es="← Volver">← Back</a>
+    <button id="langToggle" class="px-4 py-2 border border-gray-700 rounded">ES</button>
+  </div>
 
-<h1 class="text-3xl font-bold mt-6 mb-4">
-Experiment 3 — Signals Over Time
-</h1>
+  <h1 class="text-3xl font-bold mb-4"
+    data-en="Experiment 3 — Signals Over Time"
+    data-es="Experimento 3 — Señales en el Tiempo">
+    Experiment 3 — Signals Over Time
+  </h1>
 
-<p class="text-gray-400 mb-8 max-w-2xl">
-This experiment shows how entropy depends on observation scale. 
-Small windows capture local randomness, while larger windows reveal structure.
-</p>
+  <p class="text-gray-400 mb-8 max-w-2xl"
+    data-en="This experiment studies how structure appears across time. Entropy is computed locally using a sliding window."
+    data-es="Este experimento estudia cómo la estructura aparece a lo largo del tiempo. La entropía se calcula localmente usando una ventana deslizante.">
+    This experiment studies how structure appears across time.
+  </p>
 
-<div class="bg-gray-900 p-5 rounded-xl border border-gray-800 mb-6">
+  <!-- Controls -->
+  <div class="bg-gray-900 p-5 rounded-xl border border-gray-800 mb-6">
 
-<label class="block mb-2 text-sm text-gray-400">Signal type</label>
-<select id="signalType" class="w-full p-2 bg-gray-800 rounded">
-<option value="random">Random</option>
-<option value="periodic">Periodic</option>
-<option value="noisy">Noisy Pattern</option>
-</select>
+    <label class="text-sm text-gray-400"
+      data-en="Signal type"
+      data-es="Tipo de señal">Signal type</label>
 
-<label class="block mt-4 mb-2 text-sm text-gray-400">
-Length: <span id="lengthLabel">200</span>
-</label>
-<input id="length" type="range" min="50" max="400" value="200" class="w-full"/>
+    <select id="signalType" class="w-full mt-2 p-2 bg-gray-800 rounded">
+      <option value="random">Random</option>
+      <option value="periodic">Periodic</option>
+      <option value="noisy">Noisy Pattern</option>
+    </select>
 
-<label class="block mt-4 mb-2 text-sm text-gray-400">
-Window size: <span id="windowLabel">10</span>
-</label>
-<input id="windowSize" type="range" min="5" max="80" value="10" class="w-full"/>
+    <label class="block mt-4 text-sm text-gray-400">
+      <span data-en="Length" data-es="Longitud">Length</span>: <span id="lengthLabel">200</span>
+    </label>
+    <input id="length" type="range" min="50" max="400" value="200" class="w-full"/>
 
-</div>
+    <label class="block mt-4 text-sm text-gray-400">
+      <span data-en="Window size" data-es="Tamaño de ventana">Window size</span>: <span id="windowLabel">10</span>
+    </label>
+    <input id="windowSize" type="range" min="5" max="80" value="10" class="w-full"/>
 
-<canvas id="signalCanvas" width="800" height="200" class="mb-6"></canvas>
-<canvas id="entropyCanvas" width="800" height="200"></canvas>
+  </div>
 
-<div class="grid grid-cols-2 gap-4 mt-6">
-<div class="bg-gray-900 p-4 rounded border border-gray-800">
-<p class="text-sm text-gray-400">Average Entropy</p>
-<p id="avgEntropy" class="text-2xl font-bold">0</p>
-</div>
-</div>
+  <!-- Visualization -->
+  <canvas id="signalCanvas" width="800" height="200" class="mb-6"></canvas>
+  <canvas id="entropyCanvas" width="800" height="200"></canvas>
 
-<p class="text-sm text-gray-400 mt-6 max-w-xl">
-Entropy is computed over a sliding window. Changing the window changes what counts as “structure.”
-</p>
+  <!-- Metrics -->
+  <div class="grid grid-cols-2 gap-4 mt-6">
+    <div class="bg-gray-900 p-4 rounded border border-gray-800">
+      <p class="text-sm text-gray-400"
+        data-en="Average Entropy"
+        data-es="Entropía Promedio">Average Entropy</p>
+      <p id="avgEntropy" class="text-2xl font-bold">0</p>
+    </div>
+
+    <div class="bg-gray-900 p-4 rounded border border-gray-800">
+      <p class="text-sm text-gray-400"
+        data-en="Interpretation"
+        data-es="Interpretación">Interpretation</p>
+      <p id="interpretation" class="text-sm text-gray-300"></p>
+    </div>
+  </div>
 
 </div>
 
 <script>
+let currentLang = localStorage.getItem("siteLang") || "en";
+
+const langToggle = document.getElementById("langToggle");
+
+function applyLanguage(lang){
+  document.documentElement.lang = lang;
+  document.querySelectorAll("[data-en][data-es]").forEach(el=>{
+    el.textContent = el.dataset[lang];
+  });
+  langToggle.textContent = lang === "en" ? "ES" : "EN";
+  localStorage.setItem("siteLang", lang);
+  currentLang = lang;
+}
+langToggle.onclick = ()=>applyLanguage(currentLang==="en"?"es":"en");
+
 const signalCanvas = document.getElementById("signalCanvas");
 const entropyCanvas = document.getElementById("entropyCanvas");
 const sctx = signalCanvas.getContext("2d");
@@ -67,109 +99,108 @@ const ectx = entropyCanvas.getContext("2d");
 
 const signalTypeEl = document.getElementById("signalType");
 const lengthEl = document.getElementById("length");
-const windowSizeEl = document.getElementById("windowSize");
+const windowEl = document.getElementById("windowSize");
 
 const lengthLabel = document.getElementById("lengthLabel");
 const windowLabel = document.getElementById("windowLabel");
 const avgEntropyEl = document.getElementById("avgEntropy");
+const interpretationEl = document.getElementById("interpretation");
 
-let WINDOW_SIZE = 10;
+let WINDOW = 10;
 
-function generateSignal(type, length) {
-let signal = [];
-
-if (type === "random") {
-for (let i = 0; i < length; i++) {
-signal.push(Math.random() > 0.5 ? 1 : 0);
-}
-}
-
-if (type === "periodic") {
-for (let i = 0; i < length; i++) {
-signal.push(i % 20 < 10 ? 1 : 0);
-}
-}
-
-if (type === "noisy") {
-for (let i = 0; i < length; i++) {
-let base = i % 20 < 10 ? 1 : 0;
-if (Math.random() < 0.2) base = 1 - base;
-signal.push(base);
-}
+function generateSignal(type, length){
+  let s=[];
+  for(let i=0;i<length;i++){
+    if(type==="random"){
+      s.push(Math.random()>0.5?1:0);
+    }
+    if(type==="periodic"){
+      s.push(i%20<10?1:0);
+    }
+    if(type==="noisy"){
+      let base=i%20<10?1:0;
+      if(Math.random()<0.2) base=1-base;
+      s.push(base);
+    }
+  }
+  return s;
 }
 
-return signal;
+function entropy(arr){
+  let c0=0,c1=0;
+  arr.forEach(v=>v?c1++:c0++);
+  let h=0;
+  [c0,c1].forEach(c=>{
+    if(c>0){
+      let p=c/arr.length;
+      h-=p*Math.log2(p);
+    }
+  });
+  return h;
 }
 
-function entropy(arr) {
-let count = {0:0, 1:0};
-arr.forEach(v => count[v]++);
-
-let h = 0;
-for (let key in count) {
-let p = count[key] / arr.length;
-if (p > 0) h -= p * Math.log2(p);
-}
-return h;
+function sliding(signal){
+  let out=[];
+  for(let i=0;i<signal.length-WINDOW;i++){
+    out.push(entropy(signal.slice(i,i+WINDOW)));
+  }
+  return out;
 }
 
-function slidingEntropy(signal) {
-let values = [];
-
-for (let i = 0; i < signal.length - WINDOW_SIZE; i++) {
-let window = signal.slice(i, i + WINDOW_SIZE);
-values.push(entropy(window));
+function drawSignal(signal){
+  sctx.clearRect(0,0,800,200);
+  const step=800/signal.length;
+  signal.forEach((v,i)=>{
+    sctx.fillStyle=v?"#8ad7ff":"#1e293b";
+    sctx.fillRect(i*step,200-v*180,step-1,v*180);
+  });
 }
 
-return values;
+function drawEntropy(values){
+  ectx.clearRect(0,0,800,200);
+  const step=800/values.length;
+  values.forEach((v,i)=>{
+    ectx.fillStyle="#a78bfa";
+    ectx.fillRect(i*step,200-v*180,step-1,v*180);
+  });
 }
 
-function drawSignal(signal) {
-sctx.clearRect(0,0,800,200);
-
-const step = 800 / signal.length;
-
-signal.forEach((v,i)=>{
-sctx.fillStyle = v ? "#8ad7ff" : "#1e293b";
-sctx.fillRect(i*step, 200 - v*180, step-1, v*180);
-});
+function interpret(avg){
+  if(currentLang==="en"){
+    if(avg>0.9) return "High uncertainty: signal behaves close to random.";
+    if(avg>0.5) return "Moderate uncertainty: pattern partially disrupted.";
+    return "Low uncertainty: structure dominates.";
+  }else{
+    if(avg>0.9) return "Alta incertidumbre: señal cercana al ruido.";
+    if(avg>0.5) return "Incertidumbre media: patrón parcialmente alterado.";
+    return "Baja incertidumbre: domina la estructura.";
+  }
 }
 
-function drawEntropy(values) {
-ectx.clearRect(0,0,800,200);
+function update(){
+  const type=signalTypeEl.value;
+  const length=parseInt(lengthEl.value);
+  WINDOW=parseInt(windowEl.value);
 
-const step = 800 / values.length;
+  lengthLabel.textContent=length;
+  windowLabel.textContent=WINDOW;
 
-values.forEach((v,i)=>{
-const height = v * 180;
-ectx.fillStyle = "#a78bfa";
-ectx.fillRect(i*step, 200 - height, step-1, height);
-});
+  const signal=generateSignal(type,length);
+  const ent=sliding(signal);
+
+  drawSignal(signal);
+  drawEntropy(ent);
+
+  const avg=ent.reduce((a,b)=>a+b,0)/ent.length;
+  avgEntropyEl.textContent=avg.toFixed(3);
+  interpretationEl.textContent=interpret(avg);
 }
 
-function update() {
-const type = signalTypeEl.value;
-const length = parseInt(lengthEl.value);
+signalTypeEl.onchange=update;
+lengthEl.oninput=update;
+windowEl.oninput=update;
 
-WINDOW_SIZE = parseInt(windowSizeEl.value);
-
-lengthLabel.textContent = length;
-windowLabel.textContent = WINDOW_SIZE;
-
-const signal = generateSignal(type, length);
-const ent = slidingEntropy(signal);
-
-drawSignal(signal);
-drawEntropy(ent);
-
-const avg = ent.reduce((a,b)=>a+b,0)/ent.length;
-avgEntropyEl.textContent = avg.toFixed(3);
-}
-
-signalTypeEl.addEventListener("change", update);
-lengthEl.addEventListener("input", update);
-windowSizeEl.addEventListener("input", update);
-
+applyLanguage(currentLang);
 update();
 </script>
 
