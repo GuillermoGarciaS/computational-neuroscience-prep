@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Experiment 3 — Signals Over Time</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-950 text-white">
+
+<div class="max-w-5xl mx-auto px-6 py-10">
+
+  <a href="index.html" class="text-blue-400 hover:text-blue-300">← Back</a>
+
+  <h1 class="text-3xl font-bold mt-6 mb-4">
+    Experiment 3 — Signals Over Time
+  </h1>
+
+  <p class="text-gray-400 mb-8 max-w-2xl">
+    This experiment studies how structure appears across time. 
+    A signal may look random at a single point but reveal patterns when observed sequentially.
+  </p>
+
+  <!-- Controls -->
+  <div class="bg-gray-900 p-5 rounded-xl border border-gray-800 mb-6">
+    <label class="block mb-2 text-sm text-gray-400">Signal type</label>
+    <select id="signalType" class="w-full p-2 bg-gray-800 rounded">
+      <option value="random">Random</option>
+      <option value="periodic">Periodic</option>
+      <option value="noisy">Noisy Pattern</option>
+    </select>
+
+    <label class="block mt-4 mb-2 text-sm text-gray-400">Length</label>
+    <input id="length" type="range" min="50" max="400" value="200" class="w-full"/>
+  </div>
+
+  <!-- Canvas -->
+  <canvas id="signalCanvas" width="800" height="200" class="mb-6"></canvas>
+  <canvas id="entropyCanvas" width="800" height="200"></canvas>
+
+  <!-- Metrics -->
+  <div class="grid grid-cols-2 gap-4 mt-6">
+    <div class="bg-gray-900 p-4 rounded border border-gray-800">
+      <p class="text-sm text-gray-400">Average Entropy</p>
+      <p id="avgEntropy" class="text-2xl font-bold">0</p>
+    </div>
+
+    <div class="bg-gray-900 p-4 rounded border border-gray-800">
+      <p class="text-sm text-gray-400">Window Size</p>
+      <p class="text-2xl font-bold">10</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const signalCanvas = document.getElementById("signalCanvas");
+const entropyCanvas = document.getElementById("entropyCanvas");
+const sctx = signalCanvas.getContext("2d");
+const ectx = entropyCanvas.getContext("2d");
+
+const signalTypeEl = document.getElementById("signalType");
+const lengthEl = document.getElementById("length");
+const avgEntropyEl = document.getElementById("avgEntropy");
+
+const WINDOW_SIZE = 10;
+
+function generateSignal(type, length) {
+  let signal = [];
+
+  if (type === "random") {
+    for (let i = 0; i < length; i++) {
+      signal.push(Math.random() > 0.5 ? 1 : 0);
+    }
+  }
+
+  if (type === "periodic") {
+    for (let i = 0; i < length; i++) {
+      signal.push(i % 20 < 10 ? 1 : 0);
+    }
+  }
+
+  if (type === "noisy") {
+    for (let i = 0; i < length; i++) {
+      let base = i % 20 < 10 ? 1 : 0;
+      if (Math.random() < 0.2) base = 1 - base;
+      signal.push(base);
+    }
+  }
+
+  return signal;
+}
+
+function entropy(arr) {
+  let count = {0:0, 1:0};
+  arr.forEach(v => count[v]++);
+  let h = 0;
+
+  for (let key in count) {
+    let p = count[key] / arr.length;
+    if (p > 0) h -= p * Math.log2(p);
+  }
+
+  return h;
+}
+
+function slidingEntropy(signal) {
+  let values = [];
+
+  for (let i = 0; i < signal.length - WINDOW_SIZE; i++) {
+    let window = signal.slice(i, i + WINDOW_SIZE);
+    values.push(entropy(window));
+  }
+
+  return values;
+}
+
+function drawSignal(signal) {
+  sctx.clearRect(0, 0, 800, 200);
+
+  const step = 800 / signal.length;
+
+  signal.forEach((v, i) => {
+    sctx.fillStyle = v ? "#8ad7ff" : "#1e293b";
+    sctx.fillRect(i * step, 200 - v * 180, step - 1, v * 180);
+  });
+}
+
+function drawEntropy(values) {
+  ectx.clearRect(0, 0, 800, 200);
+
+  const step = 800 / values.length;
+
+  values.forEach((v, i) => {
+    const height = v / 1 * 180;
+    ectx.fillStyle = "#a78bfa";
+    ectx.fillRect(i * step, 200 - height, step - 1, height);
+  });
+}
+
+function update() {
+  const type = signalTypeEl.value;
+  const length = parseInt(lengthEl.value);
+
+  const signal = generateSignal(type, length);
+  const ent = slidingEntropy(signal);
+
+  drawSignal(signal);
+  drawEntropy(ent);
+
+  const avg = ent.reduce((a,b)=>a+b,0)/ent.length;
+  avgEntropyEl.textContent = avg.toFixed(3);
+}
+
+signalTypeEl.addEventListener("change", update);
+lengthEl.addEventListener("input", update);
+
+update();
+</script>
+
+</body>
+</html>
