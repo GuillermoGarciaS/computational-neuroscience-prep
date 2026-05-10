@@ -96,6 +96,214 @@
       max-width: 68ch;
       line-height: 1.9;
     }
+
+
+    .model-dashboard {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(138, 215, 255, 0.24);
+      background:
+        radial-gradient(circle at 18% 10%, rgba(138, 215, 255, 0.18), transparent 32%),
+        radial-gradient(circle at 92% 18%, rgba(167, 139, 250, 0.13), transparent 28%),
+        linear-gradient(180deg, rgba(15, 23, 42, 0.96), rgba(2, 6, 23, 0.72));
+      border-radius: 1.35rem;
+      padding: 1.25rem;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.24);
+    }
+
+    .model-dashboard::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+      background-size: 28px 28px;
+      mask-image: radial-gradient(circle at 50% 20%, black, transparent 70%);
+      opacity: 0.7;
+    }
+
+    .model-dashboard > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .model-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      border: 1px solid rgba(138, 215, 255, 0.25);
+      background: rgba(14, 165, 233, 0.08);
+      color: #bae6fd;
+      border-radius: 999px;
+      padding: 0.38rem 0.62rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .model-pill::before {
+      content: "";
+      width: 0.45rem;
+      height: 0.45rem;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 18px rgba(34, 197, 94, 0.75);
+    }
+
+    .formula-shell {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 0.85rem;
+      align-items: center;
+      border: 1px solid rgba(148, 163, 184, 0.16);
+      background: rgba(2, 6, 23, 0.46);
+      border-radius: 1.1rem;
+      padding: 0.95rem;
+    }
+
+    .formula-symbol {
+      width: 3.2rem;
+      height: 3.2rem;
+      border-radius: 1rem;
+      display: grid;
+      place-items: center;
+      color: #e0f2fe;
+      background:
+        radial-gradient(circle at 42% 35%, rgba(255,255,255,0.26), transparent 28%),
+        linear-gradient(135deg, rgba(96, 165, 250, 0.38), rgba(34, 211, 238, 0.16));
+      border: 1px solid rgba(138, 215, 255, 0.32);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-weight: 800;
+    }
+
+    .model-metric {
+      border: 1px solid rgba(148, 163, 184, 0.16);
+      background: rgba(15, 23, 42, 0.58);
+      border-radius: 1rem;
+      padding: 0.88rem;
+      min-height: 6.2rem;
+    }
+
+    .model-metric-label {
+      color: #94a3b8;
+      font-size: 0.68rem;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      margin-bottom: 0.45rem;
+    }
+
+    .model-metric-value {
+      color: #e0f2fe;
+      font-size: 1rem;
+      font-weight: 760;
+      line-height: 1.35;
+      word-break: break-word;
+    }
+
+    .model-bar-track {
+      height: 0.72rem;
+      overflow: hidden;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.16);
+      background: rgba(2, 6, 23, 0.62);
+    }
+
+    .model-bar-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #60a5fa, #22d3ee, #a78bfa);
+      box-shadow: 0 0 24px rgba(96, 165, 250, 0.42);
+      transition: width 280ms ease;
+    }
+
+    .entropy-readout {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.75rem;
+      margin: 1rem 0;
+    }
+
+    .entropy-card {
+      border: 1px solid rgba(148, 163, 184, 0.16);
+      background: rgba(15, 23, 42, 0.62);
+      border-radius: 1rem;
+      padding: 0.8rem;
+      text-align: left;
+    }
+
+    .entropy-card span:first-child {
+      display: block;
+      color: #94a3b8;
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 0.35rem;
+    }
+
+    .entropy-card strong {
+      color: #e0f2fe;
+      font-size: 1.05rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    }
+
+    .bottom-nav {
+      display: flex;
+      align-items: stretch;
+      justify-content: space-between;
+      gap: 1rem;
+      margin: 2rem 0 0;
+      padding: 1rem;
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      border-radius: 1.25rem;
+      background:
+        linear-gradient(180deg, rgba(15, 23, 42, 0.90), rgba(15, 23, 42, 0.64)),
+        radial-gradient(circle at top right, rgba(138, 215, 255, 0.12), transparent 42%);
+    }
+
+    .bottom-nav a {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      background: rgba(2, 6, 23, 0.36);
+      border-radius: 1rem;
+      padding: 0.9rem 1rem;
+      color: #cbd5e1;
+      transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+    }
+
+    .bottom-nav a:hover {
+      transform: translateY(-2px);
+      border-color: rgba(138, 215, 255, 0.42);
+      background: rgba(14, 165, 233, 0.08);
+    }
+
+    .bottom-nav .nav-label {
+      color: #94a3b8;
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .bottom-nav .nav-title {
+      color: #e0f2fe;
+      font-weight: 760;
+    }
+
+    @media (max-width: 640px) {
+      .entropy-readout,
+      .bottom-nav {
+        grid-template-columns: 1fr;
+        flex-direction: column;
+      }
+
+      .formula-shell {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 
@@ -358,24 +566,54 @@
 
             <canvas id="resultsChart" width="760" height="340" class="w-full rounded-xl border border-gray-800 bg-gray-950"></canvas>
 
-            <div class="mt-5 rounded-2xl border border-blue-900/40 bg-blue-950/20 p-5">
-              <p class="text-xs uppercase tracking-[0.18em] text-blue-300 mb-3" data-en="Current Model" data-es="Modelo actual">Current Model</p>
+            <div class="model-dashboard mt-5">
+              <div class="flex items-start justify-between gap-4 mb-4">
+                <div>
+                  <p class="concept-kicker" data-en="Current Model" data-es="Modelo actual">Current Model</p>
+                  <h3 class="text-xl font-semibold text-white tracking-tight" data-en="Live storage-growth model" data-es="Modelo vivo de crecimiento de almacenamiento">Live storage-growth model</h3>
+                </div>
+                <span id="growthState" class="model-pill" data-en="low growth" data-es="crecimiento bajo">low growth</span>
+              </div>
 
-              <p class="text-lg md:text-xl text-blue-200 font-mono mb-3">
-                <span id="formulaLabel" data-en="Estimated Size(page) = Base Overhead + (Letters per Page × page)" data-es="Tamaño Estimado(página) = Costo Base + (Letras por Página × página)">
-                  Estimated Size(page) = Base Overhead + (Letters per Page × page)
-                </span>
-              </p>
+              <div class="formula-shell mb-4">
+                <div id="formulaGlyph" class="formula-symbol">Σ</div>
+                <div>
+                  <p class="text-blue-200 font-mono text-sm md:text-base leading-7">
+                    <span id="formulaLabel" data-en="Estimated Size(page) = Base Overhead + (Letters per Page × page)" data-es="Tamaño Estimado(página) = Costo Base + (Letras por Página × página)">
+                      Estimated Size(page) = Base Overhead + (Letters per Page × page)
+                    </span>
+                  </p>
+                  <p class="text-gray-300 leading-7 mt-2">
+                    <span data-en="Current substitution:" data-es="Sustitución actual:">Current substitution:</span>
+                    <span class="font-mono text-cyan-300" id="formulaSubstitution">Size(10) = 200 + (1200 × 10)</span>
+                  </p>
+                </div>
+              </div>
 
-              <p class="text-gray-300 leading-8 mb-2">
-                <span data-en="Current substitution:" data-es="Sustitución actual:">Current substitution:</span>
-                <span class="font-mono text-cyan-300" id="formulaSubstitution">Size(10) = 200 + (1200 × 10)</span>
-              </p>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+                <div class="model-metric">
+                  <p class="model-metric-label" data-en="Estimated result" data-es="Resultado estimado">Estimated result</p>
+                  <p class="model-metric-value" id="formulaResult">12,200 bytes</p>
+                </div>
+                <div class="model-metric">
+                  <p class="model-metric-label" data-en="Growth per page" data-es="Crecimiento por página">Growth per page</p>
+                  <p class="model-metric-value"><span id="slopeValue">1,200</span> bytes/page</p>
+                </div>
+                <div class="model-metric">
+                  <p class="model-metric-label" data-en="Overhead share" data-es="Peso del costo base">Overhead share</p>
+                  <p class="model-metric-value"><span id="overheadShare">1.6</span>%</p>
+                </div>
+              </div>
 
-              <p class="text-gray-200 leading-8">
-                <span data-en="Estimated result:" data-es="Resultado estimado:">Estimated result:</span>
-                <strong class="text-blue-300 font-mono" id="formulaResult">12,200 bytes</strong>
-              </p>
+              <div>
+                <div class="flex items-center justify-between text-xs text-gray-400 mb-2">
+                  <span data-en="Output scale" data-es="Escala de salida">Output scale</span>
+                  <span id="modelPulseLabel" class="font-mono text-blue-200">12,200 / 260,000</span>
+                </div>
+                <div class="model-bar-track">
+                  <div id="modelBarFill" class="model-bar-fill"></div>
+                </div>
+              </div>
             </div>
 
             <div class="mt-5 rounded-2xl border border-gray-800 bg-gray-950/70 p-5">
@@ -477,12 +715,22 @@
                 class="w-full my-2 accent-blue-400"
               >
 
-              <p class="text-gray-300 mt-3">
-                <span data-en="Entropy" data-es="Entropía">Entropy</span>:
-                <strong id="entropyValue">0</strong>
-              </p>
+              <div class="entropy-readout">
+                <div class="entropy-card">
+                  <span data-en="Probability p" data-es="Probabilidad p">Probability p</span>
+                  <strong id="pReadout">0.50</strong>
+                </div>
+                <div class="entropy-card">
+                  <span data-en="Probability 1-p" data-es="Probabilidad 1-p">Probability 1-p</span>
+                  <strong id="qReadout">0.50</strong>
+                </div>
+                <div class="entropy-card">
+                  <span data-en="Entropy" data-es="Entropía">Entropy</span>
+                  <strong id="entropyValue">0</strong>
+                </div>
+              </div>
 
-              <canvas id="entropyChart" width="760" height="360" class="w-full mt-4 bg-gray-950 rounded-xl border border-gray-800"></canvas>
+              <canvas id="entropyChart" width="760" height="390" class="w-full mt-4 bg-gray-950 rounded-xl border border-gray-800"></canvas>
 
               <p
                 class="text-sm text-gray-400 mt-3 leading-7"
@@ -494,6 +742,18 @@
             </div>
           </div>
         </section>
+
+
+        <nav class="bottom-nav" aria-label="Experiment navigation">
+          <a href="index.html">
+            <span class="nav-label" data-en="Notebook" data-es="Cuaderno">Notebook</span>
+            <span class="nav-title" data-en="Back to index" data-es="Volver al índice">Back to index</span>
+          </a>
+          <a href="experiment-2.html">
+            <span class="nav-label" data-en="Next" data-es="Siguiente">Next</span>
+            <span class="nav-title" data-en="Experiment 2 — Entropy, Content, and Representation →" data-es="Experimento 2 — Entropía, Contenido y Representación →">Experiment 2 — Entropy, Content, and Representation →</span>
+          </a>
+        </nav>
       </main>
 
       <aside class="hidden lg:block">
@@ -536,10 +796,23 @@
   const formulaSubstitution = document.getElementById("formulaSubstitution");
   const formulaResult = document.getElementById("formulaResult");
   const modelInterpretation = document.getElementById("modelInterpretation");
+  const growthState = document.getElementById("growthState");
+  const slopeValue = document.getElementById("slopeValue");
+  const overheadShare = document.getElementById("overheadShare");
+  const modelBarFill = document.getElementById("modelBarFill");
+  const modelPulseLabel = document.getElementById("modelPulseLabel");
+  const pReadout = document.getElementById("pReadout");
+  const qReadout = document.getElementById("qReadout");
+
+  const FIXED_MAX_X = 100;
+  const FIXED_MIN_Y = 0;
+  const FIXED_MAX_Y = 260000;
 
   let animatedPoints = [];
   let targetPoints = [];
   let animationFrame = null;
+  let chartPulseFrame = null;
+  let latestEntropyP = 0.5;
 
   function entropy(p) {
     const q = 1 - p;
@@ -561,39 +834,68 @@
 
   function updateFormula(maxPages, lettersPerPage, baseOverhead) {
     const finalSize = baseOverhead + (lettersPerPage * maxPages);
+    const overheadPercent = finalSize === 0 ? 0 : (baseOverhead / finalSize) * 100;
+    const outputRatio = Math.min(finalSize / FIXED_MAX_Y, 1);
+
     formulaSubstitution.textContent = `Size(${maxPages}) = ${baseOverhead} + (${lettersPerPage} × ${maxPages})`;
     formulaResult.textContent = `${formatNumber(finalSize)} bytes`;
+
+    if (slopeValue) slopeValue.textContent = formatNumber(lettersPerPage);
+    if (overheadShare) overheadShare.textContent = overheadPercent.toFixed(1);
+    if (modelBarFill) modelBarFill.style.width = `${Math.max(outputRatio * 100, 2)}%`;
+    if (modelPulseLabel) modelPulseLabel.textContent = `${formatNumber(finalSize)} / ${formatNumber(FIXED_MAX_Y)}`;
+
+    if (growthState) {
+      if (finalSize < 50000) {
+        growthState.textContent = currentLang === "en" ? "low growth" : "crecimiento bajo";
+      } else if (finalSize < 160000) {
+        growthState.textContent = currentLang === "en" ? "moderate growth" : "crecimiento medio";
+      } else {
+        growthState.textContent = currentLang === "en" ? "high growth" : "crecimiento alto";
+      }
+    }
   }
 
-function drawResultsChart(points, maxPages) {
+function drawResultsChart(points, maxPages, time = performance.now()) {
   const w = resultsCanvas.width;
   const h = resultsCanvas.height;
   const padding = 64;
-
-  // ===== Fixed axis ranges =====
-  const FIXED_MAX_X = 100;
-  const FIXED_MIN_Y = 0;
-  const FIXED_MAX_Y = 260000; 
-  // You can change this to 100000, 200000, 300000, etc.
+  const plotW = w - padding * 2;
+  const plotH = h - padding * 2;
+  const pulse = (Math.sin(time * 0.004) + 1) / 2;
+  const sweep = ((time * 0.035) % plotW) + padding;
 
   rctx.clearRect(0, 0, w, h);
 
-  // Background
   const bgGradient = rctx.createLinearGradient(0, 0, 0, h);
-  bgGradient.addColorStop(0, "rgba(17,24,39,0.95)");
-  bgGradient.addColorStop(1, "rgba(2,6,23,0.98)");
+  bgGradient.addColorStop(0, "rgba(15,23,42,0.98)");
+  bgGradient.addColorStop(0.55, "rgba(2,6,23,0.98)");
+  bgGradient.addColorStop(1, "rgba(8,13,26,1)");
   rctx.fillStyle = bgGradient;
   rctx.fillRect(0, 0, w, h);
 
-  // ===== Grid + Y labels (fixed) =====
-  rctx.strokeStyle = "#1f2937";
+  rctx.fillStyle = "rgba(14,165,233,0.035)";
+  for (let x = padding; x <= w - padding; x += 28) {
+    rctx.fillRect(x, padding, 1, plotH);
+  }
+  for (let y = padding; y <= h - padding; y += 28) {
+    rctx.fillRect(padding, y, plotW, 1);
+  }
+
+  const radial = rctx.createRadialGradient(w * 0.72, h * 0.25, 4, w * 0.72, h * 0.25, w * 0.62);
+  radial.addColorStop(0, "rgba(96,165,250,0.14)");
+  radial.addColorStop(1, "rgba(96,165,250,0)");
+  rctx.fillStyle = radial;
+  rctx.fillRect(0, 0, w, h);
+
+  rctx.strokeStyle = "rgba(148,163,184,0.16)";
   rctx.lineWidth = 1;
   rctx.fillStyle = "#94a3b8";
   rctx.font = "12px sans-serif";
 
   const yTicks = 5;
   for (let i = 0; i <= yTicks; i++) {
-    const gy = padding + (i * (h - padding * 2)) / yTicks;
+    const gy = padding + (i * plotH) / yTicks;
     const yValue = Math.round(FIXED_MAX_Y - (i / yTicks) * (FIXED_MAX_Y - FIXED_MIN_Y));
 
     rctx.beginPath();
@@ -604,11 +906,10 @@ function drawResultsChart(points, maxPages) {
     rctx.fillText(formatNumber(yValue), 8, gy + 4);
   }
 
-  // ===== Grid + X labels (fixed: 0 to 100) =====
   const xTicks = 10;
   for (let i = 0; i <= xTicks; i++) {
     const ratio = i / xTicks;
-    const gx = padding + ratio * (w - padding * 2);
+    const gx = padding + ratio * plotW;
     const xValue = Math.round(ratio * FIXED_MAX_X);
 
     rctx.beginPath();
@@ -621,8 +922,19 @@ function drawResultsChart(points, maxPages) {
     rctx.fillText(String(xValue), gx - 8, h - padding + 18);
   }
 
-  // ===== Axes =====
-  rctx.strokeStyle = "#94a3b8";
+  rctx.save();
+  rctx.beginPath();
+  rctx.rect(padding, padding, plotW, plotH);
+  rctx.clip();
+  const sweepGradient = rctx.createLinearGradient(sweep - 70, 0, sweep + 70, 0);
+  sweepGradient.addColorStop(0, "rgba(125,211,252,0)");
+  sweepGradient.addColorStop(0.5, "rgba(125,211,252,0.12)");
+  sweepGradient.addColorStop(1, "rgba(125,211,252,0)");
+  rctx.fillStyle = sweepGradient;
+  rctx.fillRect(sweep - 70, padding, 140, plotH);
+  rctx.restore();
+
+  rctx.strokeStyle = "rgba(203,213,225,0.58)";
   rctx.lineWidth = 1.5;
   rctx.beginPath();
   rctx.moveTo(padding, h - padding);
@@ -631,25 +943,23 @@ function drawResultsChart(points, maxPages) {
   rctx.lineTo(padding, padding);
   rctx.stroke();
 
-  rctx.fillStyle = "#9ca3af";
+  rctx.fillStyle = "#cbd5e1";
   rctx.font = "13px sans-serif";
   rctx.fillText("Bytes", 18, padding - 14);
   rctx.fillText("Pages", w - padding - 8, h - 18);
 
-  // ===== Convert data points using FIXED axes =====
   const coords = points.map(p => {
-    const px = padding + (p.x / FIXED_MAX_X) * (w - padding * 2);
-    const py = h - padding - ((p.y - FIXED_MIN_Y) / (FIXED_MAX_Y - FIXED_MIN_Y)) * (h - padding * 2);
+    const px = padding + (p.x / FIXED_MAX_X) * plotW;
+    const py = h - padding - ((p.y - FIXED_MIN_Y) / (FIXED_MAX_Y - FIXED_MIN_Y)) * plotH;
     return { ...p, px, py };
   });
 
   if (coords.length === 0) return;
 
-  // ===== Area fill =====
   const areaGradient = rctx.createLinearGradient(0, padding, 0, h - padding);
-  areaGradient.addColorStop(0, "rgba(96,165,250,0.36)");
-  areaGradient.addColorStop(0.45, "rgba(56,189,248,0.14)");
-  areaGradient.addColorStop(1, "rgba(96,165,250,0.03)");
+  areaGradient.addColorStop(0, "rgba(96,165,250,0.34)");
+  areaGradient.addColorStop(0.45, "rgba(34,211,238,0.16)");
+  areaGradient.addColorStop(1, "rgba(96,165,250,0.015)");
 
   rctx.beginPath();
   rctx.moveTo(coords[0].px, h - padding);
@@ -659,19 +969,22 @@ function drawResultsChart(points, maxPages) {
   rctx.fillStyle = areaGradient;
   rctx.fill();
 
-  // ===== Glow line =====
   rctx.beginPath();
-  rctx.strokeStyle = "rgba(96,165,250,0.18)";
-  rctx.lineWidth = 10;
+  rctx.strokeStyle = "rgba(56,189,248,0.14)";
+  rctx.lineWidth = 14;
   coords.forEach((c, i) => {
     if (i === 0) rctx.moveTo(c.px, c.py);
     else rctx.lineTo(c.px, c.py);
   });
   rctx.stroke();
 
-  // ===== Main line =====
+  const lineGradient = rctx.createLinearGradient(padding, 0, w - padding, 0);
+  lineGradient.addColorStop(0, "#60a5fa");
+  lineGradient.addColorStop(0.55, "#22d3ee");
+  lineGradient.addColorStop(1, "#a78bfa");
+
   rctx.beginPath();
-  rctx.strokeStyle = "#7dd3fc";
+  rctx.strokeStyle = lineGradient;
   rctx.lineWidth = 3;
   coords.forEach((c, i) => {
     if (i === 0) rctx.moveTo(c.px, c.py);
@@ -679,58 +992,70 @@ function drawResultsChart(points, maxPages) {
   });
   rctx.stroke();
 
-  // ===== Points =====
-  const pointRadius = maxPages <= 20 ? 4 : 2.6;
-  const glowRadius = maxPages <= 20 ? 10 : 5;
-
-  coords.forEach(c => {
+  const visibleStep = coords.length > 60 ? 5 : coords.length > 30 ? 3 : 1;
+  coords.forEach((c, i) => {
+    if (i % visibleStep !== 0 && i !== coords.length - 1) return;
     rctx.beginPath();
-    rctx.fillStyle = "rgba(125,211,252,0.15)";
-    rctx.arc(c.px, c.py, glowRadius, 0, Math.PI * 2);
+    rctx.fillStyle = "rgba(125,211,252,0.13)";
+    rctx.arc(c.px, c.py, 5.5 + pulse * 2, 0, Math.PI * 2);
     rctx.fill();
 
     rctx.beginPath();
     rctx.fillStyle = "#8ad7ff";
-    rctx.arc(c.px, c.py, pointRadius, 0, Math.PI * 2);
+    rctx.arc(c.px, c.py, coords.length <= 20 ? 3.8 : 2.8, 0, Math.PI * 2);
     rctx.fill();
   });
 
-  // ===== Final point guide lines =====
   const last = coords[coords.length - 1];
 
-  // Vertical line downward
-  rctx.beginPath();
-  rctx.strokeStyle = "rgba(34,197,94,0.45)";
-  rctx.lineWidth = 1.6;
+  rctx.save();
   rctx.setLineDash([6, 5]);
+  rctx.strokeStyle = "rgba(34,197,94,0.56)";
+  rctx.lineWidth = 1.6;
+  rctx.beginPath();
   rctx.moveTo(last.px, last.py);
   rctx.lineTo(last.px, h - padding);
-  rctx.stroke();
-
-  // Horizontal line to the left
-  rctx.beginPath();
   rctx.moveTo(last.px, last.py);
   rctx.lineTo(padding, last.py);
   rctx.stroke();
+  rctx.restore();
 
-  rctx.setLineDash([]);
-
-  // Small highlight on final point
   rctx.beginPath();
-  rctx.fillStyle = "rgba(34,197,94,0.18)";
-  rctx.arc(last.px, last.py, 12, 0, Math.PI * 2);
+  rctx.fillStyle = `rgba(34,197,94,${0.13 + pulse * 0.09})`;
+  rctx.arc(last.px, last.py, 13 + pulse * 5, 0, Math.PI * 2);
   rctx.fill();
 
   rctx.beginPath();
   rctx.fillStyle = "#22c55e";
-  rctx.arc(last.px, last.py, 4.5, 0, Math.PI * 2);
+  rctx.arc(last.px, last.py, 4.8, 0, Math.PI * 2);
   rctx.fill();
 
-  // Final label
-  rctx.fillStyle = "#22c55e";
+  const labelX = Math.min(Math.max(last.px + 12, padding + 4), w - padding - 108);
+  const labelY = Math.max(last.py - 36, padding + 10);
+  rctx.fillStyle = "rgba(2,6,23,0.74)";
+  rctx.strokeStyle = "rgba(34,197,94,0.28)";
+  rctx.lineWidth = 1;
+  roundRect(rctx, labelX, labelY, 108, 34, 10);
+  rctx.fill();
+  rctx.stroke();
+  rctx.fillStyle = "#bbf7d0";
   rctx.font = "12px sans-serif";
-  rctx.fillText("Final size", Math.max(last.px - 24, padding), last.py - 24);
+  rctx.fillText("Final size", labelX + 12, labelY + 21);
 }
+
+  function roundRect(ctx, x, y, width, height, radius) {
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.lineTo(x + width - radius, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+    ctx.lineTo(x + width, y + height - radius);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    ctx.lineTo(x + radius, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+    ctx.lineTo(x, y + radius);
+    ctx.quadraticCurveTo(x, y, x + radius, y);
+    ctx.closePath();
+  }
 
   function animateResults() {
     let done = true;
@@ -803,77 +1128,176 @@ function drawResultsChart(points, maxPages) {
     }
   }
 
-  function drawEntropyChart(p) {
+  function drawEntropyChart(p, time = performance.now()) {
     const q = 1 - p;
     const w = entropyCanvas.width;
     const h = entropyCanvas.height;
+    const padding = 58;
+    const plotW = w - padding * 2;
+    const plotH = h - padding * 2;
+    const pulse = (Math.sin(time * 0.004) + 1) / 2;
+
     ectx.clearRect(0, 0, w, h);
 
-    const padding = 44;
+    const bg = ectx.createLinearGradient(0, 0, 0, h);
+    bg.addColorStop(0, "rgba(15,23,42,0.98)");
+    bg.addColorStop(0.58, "rgba(2,6,23,0.98)");
+    bg.addColorStop(1, "rgba(10,10,24,1)");
+    ectx.fillStyle = bg;
+    ectx.fillRect(0, 0, w, h);
 
-    ectx.strokeStyle = "#374151";
+    const glow = ectx.createRadialGradient(w * 0.50, h * 0.35, 8, w * 0.50, h * 0.35, w * 0.45);
+    glow.addColorStop(0, "rgba(167,139,250,0.14)");
+    glow.addColorStop(1, "rgba(167,139,250,0)");
+    ectx.fillStyle = glow;
+    ectx.fillRect(0, 0, w, h);
+
+    ectx.strokeStyle = "rgba(148,163,184,0.16)";
     ectx.lineWidth = 1;
+    ectx.fillStyle = "#94a3b8";
+    ectx.font = "12px sans-serif";
+
     for (let i = 0; i <= 4; i++) {
-      const y = padding + (i * (h - padding * 2)) / 4;
+      const y = padding + (i * plotH) / 4;
+      const label = (1 - i / 4).toFixed(2);
       ectx.beginPath();
       ectx.moveTo(padding, y);
       ectx.lineTo(w - padding, y);
       ectx.stroke();
+      ectx.fillText(label, 18, y + 4);
     }
 
-    ectx.beginPath();
-    ectx.strokeStyle = "#a78bfa";
-    ectx.lineWidth = 2.5;
+    for (let i = 0; i <= 4; i++) {
+      const x = padding + (i * plotW) / 4;
+      const label = (i / 4).toFixed(2);
+      ectx.beginPath();
+      ectx.moveTo(x, padding);
+      ectx.lineTo(x, h - padding);
+      ectx.stroke();
+      ectx.fillText(label, x - 10, h - padding + 22);
+    }
 
+    ectx.strokeStyle = "rgba(203,213,225,0.55)";
+    ectx.lineWidth = 1.5;
+    ectx.beginPath();
+    ectx.moveTo(padding, h - padding);
+    ectx.lineTo(w - padding, h - padding);
+    ectx.moveTo(padding, h - padding);
+    ectx.lineTo(padding, padding);
+    ectx.stroke();
+
+    const peakX = padding + 0.5 * plotW;
+    ectx.save();
+    ectx.setLineDash([5, 6]);
+    ectx.strokeStyle = "rgba(251,191,36,0.42)";
+    ectx.beginPath();
+    ectx.moveTo(peakX, padding);
+    ectx.lineTo(peakX, h - padding);
+    ectx.stroke();
+    ectx.restore();
+
+    const curveGradient = ectx.createLinearGradient(padding, 0, w - padding, 0);
+    curveGradient.addColorStop(0, "#60a5fa");
+    curveGradient.addColorStop(0.5, "#a78bfa");
+    curveGradient.addColorStop(1, "#34d399");
+
+    ectx.beginPath();
     for (let i = 1; i <= 99; i++) {
       const pxVal = i / 100;
       const eVal = entropy(pxVal);
-      const x = padding + ((pxVal - 0.01) / 0.98) * (w - padding * 2);
-      const y = h - padding - eVal * (h - padding * 2);
-
+      const x = padding + pxVal * plotW;
+      const y = h - padding - eVal * plotH;
       if (i === 1) ectx.moveTo(x, y);
       else ectx.lineTo(x, y);
     }
+    ectx.strokeStyle = "rgba(167,139,250,0.18)";
+    ectx.lineWidth = 10;
+    ectx.stroke();
 
+    ectx.beginPath();
+    for (let i = 1; i <= 99; i++) {
+      const pxVal = i / 100;
+      const eVal = entropy(pxVal);
+      const x = padding + pxVal * plotW;
+      const y = h - padding - eVal * plotH;
+      if (i === 1) ectx.moveTo(x, y);
+      else ectx.lineTo(x, y);
+    }
+    ectx.strokeStyle = curveGradient;
+    ectx.lineWidth = 3;
     ectx.stroke();
 
     const currentEntropy = entropy(p);
-    const cx = padding + ((p - 0.01) / 0.98) * (w - padding * 2);
-    const cy = h - padding - currentEntropy * (h - padding * 2);
+    const cx = padding + p * plotW;
+    const cy = h - padding - currentEntropy * plotH;
 
-    ectx.beginPath();
-    ectx.strokeStyle = "#60a5fa";
+    ectx.save();
+    ectx.setLineDash([6, 5]);
+    ectx.strokeStyle = "rgba(96,165,250,0.58)";
     ectx.lineWidth = 1.5;
+    ectx.beginPath();
     ectx.moveTo(cx, h - padding);
     ectx.lineTo(cx, cy);
+    ectx.moveTo(padding, cy);
+    ectx.lineTo(cx, cy);
     ectx.stroke();
+    ectx.restore();
+
+    ectx.beginPath();
+    ectx.fillStyle = `rgba(138,215,255,${0.13 + pulse * 0.12})`;
+    ectx.arc(cx, cy, 13 + pulse * 5, 0, Math.PI * 2);
+    ectx.fill();
 
     ectx.beginPath();
     ectx.fillStyle = "#8ad7ff";
-    ectx.arc(cx, cy, 5, 0, Math.PI * 2);
+    ectx.arc(cx, cy, 5.2, 0, Math.PI * 2);
     ectx.fill();
 
-    const barBase = h - 28;
-    const barMaxHeight = 100;
+    const barBase = h - padding;
+    const barMaxHeight = 92;
+    const barW = 44;
+    const pX = w - padding - 118;
+    const qX = w - padding - 62;
 
-    ectx.fillStyle = "#60a5fa";
-    ectx.fillRect(70, barBase - p * barMaxHeight, 56, p * barMaxHeight);
+    ectx.fillStyle = "rgba(15,23,42,0.72)";
+    roundRect(ectx, pX - 12, barBase - barMaxHeight - 18, 126, barMaxHeight + 46, 14);
+    ectx.fill();
+    ectx.strokeStyle = "rgba(148,163,184,0.16)";
+    ectx.stroke();
 
-    ectx.fillStyle = "#34d399";
-    ectx.fillRect(150, barBase - q * barMaxHeight, 56, q * barMaxHeight);
+    const pGrad = ectx.createLinearGradient(0, barBase - barMaxHeight, 0, barBase);
+    pGrad.addColorStop(0, "#60a5fa");
+    pGrad.addColorStop(1, "rgba(96,165,250,0.20)");
+    ectx.fillStyle = pGrad;
+    roundRect(ectx, pX, barBase - p * barMaxHeight, barW, p * barMaxHeight, 9);
+    ectx.fill();
 
-    ectx.fillStyle = "#9ca3af";
-    ectx.font = "13px sans-serif";
-    ectx.fillText("p", 92, barBase + 18);
-    ectx.fillText("1-p", 166, barBase + 18);
-    ectx.fillText("Entropy curve", w - 140, 26);
-    ectx.fillText("Probability bias", w - 135, h - 18);
-    ectx.fillText("Entropy", 16, 24);
+    const qGrad = ectx.createLinearGradient(0, barBase - barMaxHeight, 0, barBase);
+    qGrad.addColorStop(0, "#34d399");
+    qGrad.addColorStop(1, "rgba(52,211,153,0.20)");
+    ectx.fillStyle = qGrad;
+    roundRect(ectx, qX, barBase - q * barMaxHeight, barW, q * barMaxHeight, 9);
+    ectx.fill();
+
+    ectx.fillStyle = "#cbd5e1";
+    ectx.font = "12px sans-serif";
+    ectx.fillText("p", pX + 18, barBase + 20);
+    ectx.fillText("1-p", qX + 10, barBase + 20);
+
+    ectx.fillStyle = "#e0f2fe";
+    ectx.font = "12px sans-serif";
+    ectx.fillText("max uncertainty", peakX - 44, padding - 16);
+    ectx.fillText("p", w - padding + 18, h - padding + 4);
+    ectx.fillText("H", padding - 28, padding - 12);
   }
 
   function updateEntropy() {
     const p = parseFloat(slider.value);
+    const q = 1 - p;
+    latestEntropyP = p;
     pValue.textContent = p.toFixed(2);
+    if (pReadout) pReadout.textContent = p.toFixed(2);
+    if (qReadout) qReadout.textContent = q.toFixed(2);
     const h = entropy(p);
     entropyValue.textContent = h.toFixed(3);
     drawEntropyChart(p);
@@ -906,6 +1330,12 @@ function drawResultsChart(points, maxPages) {
     }
   }
 
+  function runChartPulse(time) {
+    if (animatedPoints.length) drawResultsChart(animatedPoints, animatedPoints.length, time);
+    drawEntropyChart(latestEntropyP, time);
+    chartPulseFrame = requestAnimationFrame(runChartPulse);
+  }
+
   pagesSlider.addEventListener("input", updateResults);
   lettersSlider.addEventListener("input", updateResults);
   baseSlider.addEventListener("input", updateResults);
@@ -918,6 +1348,7 @@ function drawResultsChart(points, maxPages) {
   updateResults();
   updateEntropy();
   applyLanguage(currentLang);
+  chartPulseFrame = requestAnimationFrame(runChartPulse);
 </script>
 
 </body>
