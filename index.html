@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en" id="top" class="scroll-smooth">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -309,7 +309,8 @@
       background: rgba(255,255,255,0.075);
     }
 
-    .side-stat {
+    .side-stat,
+    .signal-probe {
       padding: 0.9rem;
       border: 1px solid rgba(255,255,255,0.08);
       background: rgba(2,6,23,0.22);
@@ -331,6 +332,40 @@
       font-size: 1.05rem;
       font-weight: 750;
       letter-spacing: -0.02em;
+    }
+
+    .probe-line {
+      display: flex;
+      gap: 0.35rem;
+      flex-wrap: wrap;
+      margin-top: 0.65rem;
+    }
+
+    .probe-bit {
+      width: 1.55rem;
+      height: 1.55rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0.55rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 0.78rem;
+      border: 1px solid rgba(138,215,255,0.18);
+      background: rgba(255,255,255,0.035);
+      color: var(--muted);
+    }
+
+    .probe-bit.one {
+      color: #e0f2fe;
+      background: rgba(14,165,233,0.18);
+      border-color: rgba(138,215,255,0.32);
+    }
+
+    .probe-status {
+      margin-top: 0.7rem;
+      color: var(--accent-2);
+      font-size: 0.83rem;
+      font-weight: 720;
     }
 
     main {
@@ -555,19 +590,6 @@
       box-shadow: 0 18px 42px rgba(0,0,0,0.24);
     }
 
-    .section-card.disabled {
-      cursor: default;
-      opacity: 0.72;
-    }
-
-    .section-card.disabled:hover {
-      transform: none;
-      border-color: var(--border);
-      background: linear-gradient(180deg, rgba(255,255,255,0.052), rgba(255,255,255,0.032));
-      box-shadow: var(--shadow);
-      color: inherit;
-    }
-
     .item-badge {
       display: inline-flex;
       margin-bottom: 0.55rem;
@@ -756,6 +778,7 @@
           <a href="experiment-1.html" class="primary-button" data-en="Start with Experiment 1 →" data-es="Empezar con Experimento 1 →">Start with Experiment 1 →</a>
           <a href="#experiments" class="secondary-button" data-en="View learning path" data-es="Ver ruta de aprendizaje">View learning path</a>
         </div>
+      </div>
 
       <aside class="side-card">
         <div>
@@ -776,7 +799,15 @@
           <p class="stat-label" data-en="Long-term aim" data-es="Objetivo a largo plazo">Long-term aim</p>
           <p class="stat-value" data-en="Representation without overclaiming" data-es="Representación sin exagerar">Representation without overclaiming</p>
         </div>
+
+        <div class="signal-probe">
+          <p class="stat-label" data-en="Tiny signal probe" data-es="Mini sonda de señal">Tiny signal probe</p>
+          <div id="probeLine" class="probe-line" aria-hidden="true"></div>
+          <div id="probeStatus" class="probe-status">Pattern drifting...</div>
+        </div>
       </aside>
+    </div>
+  </header>
 
   <main>
     <div class="container stack">
@@ -1042,13 +1073,13 @@
       langToggle.textContent = lang === "en" ? "ES" : "EN";
       localStorage.setItem("siteLang", lang);
       currentLang = lang;
+
+      updateProbe();
     }
 
     langToggle.addEventListener("click", () => {
       applyLanguage(currentLang === "en" ? "es" : "en");
     });
-
-    applyLanguage(currentLang);
 
     const canvas = document.getElementById("particleCanvas");
     const ctx = canvas.getContext("2d");
@@ -1149,8 +1180,50 @@
       else drawParticles();
     }
 
+    const probeLine = document.getElementById("probeLine");
+    const probeStatus = document.getElementById("probeStatus");
+
+    function updateProbe() {
+      if (!probeLine || !probeStatus) return;
+
+      const modes = [
+        {
+          bits: "010101010101",
+          en: "Detected: alternating structure",
+          es: "Detectado: estructura alternante"
+        },
+        {
+          bits: "111100001111",
+          en: "Detected: block structure",
+          es: "Detectado: estructura por bloques"
+        },
+        {
+          bits: "011010011001",
+          en: "Uncertain: noisy pattern",
+          es: "Incierto: patrón con ruido"
+        },
+        {
+          bits: "101101001011",
+          en: "Probe active: structure unclear",
+          es: "Sonda activa: estructura poco clara"
+        }
+      ];
+
+      const item = modes[Math.floor(Math.random() * modes.length)];
+
+      probeLine.innerHTML = item.bits.split("").map(bit => {
+        return `<span class="probe-bit ${bit === "1" ? "one" : ""}">${bit}</span>`;
+      }).join("");
+
+      probeStatus.textContent = item[currentLang];
+    }
+
     window.addEventListener("resize", setupParticles);
+
+    applyLanguage(currentLang);
     setupParticles();
+    updateProbe();
+    setInterval(updateProbe, 2600);
   </script>
 </body>
 </html>
