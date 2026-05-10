@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project 3 — The Boundary of Computational Explanation</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html { scrollbar-width: thin; scrollbar-color: #8ad7ff #081120; }
+    ::-webkit-scrollbar { width: 12px; }
+    ::-webkit-scrollbar-track { background: linear-gradient(180deg, #071224, #05101f); }
+    ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #8ad7ff, #6ca8ff); border-radius: 999px; border: 2px solid #081120; }
+    ::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #b6ecff, #8ad7ff); }
+    ::selection { background: rgba(138, 215, 255, 0.28); color: white; }
+    :root {
+      --page-accent: #8ad7ff;
+      --page-accent-soft: rgba(138, 215, 255, 0.12);
+      --page-accent-border: rgba(138, 215, 255, 0.28);
+      --panel: rgba(15, 23, 42, 0.78);
+      --panel-strong: rgba(15, 23, 42, 0.92);
+      --violet: #b8a4ff;
+      --cyan: #8ee7dc;
+      --amber: #f2c879;
+    }
+    body {
+      background:
+        radial-gradient(circle at 12% 8%, rgba(96, 165, 250, 0.10), transparent 26%),
+        radial-gradient(circle at 88% 22%, rgba(138, 215, 255, 0.07), transparent 24%),
+        radial-gradient(circle at 50% 100%, rgba(168, 85, 247, 0.08), transparent 32%),
+        #030712;
+    }
+    .reading-block { max-width: 68ch; }
+    .reading-block p { line-height: 1.9; }
+    .section-intro { color: #cbd5e1; font-size: 1.05rem; line-height: 1.85; max-width: 68ch; }
+    .concept-card {
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      background:
+        linear-gradient(180deg, var(--panel-strong), var(--panel)),
+        radial-gradient(circle at top left, var(--page-accent-soft), transparent 38%);
+      border-radius: 1.25rem;
+      padding: 1.4rem;
+      box-shadow: 0 20px 55px rgba(0,0,0,0.20);
+    }
+    .concept-card-strong {
+      border-color: var(--page-accent-border);
+      background:
+        linear-gradient(180deg, rgba(15, 23, 42, 0.90), rgba(15, 23, 42, 0.70)),
+        radial-gradient(circle at top left, rgba(96, 165, 250, 0.18), transparent 42%);
+    }
+    .concept-kicker { color: var(--page-accent); font-size: 0.76rem; letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 0.7rem; font-weight: 700; }
+    .concept-title { color: white; font-size: 1.05rem; font-weight: 700; margin-bottom: 0.45rem; }
+    .formula-card { border: 1px solid rgba(138, 215, 255, 0.22); background: rgba(2, 6, 23, 0.56); border-radius: 1rem; padding: 1rem; overflow-x: auto; }
+    .formula { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; color: #e0f2fe; font-size: clamp(0.9rem, 2vw, 1.05rem); white-space: nowrap; }
+    .metric { border: 1px solid rgba(148, 163, 184, 0.18); background: rgba(2, 6, 23, 0.36); border-radius: 1rem; padding: 1rem; }
+    .metric-label { color: #94a3b8; font-size: 0.76rem; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.35rem; }
+    .metric-value { color: white; font-size: 1.55rem; font-weight: 750; letter-spacing: -0.03em; }
+    select, input[type="range"], textarea { accent-color: #8ad7ff; }
+    select, input[type="number"] {
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      background: rgba(15, 23, 42, 0.72);
+      color: #dbeafe;
+      border-radius: 0.85rem;
+      padding: 0.65rem 0.8rem;
+      font-size: 0.92rem;
+      width: 100%;
+      outline: none;
+    }
+    textarea {
+      width: 100%; min-height: 115px; resize: vertical; border: 1px solid rgba(148, 163, 184, 0.22);
+      background: rgba(2, 6, 23, 0.62); color: #e5f3ff; border-radius: 1rem; padding: 1rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; line-height: 1.65; outline: none;
+    }
+    textarea:focus, select:focus, input[type="number"]:focus { border-color: rgba(138, 215, 255, 0.55); }
+    canvas { width: 100%; height: auto; background: rgba(2, 6, 23, 0.42); border: 1px solid rgba(148, 163, 184, 0.16); border-radius: 1rem; }
+    .pill { display: inline-flex; align-items: center; gap: 0.45rem; border: 1px solid rgba(148, 163, 184, 0.18); background: rgba(15, 23, 42, 0.62); border-radius: 999px; padding: 0.45rem 0.7rem; color: #cbd5e1; font-size: 0.84rem; }
+    .mini-table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+    .mini-table th, .mini-table td { border-bottom: 1px solid rgba(148, 163, 184, 0.13); padding: 0.55rem 0.35rem; text-align: left; vertical-align: top; }
+    .mini-table th { color: #93c5fd; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; }
+    .preset-button { border: 1px solid rgba(148, 163, 184, 0.22); background: rgba(15, 23, 42, 0.72); color: #dbeafe; border-radius: 0.85rem; padding: 0.65rem 0.8rem; font-size: 0.88rem; transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease; }
+    .preset-button:hover, .preset-button.active { border-color: rgba(138, 215, 255, 0.46); background: rgba(30, 41, 59, 0.82); transform: translateY(-1px); }
+    .sequence-strip { display: flex; flex-wrap: wrap; gap: 0.35rem; padding: 0.9rem; border-radius: 1rem; border: 1px solid rgba(148, 163, 184, 0.16); background: rgba(2, 6, 23, 0.34); max-height: 170px; overflow-y: auto; }
+    .bit-cell { display: inline-flex; align-items: center; justify-content: center; width: 1.8rem; height: 1.8rem; border-radius: 0.55rem; font-size: 0.82rem; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; border: 1px solid rgba(138, 215, 255, 0.18); }
+    .bit-one { background: rgba(14, 165, 233, 0.18); color: #e0f2fe; }
+    .bit-zero { background: rgba(15, 23, 42, 0.72); color: #94a3b8; }
+    .stage-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.8rem; }
+    .stage-card { border: 1px solid rgba(148, 163, 184, 0.16); border-radius: 1rem; background: rgba(2, 6, 23, 0.34); padding: 0.9rem; min-height: 140px; position: relative; overflow: hidden; }
+    .stage-card::after { content: ""; position: absolute; inset: auto -20% -40% -20%; height: 90px; background: radial-gradient(circle, rgba(138,215,255,0.13), transparent 62%); }
+    .stage-title { color: #bfdbfe; font-size: 0.74rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 800; margin-bottom: 0.55rem; }
+    .stage-body { position: relative; z-index: 1; }
+    .bar-shell { height: 0.62rem; border-radius: 999px; background: rgba(15,23,42,0.82); overflow: hidden; border: 1px solid rgba(148,163,184,0.12); }
+    .bar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #6ca8ff, #8ee7dc); }
+    .matrix { width: 100%; border-collapse: separate; border-spacing: 0.3rem; text-align: center; font-size: 0.84rem; }
+    .matrix th { color: #93c5fd; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; }
+    .matrix td { border: 1px solid rgba(148,163,184,0.15); background: rgba(15,23,42,0.68); color: #e5e7eb; border-radius: 0.55rem; padding: 0.48rem; }
+    .matrix td.strong { background: rgba(14,165,233,0.22); border-color: rgba(138,215,255,0.35); color: white; }
+    @media (max-width: 900px) { .stage-grid { grid-template-columns: 1fr; } }
+  </style>
+
+</head>
+<body class="bg-gray-950 text-white">
+  <div class="max-w-7xl mx-auto px-6 py-8 lg:px-8">
+
+    <div class="grid grid-cols-1 lg:grid-cols-[220px_minmax(0,1fr)_260px] gap-8">
+      <aside class="hidden lg:block"><div class="sticky top-8 rounded-2xl border border-gray-800 bg-gray-900/70 backdrop-blur p-4"><p class="text-xs uppercase tracking-[0.18em] text-blue-300 mb-4" data-en="On this page" data-es="En esta página">On this page</p><nav class="space-y-3 text-sm"><a href="#intro" class="block text-gray-300 hover:text-blue-300 transition" data-en="Introduction" data-es="Introducción">Introduction</a><a href="#explains" class="block text-gray-300 hover:text-blue-300 transition" data-en="What it explains" data-es="Lo que explica">What it explains</a><a href="#missing" class="block text-gray-300 hover:text-blue-300 transition" data-en="What remains" data-es="Lo pendiente">What remains</a><a href="#ladder" class="block text-gray-300 hover:text-blue-300 transition" data-en="Ladder" data-es="Escalera">Ladder</a><a href="#cases" class="block text-gray-300 hover:text-blue-300 transition" data-en="Comparison cases" data-es="Casos comparativos">Comparison cases</a><a href="#position" class="block text-gray-300 hover:text-blue-300 transition" data-en="Position" data-es="Postura">Position</a></nav></div></aside>
+      <main class="max-w-3xl">
+        <div class="flex justify-between items-center gap-4 mb-6"><a href="index.html" class="text-blue-400 hover:text-blue-300 transition" data-en="← Back" data-es="← Volver">← Back</a><button id="langToggle" class="rounded-xl border border-gray-800 bg-gray-900/70 px-4 py-2 text-sm text-gray-200 hover:border-blue-400/40 hover:text-white transition">ES</button></div>
+        <h1 class="text-4xl font-bold mt-4 mb-6 tracking-tight" data-en="Project #3 — The Boundary of Computational Explanation" data-es="Proyecto #3 — El Límite de la Explicación Computacional">Project #3 — The Boundary of Computational Explanation</h1>
+        <p class="section-intro mb-10" data-en="After modeling signal, entropy, detection, representation, and integration, this capstone asks what still remains unexplained." data-es="Después de modelar señal, entropía, detección, representación e integración, este cierre pregunta qué queda sin explicar.">After modeling signal, entropy, detection, representation, and integration, this capstone asks what still remains unexplained.</p>
+
+        <section id="intro" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8"><h2 class="text-2xl font-semibold mb-4" data-en="Introduction" data-es="Introducción">Introduction</h2><div class="space-y-4"><div class="concept-card concept-card-strong"><p class="concept-kicker" data-en="Core question" data-es="Pregunta central">Core question</p><p class="text-gray-300 leading-8" data-en="After the computational layers are built, what still separates usable structure from subjective experience?" data-es="Después de construir las capas computacionales, ¿qué sigue separando la estructura utilizable de la experiencia subjetiva?">After the computational layers are built, what still separates usable structure from subjective experience?</p></div><div class="concept-card"><p class="concept-kicker" data-en="Page thesis" data-es="Tesis de la página">Page thesis</p><h3 class="concept-title" data-en="Computational explanation has a boundary" data-es="La explicación computacional tiene un límite">Computational explanation has a boundary</h3><p class="text-gray-300 leading-8" data-en="Computational models can explain how structure becomes detectable, usable, and integrated. They do not automatically explain why or whether anything is experienced from the inside." data-es="Los modelos computacionales pueden explicar cómo la estructura se vuelve detectable, utilizable e integrada. No explican automáticamente por qué o si algo se experimenta desde dentro.">Computational models can explain how structure becomes detectable, usable, and integrated. They do not automatically explain why or whether anything is experienced from the inside.</p></div></div></section>
+
+        <section id="explains" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8"><h2 class="text-2xl font-semibold mb-4" data-en="What the experiments explain" data-es="Lo que explican los experimentos">What the experiments explain</h2><div class="concept-card"><table class="mini-table"><thead><tr><th data-en="Layer" data-es="Capa">Layer</th><th data-en="What it explains" data-es="Qué explica">What it explains</th><th data-en="Example" data-es="Ejemplo">Example</th></tr></thead><tbody><tr><td>Signal</td><td data-en="Raw variation" data-es="Variación cruda">Raw variation</td><td data-en="bits, pixels, text" data-es="bits, píxeles, texto">bits, pixels, text</td></tr><tr><td>Entropy</td><td data-en="Uncertainty" data-es="Incertidumbre">Uncertainty</td><td data-en="how unpredictable a signal is" data-es="qué tan impredecible es una señal">how unpredictable a signal is</td></tr><tr><td>Detection</td><td data-en="Findable structure" data-es="Estructura encontrable">Findable structure</td><td data-en="repetition, edges, patterns" data-es="repetición, bordes, patrones">repetition, edges, patterns</td></tr><tr><td>Representation</td><td data-en="Usable structure" data-es="Estructura utilizable">Usable structure</td><td data-en="features for classification" data-es="rasgos para clasificación">features for classification</td></tr><tr><td>Integration</td><td data-en="Combined structure" data-es="Estructura combinada">Combined structure</td><td data-en="multiple channels reducing uncertainty" data-es="múltiples canales reduciendo incertidumbre">multiple channels reducing uncertainty</td></tr></tbody></table></div></section>
+
+        <section id="missing" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8"><h2 class="text-2xl font-semibold mb-4" data-en="What they do not explain" data-es="Lo que no explican">What they do not explain</h2><div class="concept-card"><table class="mini-table"><thead><tr><th data-en="Missing issue" data-es="Asunto faltante">Missing issue</th><th data-en="Why it remains unresolved" data-es="Por qué sigue sin resolverse">Why it remains unresolved</th></tr></thead><tbody><tr><td data-en="Subjective feeling" data-es="Sentimiento subjetivo">Subjective feeling</td><td data-en="Computation can model behavior without proving experience." data-es="La computación puede modelar conducta sin probar experiencia.">Computation can model behavior without proving experience.</td></tr><tr><td data-en="First-person perspective" data-es="Perspectiva de primera persona">First-person perspective</td><td data-en="External measurement does not directly give interiority." data-es="La medición externa no entrega interioridad directamente.">External measurement does not directly give interiority.</td></tr><tr><td data-en="Meaning for the subject" data-es="Significado para el sujeto">Meaning for the subject</td><td data-en="Task-use is not the same as lived significance." data-es="Uso en tarea no es lo mismo que significado vivido.">Task-use is not the same as lived significance.</td></tr><tr><td>Qualia</td><td data-en="Detecting red is not the same as experiencing red." data-es="Detectar rojo no es lo mismo que experimentar rojo.">Detecting red is not the same as experiencing red.</td></tr><tr><td data-en="Selfhood" data-es="Yo / sí mismo">Selfhood</td><td data-en="Integrated information is not automatically a self." data-es="La información integrada no es automáticamente un yo.">Integrated information is not automatically a self.</td></tr></tbody></table></div></section>
+
+        <section id="ladder" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8"><h2 class="text-2xl font-semibold mb-4" data-en="The ladder of explanation" data-es="La escalera de explicación">The ladder of explanation</h2><p class="section-intro mb-6" data-en="Use the slider to move through the explanatory ladder. The final step is deliberately marked as unresolved, not denied and not solved." data-es="Usa el control para moverte por la escalera explicativa. El paso final queda marcado deliberadamente como irresuelto, no negado ni resuelto.">Use the slider to move through the explanatory ladder. The final step is deliberately marked as unresolved, not denied and not solved.</p><div class="concept-card mb-6"><label class="block mb-2 text-sm text-gray-400"><span data-en="Explanation level" data-es="Nivel de explicación">Explanation level</span>: <span id="levelLabel">0</span></label><input id="levelSlider" type="range" min="0" max="8" value="6" class="w-full" /></div><div class="concept-card"><canvas id="ladderCanvas" width="820" height="520" aria-label="Explanatory ladder"></canvas></div><div class="concept-card concept-card-strong mt-6"><p class="concept-kicker" data-en="Boundary note" data-es="Nota de límite">Boundary note</p><p id="boundaryNote" class="text-gray-300 leading-8"></p></div></section>
+
+        <section id="cases" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8"><h2 class="text-2xl font-semibold mb-4" data-en="Comparison cases" data-es="Casos comparativos">Comparison cases</h2><div class="concept-card"><table class="mini-table"><thead><tr><th data-en="System" data-es="Sistema">System</th><th data-en="Detects?" data-es="¿Detecta?">Detects?</th><th data-en="Represents?" data-es="¿Representa?">Represents?</th><th data-en="Integrates?" data-es="¿Integra?">Integrates?</th><th data-en="Experiences?" data-es="¿Experimenta?">Experiences?</th></tr></thead><tbody><tr><td>Thermostat</td><td>yes</td><td>weakly</td><td>no</td><td>unknown / no strong reason</td></tr><tr><td>Image classifier</td><td>yes</td><td>yes</td><td>limited</td><td>unknown / no strong reason</td></tr><tr><td>Robot agent</td><td>yes</td><td>yes</td><td>yes</td><td>still unresolved</td></tr><tr><td>Human brain</td><td>yes</td><td>yes</td><td>yes</td><td>yes, from first-person evidence</td></tr></tbody></table></div></section>
+
+        <section id="position" class="scroll-mt-24 mb-16"><h2 class="text-2xl font-semibold mb-4" data-en="Working position" data-es="Postura de trabajo">Working position</h2><div class="reading-block space-y-5 text-gray-300"><p data-en="The stronger position is not crude reductionism and not mysticism. Computation explains many functional layers, but subjective experience requires an additional argument." data-es="La postura más fuerte no es reduccionismo crudo ni misticismo. La computación explica muchas capas funcionales, pero la experiencia subjetiva requiere un argumento adicional.">The stronger position is not crude reductionism and not mysticism. Computation explains many functional layers, but subjective experience requires an additional argument.</p><div class="formula-card"><p class="formula">lim(functional explanation) ≠ proof of lived experience</p></div></div></section>
+      </main>
+      <aside class="hidden xl:block"><div class="sticky top-8 space-y-4"><div class="concept-card"><p class="concept-kicker" data-en="Core idea" data-es="Idea central">Core idea</p><p class="text-gray-300 leading-7" data-en="The project should show where computation is powerful and where it stops." data-es="El proyecto debe mostrar dónde la computación es poderosa y dónde se detiene.">The project should show where computation is powerful and where it stops.</p></div><div class="concept-card"><p class="concept-kicker" data-en="Warning" data-es="Advertencia">Warning</p><p class="text-gray-400 leading-7" data-en="Do not claim that entropy solves consciousness. That would weaken the whole project." data-es="No afirmes que la entropía resuelve la consciencia. Eso debilitaría todo el proyecto.">Do not claim that entropy solves consciousness. That would weaken the whole project.</p></div></div></aside>
+    </div>
+
+  </div>
+<script>
+
+const langToggle = document.getElementById("langToggle");
+const slider = document.getElementById("levelSlider"), label = document.getElementById("levelLabel"), note = document.getElementById("boundaryNote");
+const canvas = document.getElementById("ladderCanvas"), ctx = canvas.getContext("2d");
+let currentLang = localStorage.getItem("siteLang") || "en";
+const levels = [
+  {en:"data", es:"datos"}, {en:"signal", es:"señal"}, {en:"structure", es:"estructura"}, {en:"detection", es:"detección"}, {en:"representation", es:"representación"}, {en:"integration", es:"integración"}, {en:"behavior/report", es:"conducta/reporte"}, {en:"?", es:"?"}, {en:"experience", es:"experiencia"}
+];
+function t(en, es){ return currentLang === "en" ? en : es; }
+function applyLanguage(lang){ document.documentElement.lang = lang; document.querySelectorAll("[data-en][data-es]").forEach(el => el.textContent = el.dataset[lang]); document.title = lang === "en" ? "Project 3 — The Boundary of Computational Explanation" : "Proyecto 3 — El Límite de la Explicación Computacional"; langToggle.textContent = lang === "en" ? "ES" : "EN"; localStorage.setItem("siteLang", lang); currentLang = lang; draw(); }
+function draw(){ const active = parseInt(slider.value); label.textContent = active; const w = canvas.width, h = canvas.height; ctx.clearRect(0,0,w,h); ctx.textAlign = "center"; ctx.font = "14px sans-serif"; for(let i=0;i<levels.length;i++){ const x = 150 + i*72; const y = h - 70 - i*44; const isActive = i <= active; const isGap = i === 7; ctx.beginPath(); ctx.arc(x,y, isGap ? 28 : 24,0,Math.PI*2); ctx.fillStyle = isGap ? "rgba(242,200,121,0.16)" : isActive ? "rgba(138,215,255,0.24)" : "rgba(15,23,42,0.72)"; ctx.strokeStyle = isGap ? "rgba(242,200,121,0.65)" : isActive ? "rgba(138,215,255,0.56)" : "rgba(148,163,184,0.18)"; ctx.lineWidth = isGap ? 2 : 1.4; ctx.fill(); ctx.stroke(); ctx.fillStyle = isGap ? "#fef3c7" : isActive ? "#e0f2fe" : "#94a3b8"; ctx.font = isGap ? "bold 22px sans-serif" : "bold 13px sans-serif"; ctx.fillText(levels[i][currentLang], x, y+5); if(i<levels.length-1){ const nx = 150 + (i+1)*72; const ny = h - 70 - (i+1)*44; ctx.beginPath(); ctx.moveTo(x+24,y-8); ctx.lineTo(nx-24,ny+8); ctx.strokeStyle = i === 6 ? "rgba(242,200,121,0.55)" : isActive ? "rgba(138,215,255,0.40)" : "rgba(148,163,184,0.16)"; ctx.setLineDash(i === 6 ? [8,6] : []); ctx.lineWidth = i === 6 ? 2 : 1.5; ctx.stroke(); ctx.setLineDash([]); } }
+  ctx.fillStyle = "#cbd5e1"; ctx.font = "15px sans-serif"; ctx.fillText(t("explanatory boundary", "límite explicativo"), 615, 170); ctx.fillStyle = "rgba(242,200,121,0.72)"; ctx.fillRect(518,184,195,2);
+  if(active < 6) note.textContent = t("At this level, the project is still inside functional explanation: variation, uncertainty, structure, detection, and task-use.", "En este nivel, el proyecto sigue dentro de la explicación funcional: variación, incertidumbre, estructura, detección y uso en tarea.");
+  else if(active === 6) note.textContent = t("Behavior and report can be modeled computationally, but a report is still not identical to proving inner experience.", "La conducta y el reporte pueden modelarse computacionalmente, pero un reporte no es idéntico a probar experiencia interna.");
+  else note.textContent = t("This is the unresolved step. The page should not pretend to close it. It should mark it clearly and argue carefully.", "Este es el paso irresuelto. La página no debe fingir cerrarlo. Debe marcarlo claramente y argumentar con cuidado."); }
+slider.addEventListener("input", draw); langToggle.addEventListener("click", () => applyLanguage(currentLang === "en" ? "es" : "en")); applyLanguage(currentLang);
+
+</script>
+</body>
+</html>
