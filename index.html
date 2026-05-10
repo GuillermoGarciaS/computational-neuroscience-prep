@@ -200,7 +200,8 @@
     .mini-card,
     .hub-card,
     .group-shell,
-    .timeline-card {
+    .timeline-card,
+    .thesis-card {
       background: linear-gradient(180deg, rgba(255,255,255,0.052), rgba(255,255,255,0.032));
       border: 1px solid var(--border);
       border-radius: var(--radius);
@@ -215,7 +216,8 @@
     .mini-card::before,
     .hub-card::before,
     .group-shell::before,
-    .timeline-card::before {
+    .timeline-card::before,
+    .thesis-card::before {
       content: "";
       position: absolute;
       inset: 0;
@@ -366,6 +368,76 @@
       color: var(--accent-2);
       font-size: 0.83rem;
       font-weight: 720;
+    }
+
+    .probe-controls {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.4rem;
+      margin-top: 0.75rem;
+    }
+
+    .probe-button {
+      border: 1px solid rgba(255,255,255,0.09);
+      background: rgba(255,255,255,0.035);
+      color: var(--muted);
+      border-radius: 11px;
+      padding: 0.45rem 0.25rem;
+      font-size: 0.74rem;
+      cursor: pointer;
+      transition: border-color 0.18s ease, background 0.18s ease, color 0.18s ease, transform 0.18s ease;
+    }
+
+    .probe-button:hover,
+    .probe-button.active {
+      border-color: rgba(138,215,255,0.34);
+      background: rgba(14,165,233,0.10);
+      color: var(--accent-2);
+      transform: translateY(-1px);
+    }
+
+    .signal-chain {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.45rem;
+      margin-top: 1.2rem;
+      color: var(--muted);
+      font-size: 0.86rem;
+      letter-spacing: 0.02em;
+    }
+
+    .chain-node {
+      border: 1px solid rgba(138,215,255,0.18);
+      background: rgba(2,6,23,0.23);
+      border-radius: 999px;
+      padding: 0.35rem 0.62rem;
+    }
+
+    .chain-arrow {
+      color: rgba(138,215,255,0.7);
+    }
+
+    .thesis-card {
+      padding: 1.25rem;
+      border-color: rgba(138,215,255,0.22);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.062), rgba(255,255,255,0.035)),
+        radial-gradient(circle at top left, rgba(138,215,255,0.10), transparent 42%);
+    }
+
+    .thesis-text {
+      margin: 0;
+      color: rgba(245,247,251,0.91);
+      font-size: 1rem;
+      line-height: 1.78;
+      max-width: 84ch;
+    }
+
+    .boundary-note {
+      margin: 0.9rem 0 0;
+      color: var(--muted-2);
+      font-size: 0.92rem;
     }
 
     main {
@@ -691,7 +763,8 @@
       .mini-card,
       .hub-card,
       .group-shell,
-      .timeline-card {
+      .timeline-card,
+      .thesis-card {
         border-radius: 18px;
       }
 
@@ -754,7 +827,7 @@
 
       <div class="top-actions">
         <a class="top-link" href="#experiments" data-en="Experiments" data-es="Experimentos">Experiments</a>
-        <a class="top-link" href="#projects" data-en="Projects" data-es="Proyectos">Projects</a>
+        <a class="top-link" href="#projects" data-en="Synthesis" data-es="Síntesis">Synthesis</a>
         <button id="langToggle" class="lang-button">ES</button>
       </div>
     </div>
@@ -769,41 +842,58 @@
         <h1 data-en="From Entropy to Experience" data-es="De la Entropía a la Experiencia">From Entropy to Experience</h1>
 
         <p class="lede"
-           data-en="A long-term portfolio of computational experiments on information, uncertainty, pattern detection, representation, and the limits of explaining subjective experience."
-           data-es="Un portafolio a largo plazo de experimentos computacionales sobre información, incertidumbre, detección de patrones, representación y los límites de explicar la experiencia subjetiva.">
-          A long-term portfolio of computational experiments on information, uncertainty, pattern detection, representation, and the limits of explaining subjective experience.
+           data-en="A computational notebook on how signals become structure, how structure becomes detectable, and why detection is still not experience."
+           data-es="Un cuaderno computacional sobre cómo las señales se vuelven estructura, cómo la estructura se vuelve detectable y por qué la detección todavía no es experiencia.">
+          A computational notebook on how signals become structure, how structure becomes detectable, and why detection is still not experience.
         </p>
+
+        <div class="signal-chain" aria-label="Research sequence">
+          <span class="chain-node" data-en="signal" data-es="señal">signal</span>
+          <span class="chain-arrow">→</span>
+          <span class="chain-node" data-en="structure" data-es="estructura">structure</span>
+          <span class="chain-arrow">→</span>
+          <span class="chain-node" data-en="detection" data-es="detección">detection</span>
+          <span class="chain-arrow">→</span>
+          <span class="chain-node" data-en="representation" data-es="representación">representation</span>
+          <span class="chain-arrow">→</span>
+          <span class="chain-node" data-en="limit" data-es="límite">limit</span>
+        </div>
 
         <div class="hero-actions">
           <a href="experiment-1.html" class="primary-button" data-en="Start with Experiment 1 →" data-es="Empezar con Experimento 1 →">Start with Experiment 1 →</a>
-          <a href="#experiments" class="secondary-button" data-en="View learning path" data-es="Ver ruta de aprendizaje">View learning path</a>
+          <a href="#experiments" class="secondary-button" data-en="View the research arc" data-es="Ver arco de investigación">View the research arc</a>
         </div>
       </div>
 
       <aside class="side-card">
         <div>
-          <div class="eyebrow" data-en="Research compass" data-es="Brújula de investigación">Research compass</div>
+          <div class="eyebrow" data-en="Signal observatory" data-es="Observatorio de señales">Signal observatory</div>
           <p class="small"
-             data-en="A guided path for studying how information becomes structure, how structure becomes detectable, and why detection is still not the same as experience."
-             data-es="Una ruta guiada para estudiar cómo la información se vuelve estructura, cómo la estructura se vuelve detectable y por qué la detección todavía no es lo mismo que la experiencia.">
-            A guided path for studying how information becomes structure, how structure becomes detectable, and why detection is still not the same as experience.
+             data-en="Small systems for watching uncertainty become pattern. Each study isolates one condition: entropy, time, detection, representation, or integration."
+             data-es="Pequeños sistemas para observar cómo la incertidumbre se vuelve patrón. Cada estudio aísla una condición: entropía, tiempo, detección, representación o integración.">
+            Small systems for watching uncertainty become pattern. Each study isolates one condition: entropy, time, detection, representation, or integration.
           </p>
         </div>
 
         <div class="side-stat">
-          <p class="stat-label" data-en="Starting point" data-es="Punto de partida">Starting point</p>
-          <p class="stat-value" data-en="Entropy and predictability" data-es="Entropía y predictibilidad">Entropy and predictability</p>
+          <p class="stat-label" data-en="Signal state" data-es="Estado de señal">Signal state</p>
+          <p class="stat-value" data-en="uncertain → structured" data-es="incierta → estructurada">uncertain → structured</p>
         </div>
 
         <div class="side-stat">
-          <p class="stat-label" data-en="Long-term aim" data-es="Objetivo a largo plazo">Long-term aim</p>
-          <p class="stat-value" data-en="Representation without overclaiming" data-es="Representación sin exagerar">Representation without overclaiming</p>
+          <p class="stat-label" data-en="Boundary" data-es="Límite">Boundary</p>
+          <p class="stat-value" data-en="not consciousness itself" data-es="no la consciencia en sí">not consciousness itself</p>
         </div>
 
         <div class="signal-probe">
-          <p class="stat-label" data-en="Tiny signal probe" data-es="Mini sonda de señal">Tiny signal probe</p>
+          <p class="stat-label" data-en="Live signal probe" data-es="Sonda de señal en vivo">Live signal probe</p>
           <div id="probeLine" class="probe-line" aria-hidden="true"></div>
           <div id="probeStatus" class="probe-status">Pattern drifting...</div>
+          <div class="probe-controls" aria-label="Signal probe presets">
+            <button class="probe-button" data-probe="noise" data-en="Noise" data-es="Ruido">Noise</button>
+            <button class="probe-button" data-probe="pattern" data-en="Pattern" data-es="Patrón">Pattern</button>
+            <button class="probe-button" data-probe="ambiguous" data-en="Ambiguous" data-es="Ambiguo">Ambiguous</button>
+          </div>
         </div>
       </aside>
     </div>
@@ -813,47 +903,61 @@
     <div class="container stack">
       <section class="info-grid">
         <div class="mini-card">
-          <h2 data-en="Core Question" data-es="Pregunta central">Core Question</h2>
+          <h2 data-en="The Problem" data-es="El problema">The Problem</h2>
           <p class="small"
-             data-en="To what extent can reducing uncertainty in computational systems explain structured representation, and where does that explanation fail?"
-             data-es="¿Hasta qué punto reducir la incertidumbre en sistemas computacionales puede explicar la representación estructurada, y dónde falla esa explicación?">
-            To what extent can reducing uncertainty in computational systems explain structured representation, and where does that explanation fail?
+             data-en="Raw information is not automatically representation. This site asks what a system must detect, preserve, or use before a signal becomes meaningful for a task."
+             data-es="La información cruda no es automáticamente representación. Este sitio pregunta qué debe detectar, preservar o usar un sistema antes de que una señal sea significativa para una tarea.">
+            Raw information is not automatically representation. This site asks what a system must detect, preserve, or use before a signal becomes meaningful for a task.
           </p>
         </div>
 
         <div class="mini-card">
-          <h2 data-en="Approach" data-es="Enfoque">Approach</h2>
+          <h2 data-en="The Method" data-es="El método">The Method</h2>
           <p class="small"
-             data-en="Each page isolates a measurable idea: entropy, distribution, time windows, detection, and then synthesis."
-             data-es="Cada página aísla una idea medible: entropía, distribución, ventanas temporales, detección y luego síntesis.">
-            Each page isolates a measurable idea: entropy, distribution, time windows, detection, and then synthesis.
+             data-en="Each page turns an abstract idea into a small interactive model: distributions, time windows, detectors, thresholds, channels, and uncertainty."
+             data-es="Cada página convierte una idea abstracta en un pequeño modelo interactivo: distribuciones, ventanas temporales, detectores, umbrales, canales e incertidumbre.">
+            Each page turns an abstract idea into a small interactive model: distributions, time windows, detectors, thresholds, channels, and uncertainty.
           </p>
         </div>
 
         <div class="mini-card">
-          <h2 data-en="Scope" data-es="Alcance">Scope</h2>
+          <h2 data-en="The Boundary" data-es="El límite">The Boundary</h2>
           <p class="small"
-             data-en="This project does not claim to explain consciousness. It maps what computational explanation can and cannot capture."
-             data-es="Este proyecto no pretende explicar la consciencia. Mapea lo que la explicación computacional puede y no puede capturar.">
-            This project does not claim to explain consciousness. It maps what computational explanation can and cannot capture.
+             data-en="These models do not explain consciousness. They clarify what computation can explain before the question of subjective experience even begins."
+             data-es="Estos modelos no explican la consciencia. Aclaran qué puede explicar la computación antes de que empiece la pregunta por la experiencia subjetiva.">
+            These models do not explain consciousness. They clarify what computation can explain before the question of subjective experience even begins.
           </p>
         </div>
       </section>
 
+      <section class="thesis-card">
+        <div class="hub-kicker" data-en="Working thesis" data-es="Tesis de trabajo">Working thesis</div>
+        <p class="thesis-text"
+           data-en="A signal becomes representational only relative to a system that can extract stable structure from it and use that structure for classification, prediction, or transformation. Entropy helps describe uncertainty, but it does not by itself explain meaning or experience."
+           data-es="Una señal se vuelve representacional solo en relación con un sistema que puede extraer estructura estable de ella y usar esa estructura para clasificar, predecir o transformar. La entropía ayuda a describir la incertidumbre, pero por sí sola no explica significado ni experiencia.">
+          A signal becomes representational only relative to a system that can extract stable structure from it and use that structure for classification, prediction, or transformation. Entropy helps describe uncertainty, but it does not by itself explain meaning or experience.
+        </p>
+        <p class="boundary-note"
+           data-en="Boundary condition: detection can produce usable structure without proving that the system understands or experiences anything."
+           data-es="Condición límite: la detección puede producir estructura utilizable sin probar que el sistema entiende o experimenta algo.">
+          Boundary condition: detection can produce usable structure without proving that the system understands or experiences anything.
+        </p>
+      </section>
+
       <section class="timeline-card">
-        <div class="hub-kicker" data-en="Learning path" data-es="Ruta de aprendizaje">Learning path</div>
+        <div class="hub-kicker" data-en="Research arc" data-es="Arco de investigación">Research arc</div>
         <h2 class="hub-title" data-en="From uncertainty to representation" data-es="De incertidumbre a representación">From uncertainty to representation</h2>
         <p class="hub-note"
-           data-en="The portfolio is organized as a sequence. Experiments isolate mechanisms; projects combine them into more general models."
-           data-es="El portafolio está organizado como una secuencia. Los experimentos aíslan mecanismos; los proyectos los combinan en modelos más generales.">
-          The portfolio is organized as a sequence. Experiments isolate mechanisms; projects combine them into more general models.
+           data-en="The site is organized as a sequence. Experiments isolate mechanisms; synthesis projects combine them into broader computational models."
+           data-es="El sitio está organizado como una secuencia. Los experimentos aíslan mecanismos; los proyectos de síntesis los combinan en modelos computacionales más amplios.">
+          The site is organized as a sequence. Experiments isolate mechanisms; synthesis projects combine them into broader computational models.
         </p>
 
         <div class="timeline">
           <div class="timeline-step active">
             <div class="timeline-num">01</div>
             <p class="timeline-title" data-en="Structure" data-es="Estructura">Structure</p>
-            <p class="timeline-text" data-en="Predictability and repetition." data-es="Predictibilidad y repetición.">Predictability and repetition.</p>
+            <p class="timeline-text" data-en="Repetition, compression, predictability." data-es="Repetición, compresión, predictibilidad.">Repetition, compression, predictability.</p>
           </div>
 
           <div class="timeline-step active">
@@ -871,19 +975,19 @@
           <div class="timeline-step active">
             <div class="timeline-num">04</div>
             <p class="timeline-title" data-en="Detection" data-es="Detección">Detection</p>
-            <p class="timeline-text" data-en="Structure as something a rule can identify." data-es="Estructura como algo que una regla puede identificar.">Structure as something a rule can identify.</p>
+            <p class="timeline-text" data-en="A pattern only matters if a rule can find it." data-es="Un patrón importa solo si una regla puede encontrarlo.">A pattern only matters if a rule can find it.</p>
           </div>
 
           <div class="timeline-step">
             <div class="timeline-num">P1</div>
             <p class="timeline-title" data-en="Representation" data-es="Representación">Representation</p>
-            <p class="timeline-text" data-en="Signals transformed into usable structure." data-es="Señales transformadas en estructura utilizable.">Signals transformed into usable structure.</p>
+            <p class="timeline-text" data-en="Signals become usable structure." data-es="Las señales se vuelven estructura utilizable.">Signals become usable structure.</p>
           </div>
 
           <div class="timeline-step">
             <div class="timeline-num">P2</div>
             <p class="timeline-title" data-en="Integration" data-es="Integración">Integration</p>
-            <p class="timeline-text" data-en="Multiple channels shaping uncertainty." data-es="Múltiples canales moldeando incertidumbre.">Multiple channels shaping uncertainty.</p>
+            <p class="timeline-text" data-en="Channels cooperate or interfere." data-es="Los canales cooperan o interfieren.">Channels cooperate or interfere.</p>
           </div>
         </div>
       </section>
@@ -891,15 +995,15 @@
       <section class="hub-card">
         <div class="hub-top">
           <div>
-            <div class="hub-kicker" data-en="Navigation Hub" data-es="Centro de navegación">Navigation Hub</div>
-            <h2 class="hub-title" data-en="Explore the portfolio" data-es="Explora el portafolio">Explore the portfolio</h2>
+            <div class="hub-kicker" data-en="Index of studies" data-es="Índice de estudios">Index of studies</div>
+            <h2 class="hub-title" data-en="Open the notebook" data-es="Abrir el cuaderno">Open the notebook</h2>
           </div>
         </div>
 
         <p class="hub-note"
-           data-en="Start with the experiments if you want the foundations. Jump to the projects if you want the broader synthesis."
-           data-es="Empieza con los experimentos si quieres las bases. Ve a los proyectos si quieres la síntesis más amplia.">
-          Start with the experiments if you want the foundations. Jump to the projects if you want the broader synthesis.
+           data-en="Start with the experiments for the mechanisms. Move to the synthesis studies when you want the broader model."
+           data-es="Empieza con los experimentos para ver los mecanismos. Pasa a los estudios de síntesis cuando quieras el modelo más amplio.">
+          Start with the experiments for the mechanisms. Move to the synthesis studies when you want the broader model.
         </p>
 
         <div class="hub-chips">
@@ -996,13 +1100,13 @@
           <summary class="group-summary">
             <div>
               <div class="group-meta">
-                <h2 class="group-title" data-en="Projects" data-es="Proyectos">Projects</h2>
+                <h2 class="group-title" data-en="Synthesis studies" data-es="Estudios de síntesis">Synthesis studies</h2>
                 <span class="count-badge">2</span>
               </div>
               <p class="group-desc"
-                 data-en="Broader synthesis pages that combine the experiments into specific models."
-                 data-es="Páginas de síntesis más amplias que combinan los experimentos en modelos específicos.">
-                Broader synthesis pages that combine the experiments into specific models.
+                 data-en="Larger pages that combine the experiments into specific computational models."
+                 data-es="Páginas más amplias que combinan los experimentos en modelos computacionales específicos.">
+                Larger pages that combine the experiments into specific computational models.
               </p>
             </div>
             <span class="chevron" aria-hidden="true"></span>
@@ -1046,9 +1150,9 @@
 
   <footer>
     <div class="container footer-inner">
-      <div data-en="Public portfolio in progress. This site documents an evolving research arc rather than a finished theory."
-           data-es="Portafolio público en progreso. Este sitio documenta un arco de investigación en evolución, no una teoría terminada.">
-        Public portfolio in progress. This site documents an evolving research arc rather than a finished theory.
+      <div data-en="Public notebook in progress. This site documents an evolving research arc rather than a finished theory."
+           data-es="Cuaderno público en progreso. Este sitio documenta un arco de investigación en evolución, no una teoría terminada.">
+        Public notebook in progress. This site documents an evolving research arc rather than a finished theory.
       </div>
 
       <a href="#top" data-en="Back to top ↑" data-es="Volver arriba ↑">Back to top ↑</a>
@@ -1182,41 +1286,73 @@
 
     const probeLine = document.getElementById("probeLine");
     const probeStatus = document.getElementById("probeStatus");
+    const probeButtons = document.querySelectorAll(".probe-button");
+    let activeProbe = "auto";
 
-    function updateProbe() {
+    const probeModes = {
+      pattern: {
+        bits: "010101010101",
+        en: "Detector active: stable alternation",
+        es: "Detector activo: alternancia estable"
+      },
+      block: {
+        bits: "111100001111",
+        en: "Detector active: block structure",
+        es: "Detector activo: estructura por bloques"
+      },
+      noise: {
+        bits: "101100101011",
+        en: "High uncertainty: no stable detector response",
+        es: "Alta incertidumbre: sin respuesta estable del detector"
+      },
+      ambiguous: {
+        bits: "010110100101",
+        en: "Partial structure: detection depends on threshold",
+        es: "Estructura parcial: la detección depende del umbral"
+      },
+      warning: {
+        bits: "001101011001",
+        en: "High entropy does not mean no structure",
+        es: "Alta entropía no significa ausencia de estructura"
+      },
+      limit: {
+        bits: "000000000000",
+        en: "Low entropy does not mean meaning",
+        es: "Baja entropía no significa significado"
+      }
+    };
+
+    function renderProbe(modeName) {
       if (!probeLine || !probeStatus) return;
 
-      const modes = [
-        {
-          bits: "010101010101",
-          en: "Detected: alternating structure",
-          es: "Detectado: estructura alternante"
-        },
-        {
-          bits: "111100001111",
-          en: "Detected: block structure",
-          es: "Detectado: estructura por bloques"
-        },
-        {
-          bits: "011010011001",
-          en: "Uncertain: noisy pattern",
-          es: "Incierto: patrón con ruido"
-        },
-        {
-          bits: "101101001011",
-          en: "Probe active: structure unclear",
-          es: "Sonda activa: estructura poco clara"
-        }
-      ];
-
-      const item = modes[Math.floor(Math.random() * modes.length)];
+      const item = probeModes[modeName] || probeModes.ambiguous;
 
       probeLine.innerHTML = item.bits.split("").map(bit => {
         return `<span class="probe-bit ${bit === "1" ? "one" : ""}">${bit}</span>`;
       }).join("");
 
       probeStatus.textContent = item[currentLang];
+
+      probeButtons.forEach(button => {
+        button.classList.toggle("active", button.dataset.probe === modeName);
+      });
     }
+
+    function updateProbe() {
+      const cycle = ["pattern", "block", "noise", "ambiguous", "warning", "limit"];
+      const mode = activeProbe === "auto"
+        ? cycle[Math.floor(Math.random() * cycle.length)]
+        : activeProbe;
+
+      renderProbe(mode);
+    }
+
+    probeButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        activeProbe = button.dataset.probe;
+        renderProbe(activeProbe);
+      });
+    });
 
     window.addEventListener("resize", setupParticles);
 
