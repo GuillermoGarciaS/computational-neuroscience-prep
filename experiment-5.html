@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Experiment 5 — Representation Under Constraint</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html { scrollbar-width: thin; scrollbar-color: #8ad7ff #081120; }
+    ::-webkit-scrollbar { width: 12px; }
+    ::-webkit-scrollbar-track { background: linear-gradient(180deg, #071224, #05101f); }
+    ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #8ad7ff, #6ca8ff); border-radius: 999px; border: 2px solid #081120; }
+    ::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #b6ecff, #8ad7ff); }
+    ::selection { background: rgba(138, 215, 255, 0.28); color: white; }
+    :root {
+      --page-accent: #8ad7ff;
+      --page-accent-soft: rgba(138, 215, 255, 0.12);
+      --page-accent-border: rgba(138, 215, 255, 0.28);
+      --panel: rgba(15, 23, 42, 0.78);
+      --panel-strong: rgba(15, 23, 42, 0.92);
+      --violet: #b8a4ff;
+      --cyan: #8ee7dc;
+      --amber: #f2c879;
+    }
+    body {
+      background:
+        radial-gradient(circle at 12% 8%, rgba(96, 165, 250, 0.10), transparent 26%),
+        radial-gradient(circle at 88% 22%, rgba(138, 215, 255, 0.07), transparent 24%),
+        radial-gradient(circle at 50% 100%, rgba(168, 85, 247, 0.08), transparent 32%),
+        #030712;
+    }
+    .reading-block { max-width: 68ch; }
+    .reading-block p { line-height: 1.9; }
+    .section-intro { color: #cbd5e1; font-size: 1.05rem; line-height: 1.85; max-width: 68ch; }
+    .concept-card {
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      background:
+        linear-gradient(180deg, var(--panel-strong), var(--panel)),
+        radial-gradient(circle at top left, var(--page-accent-soft), transparent 38%);
+      border-radius: 1.25rem;
+      padding: 1.4rem;
+      box-shadow: 0 20px 55px rgba(0,0,0,0.20);
+    }
+    .concept-card-strong {
+      border-color: var(--page-accent-border);
+      background:
+        linear-gradient(180deg, rgba(15, 23, 42, 0.90), rgba(15, 23, 42, 0.70)),
+        radial-gradient(circle at top left, rgba(96, 165, 250, 0.18), transparent 42%);
+    }
+    .concept-kicker { color: var(--page-accent); font-size: 0.76rem; letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 0.7rem; font-weight: 700; }
+    .concept-title { color: white; font-size: 1.05rem; font-weight: 700; margin-bottom: 0.45rem; }
+    .formula-card { border: 1px solid rgba(138, 215, 255, 0.22); background: rgba(2, 6, 23, 0.56); border-radius: 1rem; padding: 1rem; overflow-x: auto; }
+    .formula { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; color: #e0f2fe; font-size: clamp(0.9rem, 2vw, 1.05rem); white-space: nowrap; }
+    .metric { border: 1px solid rgba(148, 163, 184, 0.18); background: rgba(2, 6, 23, 0.36); border-radius: 1rem; padding: 1rem; }
+    .metric-label { color: #94a3b8; font-size: 0.76rem; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.35rem; }
+    .metric-value { color: white; font-size: 1.55rem; font-weight: 750; letter-spacing: -0.03em; }
+    select, input[type="range"], textarea { accent-color: #8ad7ff; }
+    select, input[type="number"] {
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      background: rgba(15, 23, 42, 0.72);
+      color: #dbeafe;
+      border-radius: 0.85rem;
+      padding: 0.65rem 0.8rem;
+      font-size: 0.92rem;
+      width: 100%;
+      outline: none;
+    }
+    textarea {
+      width: 100%; min-height: 115px; resize: vertical; border: 1px solid rgba(148, 163, 184, 0.22);
+      background: rgba(2, 6, 23, 0.62); color: #e5f3ff; border-radius: 1rem; padding: 1rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; line-height: 1.65; outline: none;
+    }
+    textarea:focus, select:focus, input[type="number"]:focus { border-color: rgba(138, 215, 255, 0.55); }
+    canvas { width: 100%; height: auto; background: rgba(2, 6, 23, 0.42); border: 1px solid rgba(148, 163, 184, 0.16); border-radius: 1rem; }
+    .pill { display: inline-flex; align-items: center; gap: 0.45rem; border: 1px solid rgba(148, 163, 184, 0.18); background: rgba(15, 23, 42, 0.62); border-radius: 999px; padding: 0.45rem 0.7rem; color: #cbd5e1; font-size: 0.84rem; }
+    .mini-table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+    .mini-table th, .mini-table td { border-bottom: 1px solid rgba(148, 163, 184, 0.13); padding: 0.55rem 0.35rem; text-align: left; vertical-align: top; }
+    .mini-table th { color: #93c5fd; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; }
+    .preset-button { border: 1px solid rgba(148, 163, 184, 0.22); background: rgba(15, 23, 42, 0.72); color: #dbeafe; border-radius: 0.85rem; padding: 0.65rem 0.8rem; font-size: 0.88rem; transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease; }
+    .preset-button:hover, .preset-button.active { border-color: rgba(138, 215, 255, 0.46); background: rgba(30, 41, 59, 0.82); transform: translateY(-1px); }
+    .sequence-strip { display: flex; flex-wrap: wrap; gap: 0.35rem; padding: 0.9rem; border-radius: 1rem; border: 1px solid rgba(148, 163, 184, 0.16); background: rgba(2, 6, 23, 0.34); max-height: 170px; overflow-y: auto; }
+    .bit-cell { display: inline-flex; align-items: center; justify-content: center; width: 1.8rem; height: 1.8rem; border-radius: 0.55rem; font-size: 0.82rem; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; border: 1px solid rgba(138, 215, 255, 0.18); }
+    .bit-one { background: rgba(14, 165, 233, 0.18); color: #e0f2fe; }
+    .bit-zero { background: rgba(15, 23, 42, 0.72); color: #94a3b8; }
+    .stage-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.8rem; }
+    .stage-card { border: 1px solid rgba(148, 163, 184, 0.16); border-radius: 1rem; background: rgba(2, 6, 23, 0.34); padding: 0.9rem; min-height: 140px; position: relative; overflow: hidden; }
+    .stage-card::after { content: ""; position: absolute; inset: auto -20% -40% -20%; height: 90px; background: radial-gradient(circle, rgba(138,215,255,0.13), transparent 62%); }
+    .stage-title { color: #bfdbfe; font-size: 0.74rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 800; margin-bottom: 0.55rem; }
+    .stage-body { position: relative; z-index: 1; }
+    .bar-shell { height: 0.62rem; border-radius: 999px; background: rgba(15,23,42,0.82); overflow: hidden; border: 1px solid rgba(148,163,184,0.12); }
+    .bar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #6ca8ff, #8ee7dc); }
+    .matrix { width: 100%; border-collapse: separate; border-spacing: 0.3rem; text-align: center; font-size: 0.84rem; }
+    .matrix th { color: #93c5fd; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; }
+    .matrix td { border: 1px solid rgba(148,163,184,0.15); background: rgba(15,23,42,0.68); color: #e5e7eb; border-radius: 0.55rem; padding: 0.48rem; }
+    .matrix td.strong { background: rgba(14,165,233,0.22); border-color: rgba(138,215,255,0.35); color: white; }
+    @media (max-width: 900px) { .stage-grid { grid-template-columns: 1fr; } }
+  </style>
+
+</head>
+<body class="bg-gray-950 text-white">
+  <div class="max-w-7xl mx-auto px-6 py-8 lg:px-8">
+
+    <div class="grid grid-cols-1 lg:grid-cols-[220px_minmax(0,1fr)_260px] gap-8">
+      <aside class="hidden lg:block">
+        <div class="sticky top-8 rounded-2xl border border-gray-800 bg-gray-900/70 backdrop-blur p-4">
+          <p class="text-xs uppercase tracking-[0.18em] text-blue-300 mb-4" data-en="On this page" data-es="En esta página">On this page</p>
+          <nav class="space-y-3 text-sm">
+            <a href="#intro" class="block text-gray-300 hover:text-blue-300 transition" data-en="Introduction" data-es="Introducción">Introduction</a>
+            <a href="#theory" class="block text-gray-300 hover:text-blue-300 transition" data-en="Theory" data-es="Teoría">Theory</a>
+            <a href="#lab" class="block text-gray-300 hover:text-blue-300 transition" data-en="Interactive lab" data-es="Laboratorio interactivo">Interactive lab</a>
+            <a href="#method" class="block text-gray-300 hover:text-blue-300 transition" data-en="Method" data-es="Método">Method</a>
+            <a href="#interpretation" class="block text-gray-300 hover:text-blue-300 transition" data-en="Interpretation" data-es="Interpretación">Interpretation</a>
+            <a href="#limits" class="block text-gray-300 hover:text-blue-300 transition" data-en="Limits" data-es="Límites">Limits</a>
+          </nav>
+        </div>
+      </aside>
+
+      <main class="max-w-3xl">
+        <div class="flex justify-between items-center gap-4 mb-6">
+          <a href="index.html" class="text-blue-400 hover:text-blue-300 transition" data-en="← Back" data-es="← Volver">← Back</a>
+          <button id="langToggle" class="rounded-xl border border-gray-800 bg-gray-900/70 px-4 py-2 text-sm text-gray-200 hover:border-blue-400/40 hover:text-white transition">ES</button>
+        </div>
+
+        <h1 class="text-4xl font-bold mt-4 mb-6 tracking-tight" data-en="Experiment #5 — Representation Under Constraint" data-es="Experimento #5 — Representación Bajo Restricción">Experiment #5 — Representation Under Constraint</h1>
+        <p class="section-intro mb-10" data-en="Experiment 4 showed that a rule can detect structure. This experiment asks whether the detected structure becomes useful for a task once the system has limited memory and a limited feature budget." data-es="El Experimento 4 mostró que una regla puede detectar estructura. Este experimento pregunta si la estructura detectada se vuelve útil para una tarea cuando el sistema tiene memoria y presupuesto de rasgos limitados.">Experiment 4 showed that a rule can detect structure. This experiment asks whether the detected structure becomes useful for a task once the system has limited memory and a limited feature budget.</p>
+
+        <section id="intro" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8">
+          <h2 class="text-2xl font-semibold mb-4" data-en="Introduction" data-es="Introducción">Introduction</h2>
+          <div class="space-y-4">
+            <div class="concept-card concept-card-strong">
+              <p class="concept-kicker" data-en="Central question" data-es="Pregunta central">Central question</p>
+              <p class="text-gray-300 leading-8" data-en="When does a detected pattern become a usable representation?" data-es="¿Cuándo se vuelve una representación utilizable un patrón detectado?">When does a detected pattern become a usable representation?</p>
+            </div>
+            <div class="concept-card">
+              <p class="concept-kicker" data-en="Page thesis" data-es="Tesis de la página">Page thesis</p>
+              <h3 class="concept-title" data-en="Detection is not enough" data-es="La detección no basta">Detection is not enough</h3>
+              <p class="text-gray-300 leading-8" data-en="Detection finds structure. Representation preserves structure in a form that can be used for classification, prediction, reconstruction, compression, or action." data-es="La detección encuentra estructura. La representación preserva estructura en una forma que puede usarse para clasificar, predecir, reconstruir, comprimir o actuar.">Detection finds structure. Representation preserves structure in a form that can be used for classification, prediction, reconstruction, compression, or action.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="theory" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8">
+          <h2 class="text-2xl font-semibold mb-4" data-en="Theory" data-es="Teoría">Theory</h2>
+          <div class="reading-block space-y-5 text-gray-300">
+            <p data-en="A detector can notice alternation, blocks, runs, frequency, or transition rate. But a system still needs to keep some of those features and use them in a task. Under constraint, representation becomes selective preservation, not perfect copying." data-es="Un detector puede notar alternancia, bloques, rachas, frecuencia o tasa de transición. Pero un sistema aún necesita conservar algunos de esos rasgos y usarlos en una tarea. Bajo restricción, la representación se vuelve preservación selectiva, no copia perfecta.">A detector can notice alternation, blocks, runs, frequency, or transition rate. But a system still needs to keep some of those features and use them in a task. Under constraint, representation becomes selective preservation, not perfect copying.</p>
+            <div class="formula-card"><p class="formula">Representation = retained useful features / available structure</p></div>
+            <p data-en="The lab below uses four toy signal families. When the feature budget is small, the representation may only separate structured from random. When the budget expands, it can distinguish alternation from blocks or long runs." data-es="El laboratorio usa cuatro familias de señales. Cuando el presupuesto de rasgos es pequeño, la representación quizá solo separa lo estructurado de lo aleatorio. Cuando el presupuesto aumenta, puede distinguir alternancia de bloques o rachas largas.">The lab below uses four toy signal families. When the feature budget is small, the representation may only separate structured from random. When the budget expands, it can distinguish alternation from blocks or long runs.</p>
+          </div>
+        </section>
+
+        <section id="lab" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8">
+          <h2 class="text-2xl font-semibold mb-4" data-en="Interactive lab" data-es="Laboratorio interactivo">Interactive lab</h2>
+          <p class="section-intro mb-6" data-en="Adjust noise, threshold, memory, task type, and feature budget. Watch the same signal pass through detection, compression, and task output." data-es="Ajusta ruido, umbral, memoria, tipo de tarea y presupuesto de rasgos. Observa cómo la misma señal pasa por detección, compresión y salida de tarea.">Adjust noise, threshold, memory, task type, and feature budget. Watch the same signal pass through detection, compression, and task output.</p>
+
+          <div class="concept-card mb-6">
+            <p class="concept-kicker" data-en="Controls" data-es="Controles">Controls</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div><label class="block mb-2 text-sm text-gray-400" data-en="Signal type" data-es="Tipo de señal">Signal type</label><select id="signalType"><option value="alternating" data-en="A — Alternation" data-es="A — Alternancia">A — Alternation</option><option value="blocks" data-en="B — Blocks" data-es="B — Bloques">B — Blocks</option><option value="runs" data-en="C — Long runs" data-es="C — Rachas largas">C — Long runs</option><option value="random" data-en="D — Random noise" data-es="D — Ruido aleatorio">D — Random noise</option></select></div>
+              <div><label class="block mb-2 text-sm text-gray-400"><span data-en="Noise level" data-es="Nivel de ruido">Noise level</span>: <span id="noiseLabel">12</span>%</label><input id="noiseLevel" type="range" min="0" max="50" value="12" class="w-full" /></div>
+              <div><label class="block mb-2 text-sm text-gray-400"><span data-en="Feature budget" data-es="Presupuesto de rasgos">Feature budget</span>: <span id="budgetLabel">3</span></label><input id="featureBudget" type="range" min="1" max="5" value="3" class="w-full" /></div>
+              <div><label class="block mb-2 text-sm text-gray-400" data-en="Task type" data-es="Tipo de tarea">Task type</label><select id="taskType"><option value="classify" data-en="Classify signal" data-es="Clasificar señal">Classify signal</option><option value="predict" data-en="Predict next bits" data-es="Predecir próximos bits">Predict next bits</option><option value="reconstruct" data-en="Reconstruct signal" data-es="Reconstruir señal">Reconstruct signal</option></select></div>
+              <div><label class="block mb-2 text-sm text-gray-400"><span data-en="Detector threshold" data-es="Umbral del detector">Detector threshold</span>: <span id="thresholdLabel">0.58</span></label><input id="threshold" type="range" min="0.30" max="0.90" step="0.01" value="0.58" class="w-full" /></div>
+              <div><label class="block mb-2 text-sm text-gray-400"><span data-en="Memory limit" data-es="Límite de memoria">Memory limit</span>: <span id="memoryLabel">16</span> <span data-en="observations" data-es="observaciones">observations</span></label><input id="memoryLimit" type="range" min="6" max="36" value="16" class="w-full" /></div>
+            </div>
+          </div>
+
+          <div class="concept-card mb-6">
+            <p class="concept-kicker" data-en="Representation pipeline" data-es="Canal de representación">Representation pipeline</p>
+            <div class="stage-grid">
+              <div class="stage-card"><div class="stage-body"><p class="stage-title" data-en="Signal field" data-es="Campo de señal">Signal field</p><div id="signalStrip" class="sequence-strip p-2 max-h-none"></div></div></div>
+              <div class="stage-card"><div class="stage-body"><p class="stage-title" data-en="Detected features" data-es="Rasgos detectados">Detected features</p><div id="featureList" class="space-y-3"></div></div></div>
+              <div class="stage-card"><div class="stage-body"><p class="stage-title" data-en="Compressed vector" data-es="Vector comprimido">Compressed vector</p><div id="vectorList" class="flex flex-wrap gap-2"></div><p id="lostInfoText" class="text-sm text-gray-400 mt-4"></p></div></div>
+              <div class="stage-card"><div class="stage-body"><p class="stage-title" data-en="Task result" data-es="Resultado de tarea">Task result</p><p id="taskResult" class="text-2xl font-bold text-white leading-tight">—</p><p id="taskReason" class="text-sm text-gray-400 mt-3 leading-6"></p></div></div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div class="metric"><p class="metric-label" data-en="Accuracy" data-es="Precisión">Accuracy</p><p class="metric-value"><span id="accuracyValue">0</span>%</p><p class="text-sm text-gray-400" data-en="task usefulness" data-es="utilidad de tarea">task usefulness</p></div>
+            <div class="metric"><p class="metric-label" data-en="Retained" data-es="Retenido">Retained</p><p class="metric-value"><span id="retainedValue">0</span>%</p><p class="text-sm text-gray-400" data-en="kept structure" data-es="estructura conservada">kept structure</p></div>
+            <div class="metric"><p class="metric-label" data-en="Lost info" data-es="Info perdida">Lost info</p><p class="metric-value"><span id="lostValue">0</span>%</p><p class="text-sm text-gray-400" data-en="discarded features" data-es="rasgos descartados">discarded features</p></div>
+            <div class="metric"><p class="metric-label" data-en="Rep. score" data-es="Puntaje rep.">Rep. score</p><p class="metric-value"><span id="scoreValue">0</span></p><p class="text-sm text-gray-400" data-en="combined metric" data-es="métrica combinada">combined metric</p></div>
+          </div>
+
+          <div class="concept-card mb-6">
+            <p class="concept-kicker" data-en="Confusion matrix" data-es="Matriz de confusión">Confusion matrix</p>
+            <div id="confusionMatrix" class="overflow-x-auto"></div>
+          </div>
+
+          <div class="concept-card concept-card-strong">
+            <p class="concept-kicker" data-en="Live interpretation" data-es="Interpretación en vivo">Live interpretation</p>
+            <p id="liveInterpretation" class="text-gray-300 leading-8"></p>
+          </div>
+        </section>
+
+        <section id="method" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8">
+          <h2 class="text-2xl font-semibold mb-4" data-en="Method" data-es="Método">Method</h2>
+          <div class="space-y-4">
+            <div class="concept-card"><p class="concept-kicker" data-en="Variables" data-es="Variables">Variables</p><div class="flex flex-wrap gap-2"><span class="pill" data-en="Independent: feature budget" data-es="Independiente: presupuesto de rasgos">Independent: feature budget</span><span class="pill" data-en="Independent: noise" data-es="Independiente: ruido">Independent: noise</span><span class="pill" data-en="Independent: memory limit" data-es="Independiente: límite de memoria">Independent: memory limit</span><span class="pill" data-en="Dependent: accuracy" data-es="Dependiente: precisión">Dependent: accuracy</span><span class="pill" data-en="Dependent: representation score" data-es="Dependiente: puntaje de representación">Dependent: representation score</span></div></div>
+            <div class="concept-card"><p class="concept-kicker" data-en="Procedure" data-es="Procedimiento">Procedure</p><table class="mini-table"><thead><tr><th data-en="Step" data-es="Paso">Step</th><th data-en="Action" data-es="Acción">Action</th><th data-en="Reason" data-es="Razón">Reason</th></tr></thead><tbody><tr><td>1</td><td data-en="Generate a noisy signal from a known family." data-es="Generar una señal ruidosa de una familia conocida.">Generate a noisy signal from a known family.</td><td data-en="Keep a ground truth for testing." data-es="Mantener una verdad de referencia para probar.">Keep a ground truth for testing.</td></tr><tr><td>2</td><td data-en="Measure five candidate features." data-es="Medir cinco rasgos candidatos.">Measure five candidate features.</td><td data-en="Separate detection from representation." data-es="Separar detección de representación.">Separate detection from representation.</td></tr><tr><td>3</td><td data-en="Keep only the allowed number of features." data-es="Conservar solo el número permitido de rasgos.">Keep only the allowed number of features.</td><td data-en="Simulate representational constraint." data-es="Simular restricción representacional.">Simulate representational constraint.</td></tr><tr><td>4</td><td data-en="Test whether the compressed vector supports the selected task." data-es="Probar si el vector comprimido sostiene la tarea elegida.">Test whether the compressed vector supports the selected task.</td><td data-en="Usefulness defines the stronger sense of representation." data-es="La utilidad define el sentido fuerte de representación.">Usefulness defines the stronger sense of representation.</td></tr></tbody></table></div>
+          </div>
+        </section>
+
+        <section id="interpretation" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8">
+          <h2 class="text-2xl font-semibold mb-4" data-en="Interpretation" data-es="Interpretación">Interpretation</h2>
+          <div class="reading-block space-y-5 text-gray-300"><p data-en="The central result is not just whether a feature is detectable. The important result is whether the retained feature set lets the system do something better than guessing." data-es="El resultado central no es solo si un rasgo es detectable. El resultado importante es si el conjunto de rasgos retenidos permite al sistema hacer algo mejor que adivinar.">The central result is not just whether a feature is detectable. The important result is whether the retained feature set lets the system do something better than guessing.</p><p data-en="This keeps the project from treating representation as a magical label. Here, representation means a compressed internal state that preserves enough structure to support behavior." data-es="Esto evita que el proyecto trate la representación como una etiqueta mágica. Aquí, representación significa un estado interno comprimido que preserva suficiente estructura para sostener comportamiento.">This keeps the project from treating representation as a magical label. Here, representation means a compressed internal state that preserves enough structure to support behavior.</p></div>
+        </section>
+
+        <section id="limits" class="scroll-mt-24 mb-16">
+          <h2 class="text-2xl font-semibold mb-4" data-en="Limits" data-es="Límites">Limits</h2>
+          <div class="concept-card concept-card-strong"><p class="concept-kicker" data-en="Main limitation" data-es="Límite principal">Main limitation</p><p class="text-gray-300 leading-8" data-en="This is still a toy representation. It uses simple hand-designed features and known labels. Real biological or machine systems learn features under many more pressures, including embodiment, reward, memory, and environmental feedback." data-es="Esto sigue siendo una representación de juguete. Usa rasgos simples diseñados a mano y etiquetas conocidas. Los sistemas biológicos o de máquina reales aprenden rasgos bajo muchas más presiones, incluyendo cuerpo, recompensa, memoria y retroalimentación ambiental.">This is still a toy representation. It uses simple hand-designed features and known labels. Real biological or machine systems learn features under many more pressures, including embodiment, reward, memory, and environmental feedback.</p></div>
+        </section>
+      </main>
+
+      <aside class="hidden xl:block">
+        <div class="sticky top-8 space-y-4">
+          <div class="concept-card"><p class="concept-kicker" data-en="Core idea" data-es="Idea central">Core idea</p><p class="text-gray-300 leading-7" data-en="Representation is useful structure under constraint." data-es="La representación es estructura útil bajo restricción.">Representation is useful structure under constraint.</p></div>
+          <div class="concept-card"><p class="concept-kicker" data-en="Warning" data-es="Advertencia">Warning</p><p class="text-gray-400 leading-7" data-en="A detected pattern is not yet a representation unless it helps a task." data-es="Un patrón detectado todavía no es representación si no ayuda a una tarea.">A detected pattern is not yet a representation unless it helps a task.</p></div>
+        </div>
+      </aside>
+    </div>
+
+  </div>
+<script>
+
+const langToggle = document.getElementById("langToggle");
+const signalTypeEl = document.getElementById("signalType");
+const noiseLevelEl = document.getElementById("noiseLevel");
+const featureBudgetEl = document.getElementById("featureBudget");
+const taskTypeEl = document.getElementById("taskType");
+const thresholdEl = document.getElementById("threshold");
+const memoryLimitEl = document.getElementById("memoryLimit");
+const noiseLabel = document.getElementById("noiseLabel");
+const budgetLabel = document.getElementById("budgetLabel");
+const thresholdLabel = document.getElementById("thresholdLabel");
+const memoryLabel = document.getElementById("memoryLabel");
+const signalStrip = document.getElementById("signalStrip");
+const featureList = document.getElementById("featureList");
+const vectorList = document.getElementById("vectorList");
+const lostInfoText = document.getElementById("lostInfoText");
+const taskResult = document.getElementById("taskResult");
+const taskReason = document.getElementById("taskReason");
+const accuracyValue = document.getElementById("accuracyValue");
+const retainedValue = document.getElementById("retainedValue");
+const lostValue = document.getElementById("lostValue");
+const scoreValue = document.getElementById("scoreValue");
+const confusionMatrix = document.getElementById("confusionMatrix");
+const liveInterpretation = document.getElementById("liveInterpretation");
+let currentLang = localStorage.getItem("siteLang") || "en";
+const labels = ["alternating", "blocks", "runs", "random"];
+const labelNames = { alternating: { en: "A / alternation", es: "A / alternancia" }, blocks: { en: "B / blocks", es: "B / bloques" }, runs: { en: "C / long runs", es: "C / rachas largas" }, random: { en: "D / random", es: "D / aleatorio" } };
+const featureMeta = [
+  { key: "alternation", en: "alternation", es: "alternancia" },
+  { key: "blockScore", en: "block score", es: "puntaje de bloque" },
+  { key: "runLength", en: "run length", es: "longitud de racha" },
+  { key: "balance", en: "balance", es: "balance" },
+  { key: "transition", en: "transition", es: "transición" }
+];
+function t(en, es) { return currentLang === "en" ? en : es; }
+function applyLanguage(lang) {
+  document.documentElement.lang = lang;
+  document.querySelectorAll("[data-en][data-es]").forEach(el => { el.textContent = el.dataset[lang]; });
+  document.querySelectorAll("option[data-en][data-es]").forEach(option => { option.textContent = option.dataset[lang]; });
+  document.title = lang === "en" ? "Experiment 5 — Representation Under Constraint" : "Experimento 5 — Representación Bajo Restricción";
+  langToggle.textContent = lang === "en" ? "ES" : "EN";
+  localStorage.setItem("siteLang", lang);
+  currentLang = lang;
+  update();
+}
+function makeBase(type, length) {
+  const seq = [];
+  for (let i = 0; i < length; i++) {
+    if (type === "alternating") seq.push(i % 2);
+    if (type === "blocks") seq.push(Math.floor(i / 4) % 2);
+    if (type === "runs") seq.push(Math.floor(i / 8) % 2);
+    if (type === "random") seq.push(Math.random() > 0.5 ? 1 : 0);
+  }
+  return seq;
+}
+function noisy(seq, noise) { return seq.map(bit => Math.random() < noise ? 1 - bit : bit); }
+function count(seq, value) { return seq.filter(x => x === value).length; }
+function switches(seq) { let s = 0; for (let i = 1; i < seq.length; i++) if (seq[i] !== seq[i - 1]) s++; return s; }
+function avgRun(seq) { if (!seq.length) return 0; let runs = [], r = 1; for (let i=1;i<seq.length;i++){ if(seq[i] === seq[i-1]) r++; else { runs.push(r); r=1; } } runs.push(r); return runs.reduce((a,b)=>a+b,0) / runs.length; }
+function blockScore(seq) { const r = avgRun(seq); return Math.max(0, 1 - Math.abs(r - 4) / 8); }
+function features(seq) {
+  const alt = seq.length > 1 ? switches(seq) / (seq.length - 1) : 0;
+  const run = Math.min(avgRun(seq) / 8, 1);
+  const balance = 1 - Math.abs(count(seq, 1) / seq.length - 0.5) * 2;
+  return { alternation: alt, blockScore: blockScore(seq), runLength: run, balance, transition: alt };
+}
+function selectedFeatures(feats, budget, threshold) {
+  const scored = featureMeta.map(m => ({ ...m, value: feats[m.key], active: feats[m.key] >= threshold })).sort((a,b) => b.value - a.value);
+  return scored.slice(0, budget);
+}
+function distance(a, b, keys) { return Math.sqrt(keys.reduce((sum, key) => sum + Math.pow(a[key] - b[key], 2), 0)); }
+function classify(seq, budget, threshold) {
+  const f = features(seq);
+  const kept = selectedFeatures(f, budget, threshold);
+  const keys = kept.map(x => x.key);
+  let best = { label: "random", d: Infinity };
+  for (const label of labels) {
+    const proto = features(makeBase(label, seq.length));
+    const d = distance(f, proto, keys);
+    if (d < best.d) best = { label, d };
+  }
+  return { label: best.label, features: f, kept };
+}
+function evaluate(budget, threshold, noise, memory) {
+  const matrix = Object.fromEntries(labels.map(actual => [actual, Object.fromEntries(labels.map(pred => [pred, 0]))]));
+  let correct = 0, total = 0;
+  for (const actual of labels) {
+    for (let i = 0; i < 8; i++) {
+      const seq = noisy(makeBase(actual, memory), actual === "random" ? 0 : noise);
+      const pred = classify(seq, budget, threshold).label;
+      matrix[actual][pred]++;
+      if (pred === actual) correct++;
+      total++;
+    }
+  }
+  return { matrix, accuracy: correct / total };
+}
+function renderBits(seq) {
+  signalStrip.innerHTML = seq.map(bit => `<span class="bit-cell ${bit ? "bit-one" : "bit-zero"}">${bit}</span>`).join("");
+}
+function renderFeatures(feats, kept) {
+  const keepKeys = new Set(kept.map(k => k.key));
+  featureList.innerHTML = featureMeta.map(m => {
+    const value = feats[m.key];
+    const dim = keepKeys.has(m.key) ? "" : "opacity-45";
+    return `<div class="${dim}"><div class="flex justify-between gap-3 text-xs mb-1"><span class="text-gray-300">${m[currentLang]}</span><span class="text-blue-200">${value.toFixed(2)}</span></div><div class="bar-shell"><div class="bar-fill" style="width:${Math.round(value*100)}%"></div></div></div>`;
+  }).join("");
+}
+function renderVector(kept) {
+  vectorList.innerHTML = kept.map(k => `<span class="pill"><span class="text-blue-200">${k[currentLang]}</span> ${k.value.toFixed(2)}</span>`).join("");
+  lostInfoText.textContent = t(`${5 - kept.length} candidate features discarded by the budget.`, `${5 - kept.length} rasgos candidatos descartados por el presupuesto.`);
+}
+function renderMatrix(matrix) {
+  let html = `<table class="matrix"><thead><tr><th>${t("actual / predicted", "real / predicho")}</th>${labels.map(l => `<th>${l[0].toUpperCase()}</th>`).join("")}</tr></thead><tbody>`;
+  for (const actual of labels) {
+    html += `<tr><th>${actual[0].toUpperCase()}</th>`;
+    for (const pred of labels) html += `<td class="${actual === pred ? "strong" : ""}">${matrix[actual][pred]}</td>`;
+    html += `</tr>`;
+  }
+  html += `</tbody></table>`;
+  confusionMatrix.innerHTML = html;
+}
+function updateTask(copy, predicted, actual, accuracy, retained, lost, score) {
+  const task = taskTypeEl.value;
+  taskResult.textContent = task === "classify" ? labelNames[predicted][currentLang] : task === "predict" ? copy.slice(-6).join("") + "…" : copy.join("");
+  if (task === "classify") taskReason.textContent = t(`Nearest usable representation: ${labelNames[predicted].en}. Ground truth: ${labelNames[actual].en}.`, `Representación útil más cercana: ${labelNames[predicted].es}. Verdad de referencia: ${labelNames[actual].es}.`);
+  if (task === "predict") taskReason.textContent = t(`Prediction uses the retained structure, so weak features produce weak forecasts.`, `La predicción usa la estructura retenida, así que rasgos débiles producen pronósticos débiles.`);
+  if (task === "reconstruct") taskReason.textContent = t(`Reconstruction is deliberately compressed; it cannot restore discarded detail.`, `La reconstrucción está comprimida a propósito; no puede recuperar detalle descartado.`);
+  accuracyValue.textContent = Math.round(accuracy * 100);
+  retainedValue.textContent = Math.round(retained * 100);
+  lostValue.textContent = Math.round(lost * 100);
+  scoreValue.textContent = score.toFixed(2);
+}
+function updateInterpretation(accuracy, budget, noise, predicted, actual) {
+  if (currentLang === "en") {
+    liveInterpretation.textContent = accuracy > 0.75
+      ? `The compressed feature vector is currently useful: with ${budget} retained feature(s), the system classifies most signals correctly despite ${Math.round(noise*100)}% noise. This is representation in the operational sense used here.`
+      : `The system still detects some structure, but the retained feature set is too limited or too noisy for reliable task performance. That is the distinction: detection can exist without strong representation.`;
+  } else {
+    liveInterpretation.textContent = accuracy > 0.75
+      ? `El vector de rasgos comprimido es útil actualmente: con ${budget} rasgo(s) retenido(s), el sistema clasifica la mayoría de señales correctamente pese a ${Math.round(noise*100)}% de ruido. Esto es representación en el sentido operacional usado aquí.`
+      : `El sistema todavía detecta algo de estructura, pero el conjunto de rasgos retenidos es demasiado limitado o ruidoso para un desempeño confiable. Esa es la distinción: puede haber detección sin representación fuerte.`;
+  }
+}
+function update() {
+  const actual = signalTypeEl.value;
+  const noise = parseInt(noiseLevelEl.value) / 100;
+  const budget = parseInt(featureBudgetEl.value);
+  const threshold = parseFloat(thresholdEl.value);
+  const memory = parseInt(memoryLimitEl.value);
+  noiseLabel.textContent = Math.round(noise*100); budgetLabel.textContent = budget; thresholdLabel.textContent = threshold.toFixed(2); memoryLabel.textContent = memory;
+  const seq = noisy(makeBase(actual, memory), actual === "random" ? 0 : noise);
+  const result = classify(seq, budget, threshold);
+  const evalResult = evaluate(budget, threshold, noise, memory);
+  const retained = budget / featureMeta.length;
+  const lost = 1 - retained;
+  const score = (evalResult.accuracy * 0.65 + retained * 0.35);
+  const reconstructed = makeBase(result.label, Math.min(memory, 16));
+  renderBits(seq); renderFeatures(result.features, result.kept); renderVector(result.kept); renderMatrix(evalResult.matrix); updateTask(reconstructed, result.label, actual, evalResult.accuracy, retained, lost, score); updateInterpretation(evalResult.accuracy, budget, noise, result.label, actual);
+}
+[signalTypeEl, noiseLevelEl, featureBudgetEl, taskTypeEl, thresholdEl, memoryLimitEl].forEach(el => el.addEventListener("input", update));
+[signalTypeEl, taskTypeEl].forEach(el => el.addEventListener("change", update));
+langToggle.addEventListener("click", () => applyLanguage(currentLang === "en" ? "es" : "en"));
+applyLanguage(currentLang);
+
+</script>
+</body>
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Experiment 6 — Signal Integration and Interference</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html { scrollbar-width: thin; scrollbar-color: #8ad7ff #081120; }
+    ::-webkit-scrollbar { width: 12px; }
+    ::-webkit-scrollbar-track { background: linear-gradient(180deg, #071224, #05101f); }
+    ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #8ad7ff, #6ca8ff); border-radius: 999px; border: 2px solid #081120; }
+    ::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #b6ecff, #8ad7ff); }
+    ::selection { background: rgba(138, 215, 255, 0.28); color: white; }
+    :root {
+      --page-accent: #8ad7ff;
+      --page-accent-soft: rgba(138, 215, 255, 0.12);
+      --page-accent-border: rgba(138, 215, 255, 0.28);
+      --panel: rgba(15, 23, 42, 0.78);
+      --panel-strong: rgba(15, 23, 42, 0.92);
+      --violet: #b8a4ff;
+      --cyan: #8ee7dc;
+      --amber: #f2c879;
+    }
+    body {
+      background:
+        radial-gradient(circle at 12% 8%, rgba(96, 165, 250, 0.10), transparent 26%),
+        radial-gradient(circle at 88% 22%, rgba(138, 215, 255, 0.07), transparent 24%),
+        radial-gradient(circle at 50% 100%, rgba(168, 85, 247, 0.08), transparent 32%),
+        #030712;
+    }
+    .reading-block { max-width: 68ch; }
+    .reading-block p { line-height: 1.9; }
+    .section-intro { color: #cbd5e1; font-size: 1.05rem; line-height: 1.85; max-width: 68ch; }
+    .concept-card {
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      background:
+        linear-gradient(180deg, var(--panel-strong), var(--panel)),
+        radial-gradient(circle at top left, var(--page-accent-soft), transparent 38%);
+      border-radius: 1.25rem;
+      padding: 1.4rem;
+      box-shadow: 0 20px 55px rgba(0,0,0,0.20);
+    }
+    .concept-card-strong {
+      border-color: var(--page-accent-border);
+      background:
+        linear-gradient(180deg, rgba(15, 23, 42, 0.90), rgba(15, 23, 42, 0.70)),
+        radial-gradient(circle at top left, rgba(96, 165, 250, 0.18), transparent 42%);
+    }
+    .concept-kicker { color: var(--page-accent); font-size: 0.76rem; letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 0.7rem; font-weight: 700; }
+    .concept-title { color: white; font-size: 1.05rem; font-weight: 700; margin-bottom: 0.45rem; }
+    .formula-card { border: 1px solid rgba(138, 215, 255, 0.22); background: rgba(2, 6, 23, 0.56); border-radius: 1rem; padding: 1rem; overflow-x: auto; }
+    .formula { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; color: #e0f2fe; font-size: clamp(0.9rem, 2vw, 1.05rem); white-space: nowrap; }
+    .metric { border: 1px solid rgba(148, 163, 184, 0.18); background: rgba(2, 6, 23, 0.36); border-radius: 1rem; padding: 1rem; }
+    .metric-label { color: #94a3b8; font-size: 0.76rem; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.35rem; }
+    .metric-value { color: white; font-size: 1.55rem; font-weight: 750; letter-spacing: -0.03em; }
+    select, input[type="range"], textarea { accent-color: #8ad7ff; }
+    select, input[type="number"] {
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      background: rgba(15, 23, 42, 0.72);
+      color: #dbeafe;
+      border-radius: 0.85rem;
+      padding: 0.65rem 0.8rem;
+      font-size: 0.92rem;
+      width: 100%;
+      outline: none;
+    }
+    textarea {
+      width: 100%; min-height: 115px; resize: vertical; border: 1px solid rgba(148, 163, 184, 0.22);
+      background: rgba(2, 6, 23, 0.62); color: #e5f3ff; border-radius: 1rem; padding: 1rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; line-height: 1.65; outline: none;
+    }
+    textarea:focus, select:focus, input[type="number"]:focus { border-color: rgba(138, 215, 255, 0.55); }
+    canvas { width: 100%; height: auto; background: rgba(2, 6, 23, 0.42); border: 1px solid rgba(148, 163, 184, 0.16); border-radius: 1rem; }
+    .pill { display: inline-flex; align-items: center; gap: 0.45rem; border: 1px solid rgba(148, 163, 184, 0.18); background: rgba(15, 23, 42, 0.62); border-radius: 999px; padding: 0.45rem 0.7rem; color: #cbd5e1; font-size: 0.84rem; }
+    .mini-table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+    .mini-table th, .mini-table td { border-bottom: 1px solid rgba(148, 163, 184, 0.13); padding: 0.55rem 0.35rem; text-align: left; vertical-align: top; }
+    .mini-table th { color: #93c5fd; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; }
+    .preset-button { border: 1px solid rgba(148, 163, 184, 0.22); background: rgba(15, 23, 42, 0.72); color: #dbeafe; border-radius: 0.85rem; padding: 0.65rem 0.8rem; font-size: 0.88rem; transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease; }
+    .preset-button:hover, .preset-button.active { border-color: rgba(138, 215, 255, 0.46); background: rgba(30, 41, 59, 0.82); transform: translateY(-1px); }
+    .sequence-strip { display: flex; flex-wrap: wrap; gap: 0.35rem; padding: 0.9rem; border-radius: 1rem; border: 1px solid rgba(148, 163, 184, 0.16); background: rgba(2, 6, 23, 0.34); max-height: 170px; overflow-y: auto; }
+    .bit-cell { display: inline-flex; align-items: center; justify-content: center; width: 1.8rem; height: 1.8rem; border-radius: 0.55rem; font-size: 0.82rem; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; border: 1px solid rgba(138, 215, 255, 0.18); }
+    .bit-one { background: rgba(14, 165, 233, 0.18); color: #e0f2fe; }
+    .bit-zero { background: rgba(15, 23, 42, 0.72); color: #94a3b8; }
+    .stage-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.8rem; }
+    .stage-card { border: 1px solid rgba(148, 163, 184, 0.16); border-radius: 1rem; background: rgba(2, 6, 23, 0.34); padding: 0.9rem; min-height: 140px; position: relative; overflow: hidden; }
+    .stage-card::after { content: ""; position: absolute; inset: auto -20% -40% -20%; height: 90px; background: radial-gradient(circle, rgba(138,215,255,0.13), transparent 62%); }
+    .stage-title { color: #bfdbfe; font-size: 0.74rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 800; margin-bottom: 0.55rem; }
+    .stage-body { position: relative; z-index: 1; }
+    .bar-shell { height: 0.62rem; border-radius: 999px; background: rgba(15,23,42,0.82); overflow: hidden; border: 1px solid rgba(148,163,184,0.12); }
+    .bar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #6ca8ff, #8ee7dc); }
+    .matrix { width: 100%; border-collapse: separate; border-spacing: 0.3rem; text-align: center; font-size: 0.84rem; }
+    .matrix th { color: #93c5fd; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; }
+    .matrix td { border: 1px solid rgba(148,163,184,0.15); background: rgba(15,23,42,0.68); color: #e5e7eb; border-radius: 0.55rem; padding: 0.48rem; }
+    .matrix td.strong { background: rgba(14,165,233,0.22); border-color: rgba(138,215,255,0.35); color: white; }
+    @media (max-width: 900px) { .stage-grid { grid-template-columns: 1fr; } }
+  </style>
+
+</head>
+<body class="bg-gray-950 text-white">
+  <div class="max-w-7xl mx-auto px-6 py-8 lg:px-8">
+
+    <div class="grid grid-cols-1 lg:grid-cols-[220px_minmax(0,1fr)_260px] gap-8">
+      <aside class="hidden lg:block"><div class="sticky top-8 rounded-2xl border border-gray-800 bg-gray-900/70 backdrop-blur p-4"><p class="text-xs uppercase tracking-[0.18em] text-blue-300 mb-4" data-en="On this page" data-es="En esta página">On this page</p><nav class="space-y-3 text-sm"><a href="#intro" class="block text-gray-300 hover:text-blue-300 transition" data-en="Introduction" data-es="Introducción">Introduction</a><a href="#theory" class="block text-gray-300 hover:text-blue-300 transition" data-en="Theory" data-es="Teoría">Theory</a><a href="#lab" class="block text-gray-300 hover:text-blue-300 transition" data-en="Interactive lab" data-es="Laboratorio interactivo">Interactive lab</a><a href="#method" class="block text-gray-300 hover:text-blue-300 transition" data-en="Method" data-es="Método">Method</a><a href="#interpretation" class="block text-gray-300 hover:text-blue-300 transition" data-en="Interpretation" data-es="Interpretación">Interpretation</a><a href="#limits" class="block text-gray-300 hover:text-blue-300 transition" data-en="Limits" data-es="Límites">Limits</a></nav></div></aside>
+      <main class="max-w-3xl">
+        <div class="flex justify-between items-center gap-4 mb-6"><a href="index.html" class="text-blue-400 hover:text-blue-300 transition" data-en="← Back" data-es="← Volver">← Back</a><button id="langToggle" class="rounded-xl border border-gray-800 bg-gray-900/70 px-4 py-2 text-sm text-gray-200 hover:border-blue-400/40 hover:text-white transition">ES</button></div>
+        <h1 class="text-4xl font-bold mt-4 mb-6 tracking-tight" data-en="Experiment #6 — Signal Integration and Interference" data-es="Experimento #6 — Integración e Interferencia de Señales">Experiment #6 — Signal Integration and Interference</h1>
+        <p class="section-intro mb-10" data-en="Experiment 5 treated representation as useful structure. This experiment asks what happens when several representations arrive at once, cooperate, conflict, or distort the final result." data-es="El Experimento 5 trató la representación como estructura útil. Este experimento pregunta qué pasa cuando varias representaciones llegan al mismo tiempo, cooperan, chocan o distorsionan el resultado final.">Experiment 5 treated representation as useful structure. This experiment asks what happens when several representations arrive at once, cooperate, conflict, or distort the final result.</p>
+
+        <section id="intro" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8"><h2 class="text-2xl font-semibold mb-4" data-en="Introduction" data-es="Introducción">Introduction</h2><div class="space-y-4"><div class="concept-card concept-card-strong"><p class="concept-kicker" data-en="Central question" data-es="Pregunta central">Central question</p><p class="text-gray-300 leading-8" data-en="What happens when a system receives multiple signals at once?" data-es="¿Qué ocurre cuando un sistema recibe múltiples señales a la vez?">What happens when a system receives multiple signals at once?</p></div><div class="concept-card"><p class="concept-kicker" data-en="Page thesis" data-es="Tesis de la página">Page thesis</p><h3 class="concept-title" data-en="More information is not automatically better" data-es="Más información no siempre es mejor">More information is not automatically better</h3><p class="text-gray-300 leading-8" data-en="Multiple signals can reduce uncertainty, but they can also amplify noise, create false structure, or let one unreliable channel dominate the final representation." data-es="Múltiples señales pueden reducir la incertidumbre, pero también pueden amplificar ruido, crear estructura falsa o permitir que un canal poco confiable domine la representación final.">Multiple signals can reduce uncertainty, but they can also amplify noise, create false structure, or let one unreliable channel dominate the final representation.</p></div></div></section>
+
+        <section id="theory" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8"><h2 class="text-2xl font-semibold mb-4" data-en="Theory" data-es="Teoría">Theory</h2><div class="reading-block space-y-5 text-gray-300"><p data-en="A perception-like system rarely receives one clean signal. It may combine current sensory input, temporal context, memory, and expectation. Integration is useful when channels agree and are reliable. It becomes dangerous when confidence and reliability diverge." data-es="Un sistema parecido a la percepción rara vez recibe una sola señal limpia. Puede combinar entrada sensorial actual, contexto temporal, memoria y expectativa. La integración es útil cuando los canales coinciden y son confiables. Se vuelve peligrosa cuando confianza y confiabilidad divergen.">A perception-like system rarely receives one clean signal. It may combine current sensory input, temporal context, memory, and expectation. Integration is useful when channels agree and are reliable. It becomes dangerous when confidence and reliability diverge.</p><div class="formula-card"><p class="formula">Integrated score(state) = Σ channel_weight × channel_confidence</p></div><p data-en="This page treats integration as an inference problem over hidden states: Pattern A, Pattern B, or Pattern C." data-es="Esta página trata la integración como un problema de inferencia sobre estados ocultos: Patrón A, Patrón B o Patrón C.">This page treats integration as an inference problem over hidden states: Pattern A, Pattern B, or Pattern C.</p></div></section>
+
+        <section id="lab" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8"><h2 class="text-2xl font-semibold mb-4" data-en="Interactive lab" data-es="Laboratorio interactivo">Interactive lab</h2><p class="section-intro mb-6" data-en="Choose the true hidden state, tune three channels, and select an integration rule. The lab shows confidence, entropy change, conflict, dominant channel, and error." data-es="Elige el estado oculto verdadero, ajusta tres canales y selecciona una regla de integración. El laboratorio muestra confianza, cambio de entropía, conflicto, canal dominante y error.">Choose the true hidden state, tune three channels, and select an integration rule. The lab shows confidence, entropy change, conflict, dominant channel, and error.</p>
+          <div class="concept-card mb-6"><p class="concept-kicker" data-en="Controls" data-es="Controles">Controls</p><div class="grid grid-cols-1 md:grid-cols-2 gap-5"><div><label class="block mb-2 text-sm text-gray-400" data-en="True hidden state" data-es="Estado oculto verdadero">True hidden state</label><select id="trueState"><option value="A" data-en="Pattern A" data-es="Patrón A">Pattern A</option><option value="B" data-en="Pattern B" data-es="Patrón B">Pattern B</option><option value="C" data-en="Pattern C" data-es="Patrón C">Pattern C</option></select></div><div><label class="block mb-2 text-sm text-gray-400" data-en="Signal agreement" data-es="Acuerdo entre señales">Signal agreement</label><select id="agreement"><option value="aligned" data-en="Mostly aligned" data-es="Mayormente alineadas">Mostly aligned</option><option value="conflict" data-en="One strong conflict" data-es="Un conflicto fuerte">One strong conflict</option><option value="split" data-en="Split channels" data-es="Canales divididos">Split channels</option></select></div><div><label class="block mb-2 text-sm text-gray-400" data-en="Integration rule" data-es="Regla de integración">Integration rule</label><select id="rule"><option value="average" data-en="Simple average" data-es="Promedio simple">Simple average</option><option value="weighted" data-en="Reliability weighted" data-es="Ponderada por confiabilidad">Reliability weighted</option><option value="winner" data-en="Winner-take-all" data-es="El ganador domina">Winner-take-all</option><option value="bayes" data-en="Bayesian-like" data-es="Tipo bayesiana">Bayesian-like</option></select></div><div><label class="block mb-2 text-sm text-gray-400"><span data-en="Prior bias toward A" data-es="Sesgo previo hacia A">Prior bias toward A</span>: <span id="priorLabel">20</span>%</label><input id="priorBias" type="range" min="0" max="80" value="20" class="w-full" /></div></div><div class="grid grid-cols-1 md:grid-cols-3 gap-5 mt-6"><div><label class="block mb-2 text-sm text-gray-400"><span data-en="Visual reliability" data-es="Confiabilidad visual">Visual reliability</span>: <span id="rel1Label">80</span>%</label><input id="rel1" type="range" min="10" max="100" value="80" class="w-full" /><label class="block mt-4 mb-2 text-sm text-gray-400"><span data-en="Visual noise" data-es="Ruido visual">Visual noise</span>: <span id="noise1Label">15</span>%</label><input id="noise1" type="range" min="0" max="80" value="15" class="w-full" /></div><div><label class="block mb-2 text-sm text-gray-400"><span data-en="Temporal reliability" data-es="Confiabilidad temporal">Temporal reliability</span>: <span id="rel2Label">65</span>%</label><input id="rel2" type="range" min="10" max="100" value="65" class="w-full" /><label class="block mt-4 mb-2 text-sm text-gray-400"><span data-en="Temporal noise" data-es="Ruido temporal">Temporal noise</span>: <span id="noise2Label">20</span>%</label><input id="noise2" type="range" min="0" max="80" value="20" class="w-full" /></div><div><label class="block mb-2 text-sm text-gray-400"><span data-en="Memory reliability" data-es="Confiabilidad de memoria">Memory reliability</span>: <span id="rel3Label">90</span>%</label><input id="rel3" type="range" min="10" max="100" value="90" class="w-full" /><label class="block mt-4 mb-2 text-sm text-gray-400"><span data-en="Memory noise" data-es="Ruido de memoria">Memory noise</span>: <span id="noise3Label">25</span>%</label><input id="noise3" type="range" min="0" max="80" value="25" class="w-full" /></div></div></div>
+          <div class="concept-card mb-6"><p class="concept-kicker" data-en="Integration field" data-es="Campo de integración">Integration field</p><canvas id="integrationCanvas" width="820" height="360" aria-label="Multi-channel integration diagram"></canvas></div>
+          <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6"><div class="metric"><p class="metric-label" data-en="Final confidence" data-es="Confianza final">Final confidence</p><p class="metric-value"><span id="confidenceValue">0</span>%</p></div><div class="metric"><p class="metric-label" data-en="Entropy Δ" data-es="Entropía Δ">Entropy Δ</p><p class="metric-value"><span id="entropyValue">0</span></p></div><div class="metric"><p class="metric-label" data-en="Conflict" data-es="Conflicto">Conflict</p><p class="metric-value"><span id="conflictValue">0</span>%</p></div><div class="metric"><p class="metric-label" data-en="Dominant" data-es="Dominante">Dominant</p><p class="metric-value text-lg"><span id="dominantValue">—</span></p></div><div class="metric"><p class="metric-label" data-en="Error" data-es="Error">Error</p><p class="metric-value text-lg"><span id="errorValue">—</span></p></div></div>
+          <div class="concept-card mb-6"><p class="concept-kicker" data-en="Channel readings" data-es="Lecturas de canal">Channel readings</p><div id="channelReadings" class="space-y-3"></div></div>
+          <div class="concept-card concept-card-strong"><p class="concept-kicker" data-en="Live interpretation" data-es="Interpretación en vivo">Live interpretation</p><p id="liveInterpretation" class="text-gray-300 leading-8"></p></div>
+        </section>
+        <section id="method" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8"><h2 class="text-2xl font-semibold mb-4" data-en="Method" data-es="Método">Method</h2><div class="space-y-4"><div class="concept-card"><p class="concept-kicker" data-en="Variables" data-es="Variables">Variables</p><div class="flex flex-wrap gap-2"><span class="pill" data-en="Independent: channel reliability" data-es="Independiente: confiabilidad de canal">Independent: channel reliability</span><span class="pill" data-en="Independent: integration rule" data-es="Independiente: regla de integración">Independent: integration rule</span><span class="pill" data-en="Independent: prior bias" data-es="Independiente: sesgo previo">Independent: prior bias</span><span class="pill" data-en="Dependent: final confidence" data-es="Dependiente: confianza final">Dependent: final confidence</span><span class="pill" data-en="Dependent: integration error" data-es="Dependiente: error de integración">Dependent: integration error</span></div></div><div class="concept-card"><p class="concept-kicker" data-en="Procedure" data-es="Procedimiento">Procedure</p><table class="mini-table"><thead><tr><th data-en="Step" data-es="Paso">Step</th><th data-en="Action" data-es="Acción">Action</th><th data-en="Reason" data-es="Razón">Reason</th></tr></thead><tbody><tr><td>1</td><td data-en="Assign each channel a claim and confidence." data-es="Asignar a cada canal una afirmación y confianza.">Assign each channel a claim and confidence.</td><td data-en="Model partial evidence." data-es="Modelar evidencia parcial.">Model partial evidence.</td></tr><tr><td>2</td><td data-en="Apply reliability, noise, and prior bias." data-es="Aplicar confiabilidad, ruido y sesgo previo.">Apply reliability, noise, and prior bias.</td><td data-en="Separate signal from trust." data-es="Separar señal de confianza.">Separate signal from trust.</td></tr><tr><td>3</td><td data-en="Integrate channels with a chosen rule." data-es="Integrar canales con una regla elegida.">Integrate channels with a chosen rule.</td><td data-en="Test how rules change the result." data-es="Probar cómo las reglas cambian el resultado.">Test how rules change the result.</td></tr></tbody></table></div></div></section>
+        <section id="interpretation" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8"><h2 class="text-2xl font-semibold mb-4" data-en="Interpretation" data-es="Interpretación">Interpretation</h2><div class="reading-block space-y-5 text-gray-300"><p data-en="The key lesson is that integration can both clarify and distort. Agreement among weak channels can beat one overconfident channel, but a bad integration rule can still choose the wrong state." data-es="La lección central es que la integración puede aclarar y distorsionar. El acuerdo entre canales débiles puede superar a un canal sobreconfiado, pero una mala regla de integración aún puede elegir el estado equivocado.">The key lesson is that integration can both clarify and distort. Agreement among weak channels can beat one overconfident channel, but a bad integration rule can still choose the wrong state.</p></div></section>
+        <section id="limits" class="scroll-mt-24 mb-16"><h2 class="text-2xl font-semibold mb-4" data-en="Limits" data-es="Límites">Limits</h2><div class="concept-card concept-card-strong"><p class="concept-kicker" data-en="Main limitation" data-es="Límite principal">Main limitation</p><p class="text-gray-300 leading-8" data-en="This model does not learn its integration rule. Real systems often adjust weights over time through feedback, attention, reward, and bodily context." data-es="Este modelo no aprende su regla de integración. Los sistemas reales suelen ajustar pesos con el tiempo mediante retroalimentación, atención, recompensa y contexto corporal.">This model does not learn its integration rule. Real systems often adjust weights over time through feedback, attention, reward, and bodily context.</p></div></section>
+      </main>
+      <aside class="hidden xl:block"><div class="sticky top-8 space-y-4"><div class="concept-card"><p class="concept-kicker" data-en="Core idea" data-es="Idea central">Core idea</p><p class="text-gray-300 leading-7" data-en="Integration is not accumulation. It is rule-bound conflict management." data-es="La integración no es acumulación. Es manejo de conflicto bajo reglas.">Integration is not accumulation. It is rule-bound conflict management.</p></div><div class="concept-card"><p class="concept-kicker" data-en="Warning" data-es="Advertencia">Warning</p><p class="text-gray-400 leading-7" data-en="More signals can make a system worse when they are noisy or badly weighted." data-es="Más señales pueden empeorar un sistema cuando son ruidosas o están mal ponderadas.">More signals can make a system worse when they are noisy or badly weighted.</p></div></div></aside>
+    </div>
+
+  </div>
+<script>
+
+const langToggle = document.getElementById("langToggle");
+const trueStateEl = document.getElementById("trueState"), agreementEl = document.getElementById("agreement"), ruleEl = document.getElementById("rule"), priorBiasEl = document.getElementById("priorBias");
+const controls = ["rel1","rel2","rel3","noise1","noise2","noise3"].map(id => document.getElementById(id));
+const labels = ["A","B","C"];
+const channelNames = [{en:"visual", es:"visual"},{en:"temporal", es:"temporal"},{en:"memory/prior", es:"memoria/previo"}];
+const canvas = document.getElementById("integrationCanvas"), ctx = canvas.getContext("2d");
+let currentLang = localStorage.getItem("siteLang") || "en";
+function t(en, es) { return currentLang === "en" ? en : es; }
+function applyLanguage(lang) { document.documentElement.lang = lang; document.querySelectorAll("[data-en][data-es]").forEach(el => el.textContent = el.dataset[lang]); document.querySelectorAll("option[data-en][data-es]").forEach(o => o.textContent = o.dataset[lang]); document.title = lang === "en" ? "Experiment 6 — Signal Integration and Interference" : "Experimento 6 — Integración e Interferencia de Señales"; langToggle.textContent = lang === "en" ? "ES" : "EN"; localStorage.setItem("siteLang", lang); currentLang = lang; update(); }
+function otherState(state, offset=1) { return labels[(labels.indexOf(state) + offset) % labels.length]; }
+function entropy(dist) { return -Object.values(dist).reduce((sum,p) => p > 0 ? sum + p * Math.log2(p) : sum, 0); }
+function normalize(scores) { const total = Object.values(scores).reduce((a,b)=>a+b,0) || 1; const out = {}; labels.forEach(l => out[l] = scores[l] / total); return out; }
+function channelClaims(trueState, agreement) {
+  if (agreement === "aligned") return [trueState, trueState, otherState(trueState, 1)];
+  if (agreement === "conflict") return [trueState, trueState, otherState(trueState, 1)];
+  return [trueState, otherState(trueState, 1), otherState(trueState, 2)];
+}
+function getChannelData() {
+  const trueState = trueStateEl.value; const agreement = agreementEl.value; const claims = channelClaims(trueState, agreement);
+  return [0,1,2].map(i => {
+    const rel = parseInt(document.getElementById(`rel${i+1}`).value) / 100;
+    const noise = parseInt(document.getElementById(`noise${i+1}`).value) / 100;
+    let confidence = Math.max(0.03, rel * (1 - noise));
+    if (agreement === "conflict" && i === 2) confidence = Math.min(0.98, confidence + 0.20);
+    return { name: channelNames[i], claim: claims[i], reliability: rel, noise, confidence };
+  });
+}
+function integrate(channels) {
+  const rule = ruleEl.value; const prior = parseInt(priorBiasEl.value) / 100;
+  let scores = { A: 0.34 + prior, B: 0.33 - prior/2, C: 0.33 - prior/2 };
+  if (rule === "average") channels.forEach(c => { scores[c.claim] += c.confidence; });
+  if (rule === "weighted") channels.forEach(c => { scores[c.claim] += c.confidence * c.reliability; });
+  if (rule === "winner") { const winner = channels.reduce((a,b)=> a.confidence > b.confidence ? a : b); scores = { A: 0.02, B: 0.02, C: 0.02 }; scores[winner.claim] = 1; }
+  if (rule === "bayes") channels.forEach(c => { scores[c.claim] *= 1 + (c.confidence * c.reliability * 3.4); });
+  return normalize(scores);
+}
+function dominantChannel(channels) { return channels.reduce((a,b) => a.confidence * a.reliability > b.confidence * b.reliability ? a : b); }
+function conflict(channels) { const unique = new Set(channels.map(c=>c.claim)).size; const confs = channels.map(c=>c.confidence); const spread = Math.max(...confs) - Math.min(...confs); return Math.min(1, (unique - 1) / 2 * 0.72 + spread * 0.28); }
+function draw(channels, dist, finalState, conflictScore) {
+  const w = canvas.width, h = canvas.height; ctx.clearRect(0,0,w,h);
+  const center = {x:w*0.66, y:h*0.5}; const nodes = [{x:120,y:72},{x:120,y:180},{x:120,y:288}];
+  ctx.strokeStyle = "rgba(148,163,184,0.16)"; ctx.lineWidth = 1; for(let i=0;i<6;i++){ const y=40+i*55; ctx.beginPath(); ctx.moveTo(30,y); ctx.lineTo(w-30,y); ctx.stroke(); }
+  channels.forEach((c,i)=>{ const alpha = 0.22 + c.confidence*0.55; ctx.beginPath(); ctx.moveTo(nodes[i].x+55,nodes[i].y); ctx.bezierCurveTo(300,nodes[i].y,390,center.y,center.x-80,center.y); ctx.strokeStyle = c.claim === finalState ? `rgba(142,231,220,${alpha})` : `rgba(242,200,121,${alpha})`; ctx.lineWidth = 2 + c.confidence*5; ctx.stroke(); ctx.fillStyle = "rgba(15,23,42,0.92)"; ctx.strokeStyle = "rgba(138,215,255,0.32)"; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(nodes[i].x,nodes[i].y,42,0,Math.PI*2); ctx.fill(); ctx.stroke(); ctx.fillStyle = "#e0f2fe"; ctx.font = "bold 14px sans-serif"; ctx.textAlign = "center"; ctx.fillText(c.name[currentLang], nodes[i].x, nodes[i].y-8); ctx.fillStyle = "#cbd5e1"; ctx.font = "13px sans-serif"; ctx.fillText(`${c.claim} · ${Math.round(c.confidence*100)}%`, nodes[i].x, nodes[i].y+14); });
+  const grad = ctx.createRadialGradient(center.x,center.y,12,center.x,center.y,94); grad.addColorStop(0,"rgba(138,215,255,0.30)"); grad.addColorStop(1,"rgba(15,23,42,0.70)"); ctx.fillStyle = grad; ctx.strokeStyle = conflictScore > 0.55 ? "rgba(242,200,121,0.65)" : "rgba(142,231,220,0.44)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(center.x,center.y,82,0,Math.PI*2); ctx.fill(); ctx.stroke(); ctx.fillStyle = "white"; ctx.font = "bold 28px sans-serif"; ctx.textAlign = "center"; ctx.fillText(finalState, center.x, center.y-8); ctx.fillStyle = "#cbd5e1"; ctx.font = "14px sans-serif"; ctx.fillText(`${t("final", "final")} · ${Math.round(dist[finalState]*100)}%`, center.x, center.y+22);
+  labels.forEach((l,i)=>{ const x = w*0.82; const y = 116+i*56; ctx.fillStyle = "#94a3b8"; ctx.font = "13px sans-serif"; ctx.fillText(l, x-44, y+5); ctx.fillStyle = "rgba(15,23,42,0.8)"; ctx.fillRect(x, y-9, 130, 18); ctx.fillStyle = l === finalState ? "rgba(142,231,220,0.80)" : "rgba(108,168,255,0.48)"; ctx.fillRect(x, y-9, 130*dist[l], 18); });
+}
+function updateLabels() { ["rel1","rel2","rel3","noise1","noise2","noise3","priorBias"].forEach(id => { const el = document.getElementById(id); const lab = document.getElementById(id.replace("rel","rel").replace("noise","noise") + "Label"); if (lab) lab.textContent = el.value; }); document.getElementById("priorLabel").textContent = priorBiasEl.value; }
+function updateReadings(channels) { document.getElementById("channelReadings").innerHTML = channels.map(c => `<div><div class="flex justify-between gap-3 text-sm mb-1"><span class="text-gray-300">${c.name[currentLang]} → ${t("Pattern", "Patrón")} ${c.claim}</span><span class="text-blue-200">${Math.round(c.confidence*100)}%</span></div><div class="bar-shell"><div class="bar-fill" style="width:${Math.round(c.confidence*100)}%"></div></div></div>`).join(""); }
+function updateInterpretation(finalState, trueState, conf, confScore, entBefore, entAfter, dom) { const wrong = finalState !== trueState; if (currentLang === "en") liveInterpretation.textContent = wrong ? `The system integrated toward Pattern ${finalState}, but the true state is Pattern ${trueState}. The dominant channel was ${dom.name.en}. This is the failure case: confidence can increase while accuracy gets worse.` : `The system selected Pattern ${finalState} correctly. Entropy moved from ${entBefore.toFixed(2)} to ${entAfter.toFixed(2)}, so uncertainty decreased. The important question is whether that decrease came from reliable agreement or from one channel dominating.`; else liveInterpretation.textContent = wrong ? `El sistema integró hacia el Patrón ${finalState}, pero el estado verdadero es el Patrón ${trueState}. El canal dominante fue ${dom.name.es}. Este es el caso de falla: la confianza puede aumentar mientras la precisión empeora.` : `El sistema seleccionó correctamente el Patrón ${finalState}. La entropía pasó de ${entBefore.toFixed(2)} a ${entAfter.toFixed(2)}, así que la incertidumbre disminuyó. La pregunta importante es si esa disminución vino de acuerdo confiable o de un canal dominante.`; }
+function update() { updateLabels(); const channels = getChannelData(); const dist = integrate(channels); const finalState = labels.reduce((a,b)=>dist[a]>dist[b]?a:b); const conf = dist[finalState]; const confScore = conflict(channels); const entBefore = Math.log2(3); const entAfter = entropy(dist); const dom = dominantChannel(channels); draw(channels, dist, finalState, confScore); updateReadings(channels); document.getElementById("confidenceValue").textContent = Math.round(conf*100); document.getElementById("entropyValue").textContent = (entBefore - entAfter).toFixed(2); document.getElementById("conflictValue").textContent = Math.round(confScore*100); document.getElementById("dominantValue").textContent = dom.name[currentLang]; document.getElementById("errorValue").textContent = finalState === trueStateEl.value ? t("No", "No") : t("Yes", "Sí"); updateInterpretation(finalState, trueStateEl.value, conf, confScore, entBefore, entAfter, dom); }
+[trueStateEl, agreementEl, ruleEl, priorBiasEl, ...controls].forEach(el => { el.addEventListener("input", update); el.addEventListener("change", update); });
+langToggle.addEventListener("click", () => applyLanguage(currentLang === "en" ? "es" : "en"));
+applyLanguage(currentLang);
+
+</script>
+</body>
+</html>

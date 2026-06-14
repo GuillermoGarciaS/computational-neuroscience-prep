@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project 1 — From Signals to Representation</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html { scrollbar-width: thin; scrollbar-color: #8ad7ff #081120; }
+    ::-webkit-scrollbar { width: 12px; }
+    ::-webkit-scrollbar-track { background: linear-gradient(180deg, #071224, #05101f); }
+    ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #8ad7ff, #6ca8ff); border-radius: 999px; border: 2px solid #081120; }
+    ::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #b6ecff, #8ad7ff); }
+    ::selection { background: rgba(138, 215, 255, 0.28); color: white; }
+    :root {
+      --page-accent: #8ad7ff;
+      --page-accent-soft: rgba(138, 215, 255, 0.12);
+      --page-accent-border: rgba(138, 215, 255, 0.28);
+      --panel: rgba(15, 23, 42, 0.78);
+      --panel-strong: rgba(15, 23, 42, 0.92);
+    }
+    body {
+      background:
+        radial-gradient(circle at 12% 8%, rgba(96, 165, 250, 0.10), transparent 26%),
+        radial-gradient(circle at 88% 22%, rgba(138, 215, 255, 0.07), transparent 24%),
+        radial-gradient(circle at 50% 100%, rgba(168, 85, 247, 0.08), transparent 32%),
+        #030712;
+    }
+    .reading-block { max-width: 68ch; }
+    .reading-block p { line-height: 1.9; }
+    .section-intro { color: #cbd5e1; font-size: 1.05rem; line-height: 1.85; max-width: 68ch; }
+    .concept-card {
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      background: linear-gradient(180deg, var(--panel-strong), var(--panel)), radial-gradient(circle at top left, var(--page-accent-soft), transparent 38%);
+      border-radius: 1.25rem; padding: 1.4rem; box-shadow: 0 20px 55px rgba(0,0,0,0.20);
+    }
+    .concept-card-strong { border-color: var(--page-accent-border); background: linear-gradient(180deg, rgba(15, 23, 42, 0.90), rgba(15, 23, 42, 0.70)), radial-gradient(circle at top left, rgba(96, 165, 250, 0.18), transparent 42%); }
+    .concept-kicker { color: var(--page-accent); font-size: 0.76rem; letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 0.7rem; font-weight: 700; }
+    .concept-title { color: white; font-size: 1.05rem; font-weight: 700; margin-bottom: 0.45rem; }
+    .formula-card { border: 1px solid rgba(138, 215, 255, 0.22); background: rgba(2, 6, 23, 0.56); border-radius: 1rem; padding: 1rem; overflow-x: auto; }
+    .formula { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; color: #e0f2fe; font-size: clamp(0.9rem, 2vw, 1.05rem); white-space: nowrap; }
+    .metric { border: 1px solid rgba(148, 163, 184, 0.18); background: rgba(2, 6, 23, 0.36); border-radius: 1rem; padding: 1rem; }
+    .metric-label { color: #94a3b8; font-size: 0.76rem; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.35rem; }
+    .metric-value { color: white; font-size: 1.55rem; font-weight: 750; letter-spacing: -0.03em; }
+    select, input[type="range"] { accent-color: #8ad7ff; }
+    select { border: 1px solid rgba(148, 163, 184, 0.22); background: rgba(15, 23, 42, 0.72); color: #dbeafe; border-radius: 0.85rem; padding: 0.65rem 0.8rem; font-size: 0.92rem; width: 100%; }
+    canvas { width: 100%; height: auto; background: rgba(2, 6, 23, 0.42); border: 1px solid rgba(148, 163, 184, 0.16); border-radius: 1rem; }
+    .pill { display: inline-flex; align-items: center; gap: 0.45rem; border: 1px solid rgba(148, 163, 184, 0.18); background: rgba(15, 23, 42, 0.62); border-radius: 999px; padding: 0.45rem 0.7rem; color: #cbd5e1; font-size: 0.84rem; }
+    .mini-table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+    .mini-table th, .mini-table td { border-bottom: 1px solid rgba(148, 163, 184, 0.13); padding: 0.55rem 0.35rem; text-align: left; vertical-align: top; }
+    .mini-table th { color: #93c5fd; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; }
+    .preset-button { border: 1px solid rgba(148, 163, 184, 0.22); background: rgba(15, 23, 42, 0.72); color: #dbeafe; border-radius: 0.85rem; padding: 0.65rem 0.8rem; font-size: 0.88rem; transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease; }
+    .preset-button:hover, .preset-button.active { border-color: rgba(138, 215, 255, 0.46); background: rgba(30, 41, 59, 0.82); transform: translateY(-1px); }
+    .sequence-strip { display: flex; flex-wrap: wrap; gap: 0.35rem; padding: 0.9rem; border-radius: 1rem; border: 1px solid rgba(148, 163, 184, 0.16); background: rgba(2, 6, 23, 0.34); max-height: 180px; overflow-y: auto; }
+    .bit-cell { display: inline-flex; align-items: center; justify-content: center; width: 1.8rem; height: 1.8rem; border-radius: 0.55rem; font-size: 0.82rem; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; border: 1px solid rgba(138, 215, 255, 0.18); }
+    .bit-one { background: rgba(14, 165, 233, 0.18); color: #e0f2fe; }
+    .bit-zero { background: rgba(15, 23, 42, 0.72); color: #94a3b8; }
+    .feature-cell { min-width: 2.15rem; height: 2.15rem; border-radius: 0.65rem; display: inline-flex; align-items: center; justify-content: center; font-size: 0.72rem; border: 1px solid rgba(148,163,184,.18); background: rgba(15,23,42,.62); color: #cbd5e1; }
+    .feature-cell.hot { border-color: rgba(138,215,255,.38); background: rgba(14,165,233,.18); color: #e0f2fe; }
+    @media (max-width: 900px) { .example-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body class="bg-gray-950 text-white">
+  <div class="max-w-7xl mx-auto px-6 py-8 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-[220px_minmax(0,1fr)_260px] gap-8">
+      <aside class="hidden lg:block">
+        <div class="sticky top-8 rounded-2xl border border-gray-800 bg-gray-900/70 backdrop-blur p-4">
+          <p class="text-xs uppercase tracking-[0.18em] text-blue-300 mb-4" data-en="On this page" data-es="En esta página">On this page</p>
+          <nav class="space-y-3 text-sm">
+            <a href="#intro" class="block text-gray-300 hover:text-blue-300 transition" data-en="Introduction" data-es="Introducción">Introduction</a>
+            <a href="#model" class="block text-gray-300 hover:text-blue-300 transition" data-en="Model" data-es="Modelo">Model</a>
+            <a href="#lab" class="block text-gray-300 hover:text-blue-300 transition" data-en="Interactive lab" data-es="Laboratorio interactivo">Interactive lab</a>
+            <a href="#method" class="block text-gray-300 hover:text-blue-300 transition" data-en="Method" data-es="Método">Method</a>
+            <a href="#interpretation" class="block text-gray-300 hover:text-blue-300 transition" data-en="Interpretation" data-es="Interpretación">Interpretation</a>
+            <a href="#limits" class="block text-gray-300 hover:text-blue-300 transition" data-en="Limits" data-es="Límites">Limits</a>
+          </nav>
+        </div>
+      </aside>
+
+      <main class="max-w-3xl">
+        <div class="flex justify-between items-center gap-4 mb-6">
+          <a href="index.html" class="text-blue-400 hover:text-blue-300 transition" data-en="← Back" data-es="← Volver">← Back</a>
+          <button id="langToggle" class="rounded-xl border border-gray-800 bg-gray-900/70 px-4 py-2 text-sm text-gray-200 hover:border-blue-400/40 hover:text-white transition">ES</button>
+        </div>
+
+        <h1 class="text-4xl font-bold mt-4 mb-6 tracking-tight" data-en="Project 1 — From Signals to Representation" data-es="Proyecto 1 — De Señales a Representación">Project 1 — From Signals to Representation</h1>
+        <p class="section-intro mb-10" data-en="This synthesis combines the first four experiments into one question: when can a signal begin to function as a representation for a system?" data-es="Esta síntesis combina los primeros cuatro experimentos en una pregunta: ¿cuándo puede una señal empezar a funcionar como representación para un sistema?">This synthesis combines the first four experiments into one question: when can a signal begin to function as a representation for a system?</p>
+
+        <section id="intro" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8">
+          <h2 class="text-2xl font-semibold mb-4" data-en="Introduction" data-es="Introducción">Introduction</h2>
+          <div class="space-y-4">
+            <div class="concept-card concept-card-strong">
+              <p class="concept-kicker" data-en="Central question" data-es="Pregunta central">Central question</p>
+              <p class="text-gray-300 leading-8" data-en="When does raw information become usable structure for classification, prediction, or transformation?" data-es="¿Cuándo se convierte la información cruda en estructura utilizable para clasificar, predecir o transformar?">When does raw information become usable structure for classification, prediction, or transformation?</p>
+            </div>
+            <div class="concept-card">
+              <p class="concept-kicker" data-en="Boundary" data-es="Límite">Boundary</p>
+              <h3 class="concept-title" data-en="Representation here is operational, not mental" data-es="Representación aquí es operacional, no mental">Representation here is operational, not mental</h3>
+              <p class="text-gray-300 leading-8" data-en="This page does not claim that a signal has meaning by itself. It uses a narrower definition: a signal is representational when a system can extract stable structure from it and use that structure to do work." data-es="Esta página no afirma que una señal tenga significado por sí misma. Usa una definición más limitada: una señal es representacional cuando un sistema puede extraer estructura estable de ella y usar esa estructura para hacer trabajo.">This page does not claim that a signal has meaning by itself. It uses a narrower definition: a signal is representational when a system can extract stable structure from it and use that structure to do work.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="model" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8">
+          <h2 class="text-2xl font-semibold mb-4" data-en="Model" data-es="Modelo">Model</h2>
+          <div class="reading-block space-y-5 text-gray-300">
+            <p data-en="The model links four ideas from the experiments: entropy, predictability, temporal stability, and detectability. None of them alone is enough. Together, they form a minimal computational test for usable structure." data-es="El modelo une cuatro ideas de los experimentos: entropía, predictibilidad, estabilidad temporal y detectabilidad. Ninguna basta por sí sola. Juntas forman una prueba computacional mínima de estructura utilizable.">The model links four ideas from the experiments: entropy, predictability, temporal stability, and detectability. None of them alone is enough. Together, they form a minimal computational test for usable structure.</p>
+            <div class="formula-card"><p class="formula">Representation score = 0.35D + 0.25P + 0.25S + 0.15T</p></div>
+            <p data-en="D is detectability, P is predictability, S is stability across observation windows, and T is task usefulness. This is not a universal formula. It is a deliberately simple scoring rule for the simulation." data-es="D es detectabilidad, P es predictibilidad, S es estabilidad entre ventanas de observación y T es utilidad para una tarea. No es una fórmula universal. Es una regla de puntuación deliberadamente simple para la simulación.">D is detectability, P is predictability, S is stability across observation windows, and T is task usefulness. This is not a universal formula. It is a deliberately simple scoring rule for the simulation.</p>
+            <div class="formula-card"><p class="formula">Signal → measured features → rule → task output</p></div>
+            <p data-en="The important movement is not from signal to consciousness. It is from signal to features, and from features to rule-governed use." data-es="El movimiento importante no es de señal a consciencia. Es de señal a rasgos, y de rasgos a uso gobernado por reglas.">The important movement is not from signal to consciousness. It is from signal to features, and from features to rule-governed use.</p>
+          </div>
+        </section>
+
+        <section id="lab" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8">
+          <h2 class="text-2xl font-semibold mb-4" data-en="Interactive lab" data-es="Laboratorio interactivo">Interactive lab</h2>
+          <p class="section-intro mb-6" data-en="Generate a signal, adjust its structure and noise, and see whether the system can use it as a representation." data-es="Genera una señal, ajusta su estructura y ruido, y observa si el sistema puede usarla como representación.">Generate a signal, adjust its structure and noise, and see whether the system can use it as a representation.</p>
+
+          <div class="concept-card mb-6">
+            <p class="concept-kicker" data-en="Controls" data-es="Controles">Controls</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div>
+                <label class="block mb-2 text-sm text-gray-400" data-en="Signal family" data-es="Familia de señal">Signal family</label>
+                <select id="signalType">
+                  <option value="alternating" data-en="Alternating rhythm" data-es="Ritmo alternante">Alternating rhythm</option>
+                  <option value="blocks" data-en="Block structure" data-es="Estructura por bloques">Block structure</option>
+                  <option value="periodic" data-en="Periodic pulse" data-es="Pulso periódico">Periodic pulse</option>
+                  <option value="random" data-en="Random signal" data-es="Señal aleatoria">Random signal</option>
+                </select>
+              </div>
+              <div><label class="block mb-2 text-sm text-gray-400"><span data-en="Signal length" data-es="Longitud de señal">Signal length</span>: <span id="lengthLabel">96</span></label><input id="length" type="range" min="32" max="192" value="96" class="w-full" /></div>
+              <div><label class="block mb-2 text-sm text-gray-400"><span data-en="Structure strength" data-es="Fuerza de estructura">Structure strength</span>: <span id="structureLabel">80</span>%</label><input id="structure" type="range" min="0" max="100" value="80" class="w-full" /></div>
+              <div><label class="block mb-2 text-sm text-gray-400"><span data-en="Noise level" data-es="Nivel de ruido">Noise level</span>: <span id="noiseLabel">15</span>%</label><input id="noise" type="range" min="0" max="60" value="15" class="w-full" /></div>
+              <div><label class="block mb-2 text-sm text-gray-400"><span data-en="Observation window" data-es="Ventana de observación">Observation window</span>: <span id="windowLabel">12</span></label><input id="windowSize" type="range" min="4" max="32" value="12" class="w-full" /></div>
+              <div><label class="block mb-2 text-sm text-gray-400"><span data-en="Detection threshold" data-es="Umbral de detección">Detection threshold</span>: <span id="thresholdLabel">0.62</span></label><input id="threshold" type="range" min="0.35" max="0.90" step="0.01" value="0.62" class="w-full" /></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-5">
+              <button class="preset-button" data-preset="clear" data-en="Clear representation" data-es="Representación clara">Clear representation</button>
+              <button class="preset-button" data-preset="fragile" data-en="Fragile pattern" data-es="Patrón frágil">Fragile pattern</button>
+              <button class="preset-button" data-preset="noise" data-en="Noise-dominated" data-es="Dominado por ruido">Noise-dominated</button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div class="metric"><p class="metric-label" data-en="Entropy" data-es="Entropía">Entropy</p><p class="metric-value"><span id="entropyValue">0.000</span></p><p class="text-sm text-gray-400" data-en="bits/symbol" data-es="bits/símbolo">bits/symbol</p></div>
+            <div class="metric"><p class="metric-label" data-en="Detectability" data-es="Detectabilidad">Detectability</p><p class="metric-value"><span id="detectabilityValue">0.000</span></p><p class="text-sm text-gray-400" data-en="best rule score" data-es="mejor regla">best rule score</p></div>
+            <div class="metric"><p class="metric-label" data-en="Stability" data-es="Estabilidad">Stability</p><p class="metric-value"><span id="stabilityValue">0.000</span></p><p class="text-sm text-gray-400" data-en="across windows" data-es="entre ventanas">across windows</p></div>
+            <div class="metric"><p class="metric-label" data-en="Representation" data-es="Representación">Representation</p><p class="metric-value"><span id="representationValue">0.000</span></p><p class="text-sm text-gray-400" data-en="operational score" data-es="puntaje operacional">operational score</p></div>
+          </div>
+
+          <div class="concept-card mb-6">
+            <p class="concept-kicker" data-en="Signal view" data-es="Vista de señal">Signal view</p>
+            <div id="signalStrip" class="sequence-strip"></div>
+          </div>
+
+          <div class="concept-card mb-6">
+            <p class="concept-kicker" data-en="Feature detector" data-es="Detector de rasgos">Feature detector</p>
+            <p class="text-gray-400 mb-4" data-en="Each tile is one observation window. Brighter tiles indicate stronger detectable structure." data-es="Cada bloque es una ventana de observación. Los bloques más brillantes indican estructura detectable más fuerte.">Each tile is one observation window. Brighter tiles indicate stronger detectable structure.</p>
+            <div id="featureStrip" class="flex flex-wrap gap-2"></div>
+          </div>
+
+          <div class="concept-card mb-6">
+            <p class="concept-kicker" data-en="Metric comparison" data-es="Comparación de métricas">Metric comparison</p>
+            <canvas id="metricCanvas" width="820" height="320" aria-label="Representation metric chart"></canvas>
+          </div>
+
+          <div class="concept-card concept-card-strong">
+            <p class="concept-kicker" data-en="Live interpretation" data-es="Interpretación en vivo">Live interpretation</p>
+            <p id="liveInterpretation" class="text-gray-300 leading-8"></p>
+          </div>
+        </section>
+
+        <section id="method" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8">
+          <h2 class="text-2xl font-semibold mb-4" data-en="Method" data-es="Método">Method</h2>
+          <div class="space-y-4">
+            <div class="concept-card"><p class="concept-kicker" data-en="Variables" data-es="Variables">Variables</p><div class="flex flex-wrap gap-2"><span class="pill" data-en="Independent: signal family" data-es="Independiente: familia de señal">Independent: signal family</span><span class="pill" data-en="Independent: structure/noise" data-es="Independiente: estructura/ruido">Independent: structure/noise</span><span class="pill" data-en="Independent: observation window" data-es="Independiente: ventana de observación">Independent: observation window</span><span class="pill" data-en="Dependent: representation score" data-es="Dependiente: puntaje de representación">Dependent: representation score</span></div></div>
+            <div class="concept-card"><p class="concept-kicker" data-en="Procedure" data-es="Procedimiento">Procedure</p><table class="mini-table"><thead><tr><th data-en="Step" data-es="Paso">Step</th><th data-en="Action" data-es="Acción">Action</th><th data-en="Reason" data-es="Razón">Reason</th></tr></thead><tbody><tr><td>1</td><td data-en="Generate a binary signal with a controllable structure." data-es="Generar una señal binaria con estructura controlable.">Generate a binary signal with a controllable structure.</td><td data-en="Keep the input simple enough to inspect." data-es="Mantener la entrada suficientemente simple para inspeccionarla.">Keep the input simple enough to inspect.</td></tr><tr><td>2</td><td data-en="Measure entropy, predictability, stability, and detectability." data-es="Medir entropía, predictibilidad, estabilidad y detectabilidad.">Measure entropy, predictability, stability, and detectability.</td><td data-en="Separate uncertainty from usable order." data-es="Separar incertidumbre de orden utilizable.">Separate uncertainty from usable order.</td></tr><tr><td>3</td><td data-en="Combine metrics into an operational representation score." data-es="Combinar métricas en un puntaje operacional de representación.">Combine metrics into an operational representation score.</td><td data-en="Make the hypothesis testable instead of vague." data-es="Hacer la hipótesis comprobable en vez de vaga.">Make the hypothesis testable instead of vague.</td></tr></tbody></table></div>
+          </div>
+        </section>
+
+        <section id="interpretation" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8">
+          <h2 class="text-2xl font-semibold mb-4" data-en="Interpretation" data-es="Interpretación">Interpretation</h2>
+          <div class="reading-block space-y-5 text-gray-300">
+            <p data-en="A signal becomes representational in this limited model when the system can extract structure that remains stable enough to support an operation. The representation is not the raw signal; it is the compressed set of useful features taken from the signal." data-es="Una señal se vuelve representacional en este modelo limitado cuando el sistema puede extraer estructura suficientemente estable para sostener una operación. La representación no es la señal cruda; es el conjunto comprimido de rasgos útiles extraídos de la señal.">A signal becomes representational in this limited model when the system can extract structure that remains stable enough to support an operation. The representation is not the raw signal; it is the compressed set of useful features taken from the signal.</p>
+            <p data-en="This is why entropy matters but cannot do the whole job. High entropy may hide structure, and low entropy may be trivial. Representation requires a relation between the signal, the detector, and the task." data-es="Por eso la entropía importa pero no puede hacer todo el trabajo. La entropía alta puede esconder estructura, y la baja entropía puede ser trivial. La representación requiere una relación entre la señal, el detector y la tarea.">This is why entropy matters but cannot do the whole job. High entropy may hide structure, and low entropy may be trivial. Representation requires a relation between the signal, the detector, and the task.</p>
+          </div>
+        </section>
+
+        <section id="limits" class="scroll-mt-24 mb-16">
+          <h2 class="text-2xl font-semibold mb-4" data-en="Limits" data-es="Límites">Limits</h2>
+          <div class="concept-card concept-card-strong"><p class="concept-kicker" data-en="Main limitation" data-es="Límite principal">Main limitation</p><p class="text-gray-300 leading-8" data-en="This is a computational model of usable structure, not a theory of meaning or consciousness. It shows when a signal can support a task, not why anything would be experienced from the inside." data-es="Este es un modelo computacional de estructura utilizable, no una teoría del significado o la consciencia. Muestra cuándo una señal puede sostener una tarea, no por qué algo sería experimentado desde dentro.">This is a computational model of usable structure, not a theory of meaning or consciousness. It shows when a signal can support a task, not why anything would be experienced from the inside.</p></div>
+        </section>
+      </main>
+
+      <aside class="hidden xl:block"><div class="sticky top-8 space-y-4"><div class="concept-card"><p class="concept-kicker" data-en="Core idea" data-es="Idea central">Core idea</p><p class="text-gray-300 leading-7" data-en="A signal becomes representational only relative to a system that can use its structure." data-es="Una señal se vuelve representacional solo en relación con un sistema que puede usar su estructura.">A signal becomes representational only relative to a system that can use its structure.</p></div><div class="concept-card"><p class="concept-kicker" data-en="Warning" data-es="Advertencia">Warning</p><p class="text-gray-400 leading-7" data-en="Do not confuse detectable structure with meaning or subjective experience." data-es="No confundas estructura detectable con significado o experiencia subjetiva.">Do not confuse detectable structure with meaning or subjective experience.</p></div></div></aside>
+    </div>
+  </div>
+
+<script>
+const langToggle = document.getElementById("langToggle");
+const signalTypeEl = document.getElementById("signalType");
+const lengthEl = document.getElementById("length");
+const structureEl = document.getElementById("structure");
+const noiseEl = document.getElementById("noise");
+const windowSizeEl = document.getElementById("windowSize");
+const thresholdEl = document.getElementById("threshold");
+const labels = { length: document.getElementById("lengthLabel"), structure: document.getElementById("structureLabel"), noise: document.getElementById("noiseLabel"), window: document.getElementById("windowLabel"), threshold: document.getElementById("thresholdLabel") };
+const entropyValue = document.getElementById("entropyValue");
+const detectabilityValue = document.getElementById("detectabilityValue");
+const stabilityValue = document.getElementById("stabilityValue");
+const representationValue = document.getElementById("representationValue");
+const signalStrip = document.getElementById("signalStrip");
+const featureStrip = document.getElementById("featureStrip");
+const liveInterpretation = document.getElementById("liveInterpretation");
+const metricCanvas = document.getElementById("metricCanvas");
+const ctx = metricCanvas.getContext("2d");
+let currentLang = localStorage.getItem("siteLang") || "en";
+
+function applyLanguage(lang) {
+  document.documentElement.lang = lang;
+  document.querySelectorAll("[data-en][data-es]").forEach(el => { el.textContent = el.dataset[lang]; });
+  document.querySelectorAll("option[data-en][data-es]").forEach(option => { option.textContent = option.dataset[lang]; });
+  document.title = lang === "en" ? "Project 1 — From Signals to Representation" : "Proyecto 1 — De Señales a Representación";
+  langToggle.textContent = lang === "en" ? "ES" : "EN";
+  localStorage.setItem("siteLang", lang);
+  currentLang = lang;
+  update();
+}
+function randBit(){ return Math.random() > 0.5 ? 1 : 0; }
+function idealBit(type, i, strength) {
+  if (Math.random() > strength) return randBit();
+  if (type === "alternating") return i % 2;
+  if (type === "blocks") return Math.floor(i / 8) % 2;
+  if (type === "periodic") return i % 6 === 0 ? 1 : 0;
+  return randBit();
+}
+function generateSignal(type, length, structure, noise) {
+  const seq = [];
+  for (let i = 0; i < length; i++) {
+    let bit = idealBit(type, i, structure);
+    if (Math.random() < noise) bit = 1 - bit;
+    seq.push(bit);
+  }
+  return seq;
+}
+function countBits(seq){ return seq.reduce((a,b)=>{ b ? a.ones++ : a.zeros++; return a; }, {zeros:0, ones:0}); }
+function entropy(seq){ if (!seq.length) return 0; const {zeros,ones}=countBits(seq); return [zeros/seq.length, ones/seq.length].reduce((h,p)=> p>0 ? h - p*Math.log2(p) : h, 0); }
+function alternation(seq){ if(seq.length<2) return 0; let s=0; for(let i=1;i<seq.length;i++) if(seq[i]!==seq[i-1]) s++; return s/(seq.length-1); }
+function blockScore(seq){ if(seq.length<2) return 0; let same=0; for(let i=1;i<seq.length;i++) if(seq[i]===seq[i-1]) same++; return same/(seq.length-1); }
+function pulseScore(seq){ if(!seq.length) return 0; let hits=0; for(let i=0;i<seq.length;i++) if((i%6===0 && seq[i]===1) || (i%6!==0 && seq[i]===0)) hits++; return hits/seq.length; }
+function predictability(seq){ const h=entropy(seq); return Math.max(0, 1-h); }
+function windowScores(seq, size){ const scores=[]; for(let i=0;i<seq.length;i+=size){ const w=seq.slice(i,i+size); if(w.length>2){ scores.push(Math.max(alternation(w), blockScore(w), pulseScore(w))); } } return scores; }
+function stability(scores){ if(scores.length<2) return scores[0] || 0; const mean=scores.reduce((a,b)=>a+b,0)/scores.length; const variance=scores.reduce((a,b)=>a+(b-mean)**2,0)/scores.length; return Math.max(0, 1 - Math.sqrt(variance)*2.2); }
+function taskUsefulness(type, seq){ const scores = { alternating: alternation(seq), blocks: blockScore(seq), periodic: pulseScore(seq), random: Math.max(0, 1 - Math.abs(entropy(seq)-1)) * 0.25 }; return scores[type] ?? 0; }
+function renderSignal(seq){ const visible=seq.slice(0,160); signalStrip.innerHTML = visible.map(bit=>`<span class="bit-cell ${bit ? "bit-one" : "bit-zero"}">${bit}</span>`).join("") + (seq.length>visible.length ? `<span class="bit-cell bit-zero">…</span>` : ""); }
+function renderFeatures(scores, threshold){ featureStrip.innerHTML = scores.map((s,i)=>`<span class="feature-cell ${s>=threshold ? "hot" : ""}" title="${s.toFixed(3)}">${(i+1)}</span>`).join(""); }
+function drawChart(metrics, threshold){ const w=metricCanvas.width, h=metricCanvas.height, pad=54, baseY=h-pad, usable=h-pad*2; ctx.clearRect(0,0,w,h); ctx.strokeStyle="rgba(148,163,184,.18)"; ctx.fillStyle="#94a3b8"; ctx.font="13px sans-serif"; for(let i=0;i<=4;i++){ const y=pad+(i*usable)/4; const value=1-i/4; ctx.beginPath(); ctx.moveTo(pad,y); ctx.lineTo(w-pad,y); ctx.stroke(); ctx.fillText(value.toFixed(2), 10, y+4); } const ty=baseY-threshold*usable; ctx.setLineDash([6,6]); ctx.strokeStyle="rgba(248,250,252,.45)"; ctx.beginPath(); ctx.moveTo(pad,ty); ctx.lineTo(w-pad,ty); ctx.stroke(); ctx.setLineDash([]); const bars=[{label:currentLang==='en'?'Predict.':'Predic.',v:metrics.pred},{label:currentLang==='en'?'Detect.':'Detect.',v:metrics.detect},{label:currentLang==='en'?'Stability':'Estab.',v:metrics.stab},{label:currentLang==='en'?'Task':'Tarea',v:metrics.task},{label:currentLang==='en'?'Represent.':'Repres.',v:metrics.rep}]; const barW=74, gap=42, start=(w-(bars.length*barW+(bars.length-1)*gap))/2; bars.forEach((b,i)=>{ const x=start+i*(barW+gap); const bh=b.v*usable; const y=baseY-bh; const g=ctx.createLinearGradient(0,y,0,baseY); g.addColorStop(0,"rgba(138,215,255,.92)"); g.addColorStop(1,"rgba(96,165,250,.30)"); ctx.fillStyle=g; ctx.fillRect(x,y,barW,bh); ctx.fillStyle="#e0f2fe"; ctx.font="13px sans-serif"; ctx.fillText(b.v.toFixed(2),x+18,y-10); ctx.fillStyle="#cbd5e1"; ctx.fillText(b.label,x+5,baseY+28); }); ctx.fillStyle="#cbd5e1"; ctx.fillText(currentLang==='en'?'Threshold':'Umbral', w-124, ty-8); }
+function interpret(metrics){ if(currentLang === 'en') { if(metrics.rep >= .72) return `The signal is functioning as a usable representation in this limited model. Its structure is detectable (${metrics.detect.toFixed(3)}), stable (${metrics.stab.toFixed(3)}), and useful for the selected task (${metrics.task.toFixed(3)}).`; if(metrics.detect >= metrics.threshold && metrics.stab < .55) return `A pattern is detected, but it is unstable across observation windows. This is a fragile representation: the system can find structure, but not reliably.`; if(metrics.h > .88 && metrics.detect < metrics.threshold) return `Entropy is high and the detector does not cross the threshold. The system sees information, but not enough stable usable structure.`; return `The signal has partial structure. It may support a weak representation, but the current detector/task relation is not strong enough to treat it as reliable.`; } else { if(metrics.rep >= .72) return `La señal funciona como representación utilizable en este modelo limitado. Su estructura es detectable (${metrics.detect.toFixed(3)}), estable (${metrics.stab.toFixed(3)}) y útil para la tarea seleccionada (${metrics.task.toFixed(3)}).`; if(metrics.detect >= metrics.threshold && metrics.stab < .55) return `Se detecta un patrón, pero es inestable entre ventanas de observación. Es una representación frágil: el sistema encuentra estructura, pero no de forma confiable.`; if(metrics.h > .88 && metrics.detect < metrics.threshold) return `La entropía es alta y el detector no cruza el umbral. El sistema ve información, pero no suficiente estructura estable y utilizable.`; return `La señal tiene estructura parcial. Puede sostener una representación débil, pero la relación detector/tarea no es suficientemente fuerte para tratarla como confiable.`; } }
+function setPreset(name){ if(name==='clear'){signalTypeEl.value='alternating'; lengthEl.value=96; structureEl.value=95; noiseEl.value=5; windowSizeEl.value=12; thresholdEl.value=.62;} if(name==='fragile'){signalTypeEl.value='periodic'; lengthEl.value=96; structureEl.value=60; noiseEl.value=25; windowSizeEl.value=10; thresholdEl.value=.58;} if(name==='noise'){signalTypeEl.value='random'; lengthEl.value=96; structureEl.value=10; noiseEl.value=45; windowSizeEl.value=12; thresholdEl.value=.62;} update(); }
+function update(){ const type=signalTypeEl.value, length=+lengthEl.value, structure=+structureEl.value/100, noise=+noiseEl.value/100, win=+windowSizeEl.value, threshold=+thresholdEl.value; labels.length.textContent=length; labels.structure.textContent=Math.round(structure*100); labels.noise.textContent=Math.round(noise*100); labels.window.textContent=win; labels.threshold.textContent=threshold.toFixed(2); const seq=generateSignal(type,length,structure,noise); const h=entropy(seq); const scores=windowScores(seq,win); const detect=Math.max(alternation(seq), blockScore(seq), pulseScore(seq)); const pred=predictability(seq); const stab=stability(scores); const task=taskUsefulness(type,seq); const rep=.35*detect+.25*pred+.25*stab+.15*task; entropyValue.textContent=h.toFixed(3); detectabilityValue.textContent=detect.toFixed(3); stabilityValue.textContent=stab.toFixed(3); representationValue.textContent=rep.toFixed(3); renderSignal(seq); renderFeatures(scores,threshold); const metrics={h, detect, pred, stab, task, rep, threshold}; drawChart(metrics, threshold); liveInterpretation.textContent=interpret(metrics); }
+[signalTypeEl,lengthEl,structureEl,noiseEl,windowSizeEl,thresholdEl].forEach(el=>el.addEventListener('input',update));
+document.querySelectorAll('.preset-button').forEach(btn=>btn.addEventListener('click',()=>setPreset(btn.dataset.preset)));
+langToggle.addEventListener('click',()=>applyLanguage(currentLang==='en'?'es':'en'));
+applyLanguage(currentLang);
+</script>
+</body>
+</html>

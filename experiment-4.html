@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Experiment 4 — Detectability of Structure</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    html {
+      scrollbar-width: thin;
+      scrollbar-color: #8ad7ff #081120;
+    }
+
+    ::-webkit-scrollbar { width: 12px; }
+
+    ::-webkit-scrollbar-track {
+      background: linear-gradient(180deg, #071224, #05101f);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #8ad7ff, #6ca8ff);
+      border-radius: 999px;
+      border: 2px solid #081120;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(180deg, #b6ecff, #8ad7ff);
+    }
+
+    ::selection {
+      background: rgba(138, 215, 255, 0.28);
+      color: white;
+    }
+
+    :root {
+      --page-accent: #8ad7ff;
+      --page-accent-soft: rgba(138, 215, 255, 0.12);
+      --page-accent-border: rgba(138, 215, 255, 0.28);
+      --panel: rgba(15, 23, 42, 0.78);
+      --panel-strong: rgba(15, 23, 42, 0.92);
+    }
+
+    body {
+      background:
+        radial-gradient(circle at 12% 8%, rgba(96, 165, 250, 0.10), transparent 26%),
+        radial-gradient(circle at 88% 22%, rgba(138, 215, 255, 0.07), transparent 24%),
+        radial-gradient(circle at 50% 100%, rgba(168, 85, 247, 0.08), transparent 32%),
+        #030712;
+    }
+
+    .reading-block { max-width: 68ch; }
+    .reading-block p { line-height: 1.9; }
+
+    .section-intro {
+      color: #cbd5e1;
+      font-size: 1.05rem;
+      line-height: 1.85;
+      max-width: 68ch;
+    }
+
+    .concept-card {
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      background:
+        linear-gradient(180deg, var(--panel-strong), var(--panel)),
+        radial-gradient(circle at top left, var(--page-accent-soft), transparent 38%);
+      border-radius: 1.25rem;
+      padding: 1.4rem;
+      box-shadow: 0 20px 55px rgba(0,0,0,0.20);
+    }
+
+    .concept-card-strong {
+      border-color: var(--page-accent-border);
+      background:
+        linear-gradient(180deg, rgba(15, 23, 42, 0.90), rgba(15, 23, 42, 0.70)),
+        radial-gradient(circle at top left, rgba(96, 165, 250, 0.18), transparent 42%);
+    }
+
+    .concept-kicker {
+      color: var(--page-accent);
+      font-size: 0.76rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 0.7rem;
+      font-weight: 700;
+    }
+
+    .concept-title {
+      color: white;
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.45rem;
+    }
+
+    .formula-card {
+      border: 1px solid rgba(138, 215, 255, 0.22);
+      background: rgba(2, 6, 23, 0.56);
+      border-radius: 1rem;
+      padding: 1rem;
+      overflow-x: auto;
+    }
+
+    .formula {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      color: #e0f2fe;
+      font-size: clamp(0.9rem, 2vw, 1.05rem);
+      white-space: nowrap;
+    }
+
+    .metric {
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      background: rgba(2, 6, 23, 0.36);
+      border-radius: 1rem;
+      padding: 1rem;
+    }
+
+    .metric-label {
+      color: #94a3b8;
+      font-size: 0.76rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 0.35rem;
+    }
+
+    .metric-value {
+      color: white;
+      font-size: 1.55rem;
+      font-weight: 750;
+      letter-spacing: -0.03em;
+    }
+
+    select,
+    input[type="range"],
+    textarea {
+      accent-color: #8ad7ff;
+    }
+
+    select {
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      background: rgba(15, 23, 42, 0.72);
+      color: #dbeafe;
+      border-radius: 0.85rem;
+      padding: 0.65rem 0.8rem;
+      font-size: 0.92rem;
+      width: 100%;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 115px;
+      resize: vertical;
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      background: rgba(2, 6, 23, 0.62);
+      color: #e5f3ff;
+      border-radius: 1rem;
+      padding: 1rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      line-height: 1.65;
+      outline: none;
+    }
+
+    textarea:focus {
+      border-color: rgba(138, 215, 255, 0.55);
+    }
+
+    canvas {
+      width: 100%;
+      height: auto;
+      background: rgba(2, 6, 23, 0.42);
+      border: 1px solid rgba(148, 163, 184, 0.16);
+      border-radius: 1rem;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      background: rgba(15, 23, 42, 0.62);
+      border-radius: 999px;
+      padding: 0.45rem 0.7rem;
+      color: #cbd5e1;
+      font-size: 0.84rem;
+    }
+
+    .mini-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.86rem;
+    }
+
+    .mini-table th,
+    .mini-table td {
+      border-bottom: 1px solid rgba(148, 163, 184, 0.13);
+      padding: 0.55rem 0.35rem;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .mini-table th {
+      color: #93c5fd;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .preset-button {
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      background: rgba(15, 23, 42, 0.72);
+      color: #dbeafe;
+      border-radius: 0.85rem;
+      padding: 0.65rem 0.8rem;
+      font-size: 0.88rem;
+      transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
+    }
+
+    .preset-button:hover {
+      border-color: rgba(138, 215, 255, 0.46);
+      background: rgba(30, 41, 59, 0.82);
+      transform: translateY(-1px);
+    }
+
+    .sequence-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      padding: 0.9rem;
+      border-radius: 1rem;
+      border: 1px solid rgba(148, 163, 184, 0.16);
+      background: rgba(2, 6, 23, 0.34);
+      max-height: 170px;
+      overflow-y: auto;
+    }
+
+    .bit-cell {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.8rem;
+      height: 1.8rem;
+      border-radius: 0.55rem;
+      font-size: 0.82rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      border: 1px solid rgba(138, 215, 255, 0.18);
+    }
+
+    .bit-one {
+      background: rgba(14, 165, 233, 0.18);
+      color: #e0f2fe;
+    }
+
+    .bit-zero {
+      background: rgba(15, 23, 42, 0.72);
+      color: #94a3b8;
+    }
+
+    .example-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.8rem;
+    }
+
+    @media (max-width: 900px) {
+      .example-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body class="bg-gray-950 text-white">
+  <div class="max-w-7xl mx-auto px-6 py-8 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-[220px_minmax(0,1fr)_260px] gap-8">
+
+      <aside class="hidden lg:block">
+        <div class="sticky top-8 rounded-2xl border border-gray-800 bg-gray-900/70 backdrop-blur p-4">
+          <p class="text-xs uppercase tracking-[0.18em] text-blue-300 mb-4" data-en="On this page" data-es="En esta página">On this page</p>
+          <nav class="space-y-3 text-sm">
+            <a href="#intro" class="block text-gray-300 hover:text-blue-300 transition" data-en="Introduction" data-es="Introducción">Introduction</a>
+            <a href="#theory" class="block text-gray-300 hover:text-blue-300 transition" data-en="Theory" data-es="Teoría">Theory</a>
+            <a href="#lab" class="block text-gray-300 hover:text-blue-300 transition" data-en="Interactive lab" data-es="Laboratorio interactivo">Interactive lab</a>
+            <a href="#examples" class="block text-gray-300 hover:text-blue-300 transition" data-en="Examples" data-es="Ejemplos">Examples</a>
+            <a href="#method" class="block text-gray-300 hover:text-blue-300 transition" data-en="Method" data-es="Método">Method</a>
+            <a href="#interpretation" class="block text-gray-300 hover:text-blue-300 transition" data-en="Interpretation" data-es="Interpretación">Interpretation</a>
+            <a href="#limits" class="block text-gray-300 hover:text-blue-300 transition" data-en="Limits" data-es="Límites">Limits</a>
+          </nav>
+        </div>
+      </aside>
+
+      <main class="max-w-3xl">
+        <div class="flex justify-between items-center gap-4 mb-6">
+          <a href="index.html" class="text-blue-400 hover:text-blue-300 transition" data-en="← Back" data-es="← Volver">← Back</a>
+          <button id="langToggle" class="rounded-xl border border-gray-800 bg-gray-900/70 px-4 py-2 text-sm text-gray-200 hover:border-blue-400/40 hover:text-white transition">ES</button>
+        </div>
+
+        <h1 class="text-4xl font-bold mt-4 mb-6 tracking-tight"
+            data-en="Experiment #4 — Detectability of Structure"
+            data-es="Experimento #4 — Detectabilidad de la Estructura">
+          Experiment #4 — Detectability of Structure
+        </h1>
+
+        <p class="section-intro mb-10"
+           data-en="Experiment 3 showed that entropy depends on the observation window. This experiment asks a sharper question: can two signals have similar entropy while one has a clearer detectable pattern?"
+           data-es="El Experimento 3 mostró que la entropía depende de la ventana de observación. Este experimento hace una pregunta más precisa: ¿pueden dos señales tener entropía similar mientras una contiene un patrón detectable más claro?">
+          Experiment 3 showed that entropy depends on the observation window. This experiment asks a sharper question: can two signals have similar entropy while one has a clearer detectable pattern?
+        </p>
+
+        <section id="intro" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8">
+          <h2 class="text-2xl font-semibold mb-4" data-en="Introduction" data-es="Introducción">Introduction</h2>
+
+          <div class="space-y-4">
+            <div class="concept-card concept-card-strong">
+              <p class="concept-kicker" data-en="Central question" data-es="Pregunta central">Central question</p>
+              <p class="text-gray-300 leading-8"
+                 data-en="When does a sequence contain a detectable structure, and why is entropy alone insufficient to answer that?"
+                 data-es="¿Cuándo contiene una secuencia una estructura detectable, y por qué la entropía por sí sola no basta para responder eso?">
+                When does a sequence contain a detectable structure, and why is entropy alone insufficient to answer that?
+              </p>
+            </div>
+
+            <div class="concept-card">
+              <p class="concept-kicker" data-en="Why this matters" data-es="Por qué importa">Why this matters</p>
+              <h3 class="concept-title" data-en="Structure is not only frequency" data-es="La estructura no es solo frecuencia">Structure is not only frequency</h3>
+              <p class="text-gray-300 leading-8"
+                 data-en="A sequence can contain the same number of 0s and 1s as another sequence, yet have a very different order. Entropy based on symbol frequency may treat them as similar, even when one has a visible pattern."
+                 data-es="Una secuencia puede contener la misma cantidad de 0s y 1s que otra, pero tener un orden muy diferente. La entropía basada en frecuencia de símbolos puede tratarlas como similares, aunque una tenga un patrón visible.">
+                A sequence can contain the same number of 0s and 1s as another sequence, yet have a very different order. Entropy based on symbol frequency may treat them as similar, even when one has a visible pattern.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section id="theory" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8">
+          <h2 class="text-2xl font-semibold mb-4" data-en="Theory" data-es="Teoría">Theory</h2>
+
+          <div class="reading-block space-y-5 text-gray-300">
+            <p data-en="Shannon entropy measures uncertainty in a chosen representation. If the representation only counts how many 0s and 1s appear, then it can miss the order in which those values appear."
+               data-es="La entropía de Shannon mide incertidumbre en una representación elegida. Si la representación solo cuenta cuántos 0s y 1s aparecen, entonces puede perder el orden en el que aparecen esos valores.">
+              Shannon entropy measures uncertainty in a chosen representation. If the representation only counts how many 0s and 1s appear, then it can miss the order in which those values appear.
+            </p>
+
+            <div class="formula-card">
+              <p class="formula">H(X) = - Σ p(x) log₂ p(x)</p>
+            </div>
+
+            <p data-en="For a binary sequence, maximum entropy occurs when 0 and 1 are balanced. But balance is not the same thing as structure. The sequences 010101 and 001101 may both contain a mix of 0s and 1s, but the first has a strong alternating order."
+               data-es="Para una secuencia binaria, la entropía máxima ocurre cuando 0 y 1 están balanceados. Pero balance no es lo mismo que estructura. Las secuencias 010101 y 001101 pueden contener una mezcla de 0s y 1s, pero la primera tiene un orden alternante fuerte.">
+              For a binary sequence, maximum entropy occurs when 0 and 1 are balanced. But balance is not the same thing as structure. The sequences 010101 and 001101 may both contain a mix of 0s and 1s, but the first has a strong alternating order.
+            </p>
+
+            <div class="formula-card">
+              <p class="formula">A(S) = switches / (n - 1)</p>
+            </div>
+
+            <p data-en="The alternation score measures how often the sequence changes from 0 to 1 or from 1 to 0. A perfect alternating sequence has a score close to 1. A constant sequence has a score of 0."
+               data-es="El puntaje de alternancia mide qué tan seguido la secuencia cambia de 0 a 1 o de 1 a 0. Una secuencia perfectamente alternante tiene un puntaje cercano a 1. Una secuencia constante tiene un puntaje de 0.">
+              The alternation score measures how often the sequence changes from 0 to 1 or from 1 to 0. A perfect alternating sequence has a score close to 1. A constant sequence has a score of 0.
+            </p>
+
+            <div class="formula-card">
+              <p class="formula">R(S) = average length of consecutive runs</p>
+            </div>
+
+            <p data-en="Run length measures how long the same value tends to repeat before switching. Long runs suggest block-like structure. Very short runs suggest alternating structure. This gives us a second lens beyond entropy."
+               data-es="La longitud de racha mide cuánto tiende a repetirse el mismo valor antes de cambiar. Rachas largas sugieren estructura por bloques. Rachas muy cortas sugieren estructura alternante. Esto nos da un segundo lente más allá de la entropía.">
+              Run length measures how long the same value tends to repeat before switching. Long runs suggest block-like structure. Very short runs suggest alternating structure. This gives us a second lens beyond entropy.
+            </p>
+
+            <div class="formula-card">
+              <p class="formula">Detection = metric &gt; threshold</p>
+            </div>
+
+            <p data-en="A detector is a rule. It does not magically understand the sequence. It only checks whether a measurable property crosses a threshold. This is useful because it forces us to define structure operationally."
+               data-es="Un detector es una regla. No entiende mágicamente la secuencia. Solo revisa si una propiedad medible cruza un umbral. Esto es útil porque nos obliga a definir la estructura operacionalmente.">
+              A detector is a rule. It does not magically understand the sequence. It only checks whether a measurable property crosses a threshold. This is useful because it forces us to define structure operationally.
+            </p>
+          </div>
+        </section>
+
+        <section id="lab" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8">
+          <h2 class="text-2xl font-semibold mb-4" data-en="Interactive lab" data-es="Laboratorio interactivo">Interactive lab</h2>
+
+          <p class="section-intro mb-6"
+             data-en="Choose a sequence type, add noise, or write your own binary sequence. The lab compares entropy with pattern-detection scores."
+             data-es="Elige un tipo de secuencia, añade ruido o escribe tu propia secuencia binaria. El laboratorio compara la entropía con puntajes de detección de patrones.">
+            Choose a sequence type, add noise, or write your own binary sequence. The lab compares entropy with pattern-detection scores.
+          </p>
+
+          <div class="concept-card mb-6">
+            <p class="concept-kicker" data-en="Controls" data-es="Controles">Controls</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div>
+                <label class="block mb-2 text-sm text-gray-400" data-en="Sequence type" data-es="Tipo de secuencia">Sequence type</label>
+                <select id="sequenceType">
+                  <option value="alternating" data-en="Alternating" data-es="Alternante">Alternating</option>
+                  <option value="random" data-en="Random" data-es="Aleatoria">Random</option>
+                  <option value="blocks" data-en="Blocks" data-es="Bloques">Blocks</option>
+                  <option value="balanced" data-en="Balanced shuffled" data-es="Balanceada mezclada">Balanced shuffled</option>
+                  <option value="custom" data-en="Custom input" data-es="Entrada personalizada">Custom input</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block mb-2 text-sm text-gray-400">
+                  <span data-en="Sequence length" data-es="Longitud de secuencia">Sequence length</span>:
+                  <span id="lengthLabel">80</span>
+                </label>
+                <input id="length" type="range" min="20" max="200" value="80" class="w-full" />
+              </div>
+
+              <div>
+                <label class="block mb-2 text-sm text-gray-400">
+                  <span data-en="Noise level" data-es="Nivel de ruido">Noise level</span>:
+                  <span id="noiseLabel">10</span>%
+                </label>
+                <input id="noiseLevel" type="range" min="0" max="50" value="10" class="w-full" />
+              </div>
+
+              <div>
+                <label class="block mb-2 text-sm text-gray-400">
+                  <span data-en="Detector threshold" data-es="Umbral del detector">Detector threshold</span>:
+                  <span id="thresholdLabel">0.75</span>
+                </label>
+                <input id="threshold" type="range" min="0.50" max="0.95" step="0.01" value="0.75" class="w-full" />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mt-5">
+              <button class="preset-button" data-preset="alternating" data-en="Perfect alternation" data-es="Alternancia perfecta">Perfect alternation</button>
+              <button class="preset-button" data-preset="balanced" data-en="Same counts, shuffled" data-es="Mismas cuentas, mezclado">Same counts, shuffled</button>
+              <button class="preset-button" data-preset="blocks" data-en="Block pattern" data-es="Patrón por bloques">Block pattern</button>
+              <button class="preset-button" data-preset="customExample" data-en="Manual example" data-es="Ejemplo manual">Manual example</button>
+            </div>
+          </div>
+
+          <div id="customPanel" class="concept-card mb-6 hidden">
+            <p class="concept-kicker" data-en="Custom binary sequence" data-es="Secuencia binaria personalizada">Custom binary sequence</p>
+            <textarea id="customInput" spellcheck="false">01010101010011010110</textarea>
+            <p class="text-sm text-gray-400 mt-3"
+               data-en="Only 0s and 1s are analyzed. Spaces, commas, and other characters are ignored."
+               data-es="Solo se analizan 0s y 1s. Espacios, comas y otros caracteres se ignoran.">
+              Only 0s and 1s are analyzed. Spaces, commas, and other characters are ignored.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div class="metric">
+              <p class="metric-label" data-en="Entropy" data-es="Entropía">Entropy</p>
+              <p class="metric-value"><span id="entropyValue">0.000</span></p>
+              <p class="text-sm text-gray-400" data-en="bits per symbol" data-es="bits por símbolo">bits per symbol</p>
+            </div>
+
+            <div class="metric">
+              <p class="metric-label" data-en="Alternation score" data-es="Puntaje de alternancia">Alternation score</p>
+              <p class="metric-value"><span id="alternationValue">0.000</span></p>
+              <p class="text-sm text-gray-400" data-en="switches / possible switches" data-es="cambios / cambios posibles">switches / possible switches</p>
+            </div>
+
+            <div class="metric">
+              <p class="metric-label" data-en="Detection" data-es="Detección">Detection</p>
+              <p class="metric-value"><span id="detectionValue">—</span></p>
+              <p class="text-sm text-gray-400" data-en="alternation threshold" data-es="umbral de alternancia">alternation threshold</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div class="metric">
+              <p class="metric-label" data-en="Zeros" data-es="Ceros">Zeros</p>
+              <p class="metric-value"><span id="zeroValue">0</span></p>
+              <p class="text-sm text-gray-400" data-en="symbol count" data-es="conteo de símbolos">symbol count</p>
+            </div>
+
+            <div class="metric">
+              <p class="metric-label" data-en="Ones" data-es="Unos">Ones</p>
+              <p class="metric-value"><span id="oneValue">0</span></p>
+              <p class="text-sm text-gray-400" data-en="symbol count" data-es="conteo de símbolos">symbol count</p>
+            </div>
+
+            <div class="metric">
+              <p class="metric-label" data-en="Avg. run length" data-es="Racha promedio">Avg. run length</p>
+              <p class="metric-value"><span id="runLengthValue">0.000</span></p>
+              <p class="text-sm text-gray-400" data-en="consecutive values" data-es="valores consecutivos">consecutive values</p>
+            </div>
+          </div>
+
+          <div class="concept-card mb-6">
+            <p class="concept-kicker" data-en="Sequence view" data-es="Vista de secuencia">Sequence view</p>
+            <div id="sequenceStrip" class="sequence-strip"></div>
+          </div>
+
+          <div class="concept-card mb-6">
+            <p class="concept-kicker" data-en="Metric comparison" data-es="Comparación de métricas">Metric comparison</p>
+            <canvas id="metricCanvas" width="820" height="320" aria-label="Metric comparison chart"></canvas>
+          </div>
+
+          <div class="concept-card concept-card-strong">
+            <p class="concept-kicker" data-en="Live interpretation" data-es="Interpretación en vivo">Live interpretation</p>
+            <p id="liveInterpretation" class="text-gray-300 leading-8"></p>
+          </div>
+        </section>
+
+        <section id="examples" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8">
+          <h2 class="text-2xl font-semibold mb-4" data-en="Examples" data-es="Ejemplos">Examples</h2>
+
+          <div class="example-grid">
+            <div class="concept-card">
+              <p class="concept-kicker" data-en="Alternating" data-es="Alternante">Alternating</p>
+              <h3 class="concept-title">0101010101</h3>
+              <p class="text-gray-300 leading-8"
+                 data-en="This sequence can have high entropy because 0s and 1s are balanced, but it also has strong order because it switches almost every step."
+                 data-es="Esta secuencia puede tener alta entropía porque los 0s y 1s están balanceados, pero también tiene mucho orden porque cambia casi en cada paso.">
+                This sequence can have high entropy because 0s and 1s are balanced, but it also has strong order because it switches almost every step.
+              </p>
+            </div>
+
+            <div class="concept-card">
+              <p class="concept-kicker" data-en="Balanced shuffled" data-es="Balanceada mezclada">Balanced shuffled</p>
+              <h3 class="concept-title">0011010110</h3>
+              <p class="text-gray-300 leading-8"
+                 data-en="This can have similar entropy to an alternating sequence, but its order is weaker. This is the core reason entropy alone is not enough."
+                 data-es="Puede tener entropía similar a una secuencia alternante, pero su orden es más débil. Esta es la razón central por la que la entropía sola no basta.">
+                This can have similar entropy to an alternating sequence, but its order is weaker. This is the core reason entropy alone is not enough.
+              </p>
+            </div>
+
+            <div class="concept-card">
+              <p class="concept-kicker" data-en="Constant" data-es="Constante">Constant</p>
+              <h3 class="concept-title">1111111111</h3>
+              <p class="text-gray-300 leading-8"
+                 data-en="This has very low entropy because the next symbol is predictable. But low entropy does not automatically mean rich structure."
+                 data-es="Tiene entropía muy baja porque el siguiente símbolo es predecible. Pero baja entropía no significa automáticamente estructura rica.">
+                This has very low entropy because the next symbol is predictable. But low entropy does not automatically mean rich structure.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section id="method" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8">
+          <h2 class="text-2xl font-semibold mb-4" data-en="Method" data-es="Método">Method</h2>
+
+          <div class="space-y-4">
+            <div class="concept-card">
+              <p class="concept-kicker" data-en="Variables" data-es="Variables">Variables</p>
+              <div class="flex flex-wrap gap-2">
+                <span class="pill" data-en="Independent: sequence type" data-es="Independiente: tipo de secuencia">Independent: sequence type</span>
+                <span class="pill" data-en="Independent: noise level" data-es="Independiente: nivel de ruido">Independent: noise level</span>
+                <span class="pill" data-en="Independent: threshold" data-es="Independiente: umbral">Independent: threshold</span>
+                <span class="pill" data-en="Dependent: entropy" data-es="Dependiente: entropía">Dependent: entropy</span>
+                <span class="pill" data-en="Dependent: alternation score" data-es="Dependiente: puntaje de alternancia">Dependent: alternation score</span>
+              </div>
+            </div>
+
+            <div class="concept-card">
+              <p class="concept-kicker" data-en="Procedure" data-es="Procedimiento">Procedure</p>
+              <table class="mini-table">
+                <thead>
+                  <tr>
+                    <th data-en="Step" data-es="Paso">Step</th>
+                    <th data-en="Action" data-es="Acción">Action</th>
+                    <th data-en="Reason" data-es="Razón">Reason</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td data-en="Generate or enter a binary sequence." data-es="Generar o ingresar una secuencia binaria.">Generate or enter a binary sequence.</td>
+                    <td data-en="Keep the representation controlled." data-es="Mantener la representación controlada.">Keep the representation controlled.</td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td data-en="Calculate entropy from the count of 0s and 1s." data-es="Calcular entropía a partir del conteo de 0s y 1s.">Calculate entropy from the count of 0s and 1s.</td>
+                    <td data-en="Measure uncertainty from symbol balance." data-es="Medir incertidumbre desde el balance de símbolos.">Measure uncertainty from symbol balance.</td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td data-en="Calculate alternation and run-length scores." data-es="Calcular puntajes de alternancia y longitud de racha.">Calculate alternation and run-length scores.</td>
+                    <td data-en="Measure order that entropy can miss." data-es="Medir orden que la entropía puede perder.">Measure order that entropy can miss.</td>
+                  </tr>
+                  <tr>
+                    <td>4</td>
+                    <td data-en="Apply a threshold-based detector." data-es="Aplicar un detector basado en umbral.">Apply a threshold-based detector.</td>
+                    <td data-en="Define pattern detection operationally." data-es="Definir la detección de patrón de forma operacional.">Define pattern detection operationally.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section id="interpretation" class="scroll-mt-24 mb-12 border-b border-gray-900 pb-8">
+          <h2 class="text-2xl font-semibold mb-4" data-en="Interpretation" data-es="Interpretación">Interpretation</h2>
+
+          <div class="reading-block space-y-5 text-gray-300">
+            <p data-en="The key result is that uncertainty and detectability are not the same thing. Entropy tells us how balanced or predictable the symbols are. A detector tells us whether a specific kind of structure is present according to a rule."
+               data-es="El resultado clave es que incertidumbre y detectabilidad no son lo mismo. La entropía nos dice qué tan balanceados o predecibles son los símbolos. Un detector nos dice si un tipo específico de estructura está presente según una regla.">
+              The key result is that uncertainty and detectability are not the same thing. Entropy tells us how balanced or predictable the symbols are. A detector tells us whether a specific kind of structure is present according to a rule.
+            </p>
+
+            <p data-en="This matters for the larger project because representation cannot be reduced to lower entropy alone. A system must also preserve or extract useful relations among elements. In this experiment, that relation is simple: alternation. Later, it can become correlation, prediction, feature detection, or multi-channel integration."
+               data-es="Esto importa para el proyecto mayor porque la representación no puede reducirse solo a menor entropía. Un sistema también debe preservar o extraer relaciones útiles entre elementos. En este experimento, esa relación es simple: alternancia. Más adelante puede convertirse en correlación, predicción, detección de rasgos o integración multicanal.">
+              This matters for the larger project because representation cannot be reduced to lower entropy alone. A system must also preserve or extract useful relations among elements. In this experiment, that relation is simple: alternation. Later, it can become correlation, prediction, feature detection, or multi-channel integration.
+            </p>
+          </div>
+        </section>
+
+        <section id="limits" class="scroll-mt-24 mb-16">
+          <h2 class="text-2xl font-semibold mb-4" data-en="Limits" data-es="Límites">Limits</h2>
+
+          <div class="concept-card concept-card-strong">
+            <p class="concept-kicker" data-en="Main limitation" data-es="Límite principal">Main limitation</p>
+            <p class="text-gray-300 leading-8"
+               data-en="This detector only finds one kind of structure: alternation. A sequence can fail the alternation detector while still containing another pattern, such as blocks, repetition every five steps, or a hidden rule. A detector always reflects the structure it was designed to find."
+               data-es="Este detector solo encuentra un tipo de estructura: alternancia. Una secuencia puede fallar el detector de alternancia y aun así contener otro patrón, como bloques, repetición cada cinco pasos o una regla oculta. Un detector siempre refleja la estructura para la que fue diseñado.">
+              This detector only finds one kind of structure: alternation. A sequence can fail the alternation detector while still containing another pattern, such as blocks, repetition every five steps, or a hidden rule. A detector always reflects the structure it was designed to find.
+            </p>
+          </div>
+        </section>
+      </main>
+
+      <aside class="hidden xl:block">
+        <div class="sticky top-8 space-y-4">
+          <div class="concept-card">
+            <p class="concept-kicker" data-en="Core idea" data-es="Idea central">Core idea</p>
+            <p class="text-gray-300 leading-7"
+               data-en="Entropy measures uncertainty. Detection measures whether a chosen structure is identifiable."
+               data-es="La entropía mide incertidumbre. La detección mide si una estructura elegida es identificable.">
+              Entropy measures uncertainty. Detection measures whether a chosen structure is identifiable.
+            </p>
+          </div>
+
+          <div class="concept-card">
+            <p class="concept-kicker" data-en="Warning" data-es="Advertencia">Warning</p>
+            <p class="text-gray-400 leading-7"
+               data-en="A detector can only find what it is designed to detect."
+               data-es="Un detector solo puede encontrar aquello para lo que fue diseñado.">
+              A detector can only find what it is designed to detect.
+            </p>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+<script>
+  const langToggle = document.getElementById("langToggle");
+
+  const sequenceTypeEl = document.getElementById("sequenceType");
+  const lengthEl = document.getElementById("length");
+  const noiseLevelEl = document.getElementById("noiseLevel");
+  const thresholdEl = document.getElementById("threshold");
+  const customPanel = document.getElementById("customPanel");
+  const customInput = document.getElementById("customInput");
+
+  const lengthLabel = document.getElementById("lengthLabel");
+  const noiseLabel = document.getElementById("noiseLabel");
+  const thresholdLabel = document.getElementById("thresholdLabel");
+
+  const entropyValue = document.getElementById("entropyValue");
+  const alternationValue = document.getElementById("alternationValue");
+  const detectionValue = document.getElementById("detectionValue");
+  const zeroValue = document.getElementById("zeroValue");
+  const oneValue = document.getElementById("oneValue");
+  const runLengthValue = document.getElementById("runLengthValue");
+  const sequenceStrip = document.getElementById("sequenceStrip");
+  const liveInterpretation = document.getElementById("liveInterpretation");
+
+  const metricCanvas = document.getElementById("metricCanvas");
+  const mctx = metricCanvas.getContext("2d");
+
+  let currentLang = localStorage.getItem("siteLang") || "en";
+
+  function applyLanguage(lang) {
+    document.documentElement.lang = lang;
+
+    document.querySelectorAll("[data-en][data-es]").forEach(el => {
+      el.textContent = el.dataset[lang];
+    });
+
+    document.querySelectorAll("option[data-en][data-es]").forEach(option => {
+      option.textContent = option.dataset[lang];
+    });
+
+    document.title = lang === "en"
+      ? "Experiment 4 — Detectability of Structure"
+      : "Experimento 4 — Detectabilidad de la Estructura";
+
+    langToggle.textContent = lang === "en" ? "ES" : "EN";
+    localStorage.setItem("siteLang", lang);
+    currentLang = lang;
+
+    update();
+  }
+
+  function randomBit() {
+    return Math.random() > 0.5 ? 1 : 0;
+  }
+
+  function generateSequence(type, length, noiseRate) {
+    let sequence = [];
+
+    if (type === "alternating") {
+      for (let i = 0; i < length; i++) {
+        sequence.push(i % 2);
+      }
+    }
+
+    if (type === "random") {
+      for (let i = 0; i < length; i++) {
+        sequence.push(randomBit());
+      }
+    }
+
+    if (type === "blocks") {
+      for (let i = 0; i < length; i++) {
+        sequence.push(Math.floor(i / 8) % 2);
+      }
+    }
+
+    if (type === "balanced") {
+      const half = Math.floor(length / 2);
+      sequence = [
+        ...Array.from({ length: half }, () => 0),
+        ...Array.from({ length: length - half }, () => 1)
+      ];
+
+      for (let i = sequence.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [sequence[i], sequence[j]] = [sequence[j], sequence[i]];
+      }
+    }
+
+    if (type === "custom") {
+      sequence = parseCustomSequence(customInput.value);
+    }
+
+    if (type !== "custom" && type !== "random") {
+      sequence = sequence.map(bit => Math.random() < noiseRate ? 1 - bit : bit);
+    }
+
+    return sequence;
+  }
+
+  function parseCustomSequence(value) {
+    return Array.from(value)
+      .filter(char => char === "0" || char === "1")
+      .map(char => Number(char));
+  }
+
+  function countBits(sequence) {
+    let zeros = 0;
+    let ones = 0;
+
+    sequence.forEach(bit => {
+      if (bit === 0) zeros++;
+      if (bit === 1) ones++;
+    });
+
+    return { zeros, ones };
+  }
+
+  function entropy(sequence) {
+    if (!sequence.length) return 0;
+
+    const { zeros, ones } = countBits(sequence);
+    const total = sequence.length;
+    const probabilities = [zeros / total, ones / total];
+
+    let h = 0;
+
+    probabilities.forEach(p => {
+      if (p > 0) h -= p * Math.log2(p);
+    });
+
+    return h;
+  }
+
+  function alternationScore(sequence) {
+    if (sequence.length < 2) return 0;
+
+    let switches = 0;
+
+    for (let i = 1; i < sequence.length; i++) {
+      if (sequence[i] !== sequence[i - 1]) switches++;
+    }
+
+    return switches / (sequence.length - 1);
+  }
+
+  function averageRunLength(sequence) {
+    if (!sequence.length) return 0;
+
+    const runs = [];
+    let currentRun = 1;
+
+    for (let i = 1; i < sequence.length; i++) {
+      if (sequence[i] === sequence[i - 1]) {
+        currentRun++;
+      } else {
+        runs.push(currentRun);
+        currentRun = 1;
+      }
+    }
+
+    runs.push(currentRun);
+
+    return runs.reduce((sum, value) => sum + value, 0) / runs.length;
+  }
+
+  function renderSequence(sequence) {
+    const visible = sequence.slice(0, 160);
+
+    sequenceStrip.innerHTML = visible.map(bit => `
+      <span class="bit-cell ${bit === 1 ? "bit-one" : "bit-zero"}">${bit}</span>
+    `).join("");
+
+    if (sequence.length > visible.length) {
+      sequenceStrip.innerHTML += `<span class="bit-cell bit-zero">…</span>`;
+    }
+  }
+
+  function drawMetricChart(h, alt, runLength, threshold) {
+    const w = metricCanvas.width;
+    const hCanvas = metricCanvas.height;
+    const padding = 54;
+    const baseY = hCanvas - padding;
+    const usableH = hCanvas - padding * 2;
+
+    const normalizedRun = Math.min(runLength / 10, 1);
+
+    const bars = [
+      { label: currentLang === "en" ? "Entropy" : "Entropía", value: h, max: 1 },
+      { label: currentLang === "en" ? "Alternation" : "Alternancia", value: alt, max: 1 },
+      { label: currentLang === "en" ? "Run length" : "Racha", value: normalizedRun, max: 1 }
+    ];
+
+    mctx.clearRect(0, 0, w, hCanvas);
+
+    mctx.strokeStyle = "rgba(148, 163, 184, 0.18)";
+    mctx.lineWidth = 1;
+    mctx.font = "13px sans-serif";
+    mctx.fillStyle = "#94a3b8";
+
+    for (let i = 0; i <= 4; i++) {
+      const y = padding + (i * usableH) / 4;
+      const value = 1 - i / 4;
+
+      mctx.beginPath();
+      mctx.moveTo(padding, y);
+      mctx.lineTo(w - padding, y);
+      mctx.stroke();
+
+      mctx.fillText(value.toFixed(2), 10, y + 4);
+    }
+
+    const thresholdY = baseY - threshold * usableH;
+    mctx.strokeStyle = "rgba(248, 250, 252, 0.45)";
+    mctx.setLineDash([6, 6]);
+    mctx.beginPath();
+    mctx.moveTo(padding, thresholdY);
+    mctx.lineTo(w - padding, thresholdY);
+    mctx.stroke();
+    mctx.setLineDash([]);
+
+    const barWidth = 96;
+    const gap = 80;
+    const startX = (w - (bars.length * barWidth + (bars.length - 1) * gap)) / 2;
+
+    bars.forEach((bar, i) => {
+      const x = startX + i * (barWidth + gap);
+      const barH = bar.value * usableH;
+      const y = baseY - barH;
+
+      const gradient = mctx.createLinearGradient(0, y, 0, baseY);
+      gradient.addColorStop(0, "rgba(138, 215, 255, 0.92)");
+      gradient.addColorStop(1, "rgba(96, 165, 250, 0.30)");
+
+      mctx.fillStyle = gradient;
+      mctx.fillRect(x, y, barWidth, barH);
+
+      mctx.fillStyle = "#e0f2fe";
+      mctx.font = "14px sans-serif";
+      mctx.fillText(bar.value.toFixed(3), x + 20, y - 12);
+
+      mctx.fillStyle = "#cbd5e1";
+      mctx.fillText(bar.label, x + 5, baseY + 28);
+    });
+
+    mctx.fillStyle = "#cbd5e1";
+    mctx.fillText(currentLang === "en" ? "Threshold" : "Umbral", w - 120, thresholdY - 8);
+  }
+
+  function updateInterpretation(sequence, h, alt, runLength, threshold, detected) {
+    const { zeros, ones } = countBits(sequence);
+
+    if (currentLang === "en") {
+      if (sequence.length < 2) {
+        liveInterpretation.textContent = "Add at least two binary values to analyze structure.";
+        return;
+      }
+
+      if (detected) {
+        liveInterpretation.textContent =
+          `The alternation detector is active because the alternation score (${alt.toFixed(3)}) is above the threshold (${threshold.toFixed(2)}). Entropy is ${h.toFixed(3)} bits, but the important point is that the sequence is not only uncertain; it also has detectable order.`;
+      } else if (h > 0.9 && alt < threshold) {
+        liveInterpretation.textContent =
+          `This sequence has high entropy (${h.toFixed(3)} bits), but the alternation detector does not activate. This shows the central lesson: balanced symbols can create high entropy without forming the specific pattern we are testing for.`;
+      } else if (h < 0.3) {
+        liveInterpretation.textContent =
+          `This sequence has low entropy because one value dominates or repeats heavily. But low entropy alone does not mean rich structure. A constant sequence is predictable, but not necessarily interesting.`;
+      } else {
+        liveInterpretation.textContent =
+          `This sequence sits between simple predictability and strong alternation. It contains ${zeros} zeros and ${ones} ones, with an average run length of ${runLength.toFixed(2)}. The detector gives a rule-based answer, not a final interpretation.`;
+      }
+    } else {
+      if (sequence.length < 2) {
+        liveInterpretation.textContent = "Agrega al menos dos valores binarios para analizar estructura.";
+        return;
+      }
+
+      if (detected) {
+        liveInterpretation.textContent =
+          `El detector de alternancia está activo porque el puntaje de alternancia (${alt.toFixed(3)}) está por encima del umbral (${threshold.toFixed(2)}). La entropía es ${h.toFixed(3)} bits, pero el punto importante es que la secuencia no solo es incierta; también tiene orden detectable.`;
+      } else if (h > 0.9 && alt < threshold) {
+        liveInterpretation.textContent =
+          `Esta secuencia tiene alta entropía (${h.toFixed(3)} bits), pero el detector de alternancia no se activa. Esto muestra la lección central: los símbolos balanceados pueden producir alta entropía sin formar el patrón específico que estamos probando.`;
+      } else if (h < 0.3) {
+        liveInterpretation.textContent =
+          `Esta secuencia tiene baja entropía porque un valor domina o se repite mucho. Pero baja entropía por sí sola no significa estructura rica. Una secuencia constante es predecible, pero no necesariamente interesante.`;
+      } else {
+        liveInterpretation.textContent =
+          `Esta secuencia está entre predictibilidad simple y alternancia fuerte. Contiene ${zeros} ceros y ${ones} unos, con una racha promedio de ${runLength.toFixed(2)}. El detector da una respuesta basada en reglas, no una interpretación final.`;
+      }
+    }
+  }
+
+  function setPreset(name) {
+    if (name === "alternating") {
+      sequenceTypeEl.value = "alternating";
+      lengthEl.value = 80;
+      noiseLevelEl.value = 0;
+    }
+
+    if (name === "balanced") {
+      sequenceTypeEl.value = "balanced";
+      lengthEl.value = 80;
+      noiseLevelEl.value = 0;
+    }
+
+    if (name === "blocks") {
+      sequenceTypeEl.value = "blocks";
+      lengthEl.value = 80;
+      noiseLevelEl.value = 0;
+    }
+
+    if (name === "customExample") {
+      sequenceTypeEl.value = "custom";
+      customInput.value = "0101010101001101011001010101010011010110";
+      noiseLevelEl.value = 0;
+    }
+
+    update();
+  }
+
+  function update() {
+    const type = sequenceTypeEl.value;
+    const length = parseInt(lengthEl.value);
+    const noiseRate = parseInt(noiseLevelEl.value) / 100;
+    const threshold = parseFloat(thresholdEl.value);
+
+    customPanel.classList.toggle("hidden", type !== "custom");
+
+    lengthLabel.textContent = length;
+    noiseLabel.textContent = Math.round(noiseRate * 100);
+    thresholdLabel.textContent = threshold.toFixed(2);
+
+    const sequence = generateSequence(type, length, noiseRate);
+    const h = entropy(sequence);
+    const alt = alternationScore(sequence);
+    const runLength = averageRunLength(sequence);
+    const detected = alt >= threshold;
+
+    const { zeros, ones } = countBits(sequence);
+
+    entropyValue.textContent = h.toFixed(3);
+    alternationValue.textContent = alt.toFixed(3);
+    detectionValue.textContent = detected
+      ? (currentLang === "en" ? "Detected" : "Detectado")
+      : (currentLang === "en" ? "Not detected" : "No detectado");
+
+    zeroValue.textContent = zeros;
+    oneValue.textContent = ones;
+    runLengthValue.textContent = runLength.toFixed(3);
+
+    renderSequence(sequence);
+    drawMetricChart(h, alt, runLength, threshold);
+    updateInterpretation(sequence, h, alt, runLength, threshold, detected);
+  }
+
+  sequenceTypeEl.addEventListener("change", update);
+  lengthEl.addEventListener("input", update);
+  noiseLevelEl.addEventListener("input", update);
+  thresholdEl.addEventListener("input", update);
+  customInput.addEventListener("input", update);
+
+  document.querySelectorAll(".preset-button").forEach(button => {
+    button.addEventListener("click", () => setPreset(button.dataset.preset));
+  });
+
+  langToggle.addEventListener("click", () => {
+    applyLanguage(currentLang === "en" ? "es" : "en");
+  });
+
+  applyLanguage(currentLang);
+</script>
+</body>
+</html>
